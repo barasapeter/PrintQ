@@ -1,14 +1,17 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.router import api_router
 from app.web.router import home_router
 from app.core.config import settings
 from app.core.templating import STATIC_DIR
 from app.db.init_db import init_db
+from app.core.config import settings
 
 
 @asynccontextmanager
@@ -24,6 +27,20 @@ def create_app() -> FastAPI:
         debug=settings.debug,
         lifespan=lifespan,
     )
+
+    @app.exception_handler(StarletteHTTPException)
+    async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+        if exc.status_code == 404:
+            return HTMLResponse(content=settings.not_found, status_code=404)
+
+        if exc.status_code == 405:
+            return HTMLResponse(content=settings.method_not_allowed, status_code=405)
+
+        return HTMLResponse(
+            content=settings.custom_error.format(exc_status_code=exc.status_code),
+            status_code=exc.status_code,
+        )
+
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
     app.include_router(api_router, prefix=settings.api_v1_prefix)
     app.include_router(home_router, prefix="")

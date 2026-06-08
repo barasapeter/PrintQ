@@ -26,6 +26,32 @@ class Settings(BaseSettings):
         case_sensitive=False,
     )
 
+    @staticmethod
+    def _error_page(title: str, heading: str) -> str:
+        return f"""
+        <!doctype html>
+        <html>
+            <head>
+                <title>{title}</title>
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+            </head>
+            <body>
+                <h1 style="color: #E63F31">{heading}</h1>
+            </body>
+        </html>"""
+
+    @property
+    def not_found(self) -> str:
+        return self._error_page("404 - Page not found", "404 - Page not found")
+
+    @property
+    def method_not_allowed(self) -> str:
+        return self._error_page("405 - Method not allowed", "405 - Method not allowed")
+
+    def custom_error(self, exc_status_code: int) -> str:
+        return self._error_page(f"Error {exc_status_code}", f"Error {exc_status_code}")
+
     def database_url(self) -> str:
         return (
             f"postgresql+asyncpg://"
