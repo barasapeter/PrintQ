@@ -1,9 +1,263 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Health Check</title>
-    </head>
-    <body>
-        <h1>Status: {{ status }}</h1>
-    </body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+<title>PrintQ</title>
+
+<style>
+:root{
+  --bg:#f7f8fc;
+  --panel:#ffffff;
+  --text:#0f172a;
+  --muted:#475569;
+  --border:#e2e8f0;
+  --accent:#5b5cff;
+  --accent2:#16a34a;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.55;
+}
+
+.container{
+  width:min(1100px, 92%);
+  margin:0 auto;
+}
+
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:22px 0;
+}
+
+.logo img {
+  max-width: 140px;
+}
+
+.hero{
+  padding:34px 0 72px;
+}
+
+.hero h1{
+  font-size:42px;
+  line-height:1.1;
+  letter-spacing:-1px;
+  max-width:20ch;
+}
+
+.hero p{
+  margin-top:20px;
+  max-width:60ch;
+  line-height:1.6;
+}
+.cta{
+  margin-top:28px;
+  display:flex;
+  gap:14px;
+  text-decoration: none;
+}
+
+.button{
+  padding:12px 16px;
+  border-radius:10px;
+  font-weight:600;
+  font-size:14px;
+  border:1px solid var(--border);
+  background:var(--panel);
+  color:var(--text);
+}
+
+.button.primary{
+  background:var(--accent);
+  color:white;
+  border:none;
+}
+
+.section{
+  padding:15px 0;
+  border-top:1px solid var(--border);
+}
+
+.section h2{
+  font-size:22px;
+  margin-bottom:14px;
+}
+
+.section p{
+  color:var(--muted);
+  max-width:75ch;
+}
+
+.steps{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  margin-top:20px;
+}
+
+.step{
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:14px;
+  background:var(--panel);
+}
+
+.step strong{
+  display:block;
+  margin-bottom:6px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(0,1fr));
+  gap:16px;
+  margin-top:20px;
+}
+
+.card{
+  padding:18px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:var(--panel);
+}
+
+.highlight{
+  color:var(--accent2);
+  font-weight:600;
+}
+
+.footer{
+  padding:40px 0;
+  color:var(--muted);
+  font-size:13px;
+  border-top:1px solid var(--border);
+}
+
+@media(max-width:800px){
+  .hero h1{font-size:40px;}
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <nav>
+    <div class="logo">
+      <img src="/static/images/logo.png" alt="">
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>Print Any Document Without Leaving Your Room</h1>
+
+    <div class="cta">
+      <a class="button primary">Print Now</a>
+      <a class="button">How it works</a>
+    </div>
+
+    <p>
+      Your document is ready, but printing still means queues, cables and standing there watching a stranger scroll through your stuff.
+      PrintQ removes all of that.
+      Upload your file, choose a pickup point, and collect when it is ready.
+      No waiting, no file transfer stress, no disruption.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>The real problem</h2>
+    <p>
+      Printing is not just inconvenient. It is unpredictable.
+      You lose time in queues, risk file issues at the counter and often end up waiting when you should already be on your way.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>So we try to help</h2>
+    <p>
+      Instead of trekking to a cafe, you send your file first.
+      PrintQ routes your job to a verified print shop near you, already queued and prepared before you arrive.
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <strong>1. Upload</strong>
+        Send your document from anywhere: hostel, class, or on the move.
+      </div>
+
+      <div class="step">
+        <strong>2. Configure</strong>
+        Select pages, colour, copies, and binding exactly as needed.
+      </div>
+
+      <div class="step">
+        <strong>3. Pay</strong>
+        Complete checkout via M-Pesa with instant confirmation.
+      </div>
+
+      <div class="step">
+        <strong>4. Pick up</strong>
+        Walk in, show your SMS, collect your printout and leave.
+      </div>
+
+      <div class="step">
+        <strong>5. Optionally, get the priontout delivered</strong>
+        Pay for convenience and comfort. Let us handle the boring stuff for you.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Trust is not an add-on</h2>
+
+    <div class="grid">
+      <div class="card">
+        Funds are held until you confirm the print is correct.
+        <span class="highlight">Nothing is released prematurely.</span>
+      </div>
+
+      <div class="card">
+        Any issue is handled inside the platform, not negotiated at the counter. Refunds are processed instantly.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Designed for student pressure</h2>
+    <p>
+      Assignments, CATs, thesis work, internship documents, exam cards.
+      Printing is constant, urgent, and rarely convenient.
+      PrintQ is built around that reality.
+    </p>
+  </section>
+
+  <section class="section">
+    <h2>PrintQ</h2>
+    <p style="font-size:18px;color:var(--text)">
+      Upload it. Pick it up. Done.
+    </p>
+  </section>
+
+  <div class="footer">
+    © PrintQ. Built for speed, trust, and campus printing.
+  </div>
+
+</div>
+
+</body>
 </html>
