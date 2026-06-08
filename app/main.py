@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from app.api.router import api_router
+from app.web.router import home_router
 from app.core.config import settings
 from app.core.templating import STATIC_DIR
 from app.db.init_db import init_db
@@ -25,6 +26,7 @@ def create_app() -> FastAPI:
     )
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
     app.include_router(api_router, prefix=settings.api_v1_prefix)
+    app.include_router(home_router, prefix="")
     return app
 
 
