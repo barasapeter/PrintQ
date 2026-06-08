@@ -1,5 +1,6 @@
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from http import HTTPStatus
 
 
 class Settings(BaseSettings):
@@ -50,7 +51,11 @@ class Settings(BaseSettings):
         return self._error_page("405 - Method not allowed", "405 - Method not allowed")
 
     def custom_error(self, exc_status_code: int) -> str:
-        return self._error_page(f"Error {exc_status_code}", f"Error {exc_status_code}")
+        status = HTTPStatus(exc_status_code)
+        return self._error_page(
+            f"{exc_status_code} - {status.phrase}",
+            f"{exc_status_code} - {status.phrase}",
+        )
 
     def database_url(self) -> str:
         return (

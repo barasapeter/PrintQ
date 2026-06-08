@@ -37,7 +37,7 @@ def create_app() -> FastAPI:
             return HTMLResponse(content=settings.method_not_allowed, status_code=405)
 
         return HTMLResponse(
-            content=settings.custom_error.format(exc_status_code=exc.status_code),
+            content=settings.custom_error(exc_status_code=exc.status_code),
             status_code=exc.status_code,
         )
 
