@@ -30,12 +30,6 @@ def create_app() -> FastAPI:
 
     @app.exception_handler(StarletteHTTPException)
     async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-        if exc.status_code == 404:
-            return HTMLResponse(content=settings.not_found, status_code=404)
-
-        if exc.status_code == 405:
-            return HTMLResponse(content=settings.method_not_allowed, status_code=405)
-
         return HTMLResponse(
             content=settings.custom_error(exc_status_code=exc.status_code),
             status_code=exc.status_code,
