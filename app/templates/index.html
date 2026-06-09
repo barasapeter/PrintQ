@@ -1,141 +1,184 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
-<title>PrintQ</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+  <title>PrintQ</title>
 
-<style>
-:root{
-  --bg:#f7f8fc;
-  --panel:#ffffff;
-  --text:#0f172a;
-  --muted:#475569;
-  --border:#e2e8f0;
-  --accent:#5b5cff;
-}
+  <style>
+    :root {
+      --bg: #f7f8fc;
+      --panel: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #e2e8f0;
+      --accent: #5b5cff;
+    }
 
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-body{
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background:var(--bg);
-  color:var(--text);
-  line-height:1.55;
-}
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
 
-.container{
-  width:min(1100px, 92%);
-  margin:0 auto;
-}
+    .container {
+      width: min(1100px, 92%);
+      margin: 0 auto;
+    }
 
-nav{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:22px 0;
-}
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 0;
+    }
 
-.logo img {
-  max-width: 100px;
-}
+    .logo img {
+      max-width: 100px;
+    }
 
-.hero{
-  padding:34px 0 40px;
-}
+    .hero {
+      padding: 34px 0 40px;
+    }
 
-.hero h1{
-  font-size:42px;
-  line-height:1.1;
-  letter-spacing:-1px;
-  max-width:20ch;
-}
+    .hero h1 {
+      font-size: 42px;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      max-width: 20ch;
+    }
 
-.cta{
-  margin-top:28px;
-  display:flex;
-  gap:14px;
-  text-decoration:none;
-}
+    .cta {
+      margin-top: 28px;
+      display: flex;
+      gap: 14px;
+      text-decoration: none;
+    }
 
-.button{
-  padding:12px 16px;
-  border-radius:10px;
-  font-weight:600;
-  font-size:14px;
-  border:1px solid var(--border);
-  background:var(--panel);
-  color:var(--text);
-  text-decoration:none;
-}
+    .button {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      text-decoration: none;
+      display: inline-block;
+    }
 
-.button.primary{
-  background:var(--accent);
-  color:white;
-  border:none;
-}
+    .button.primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+    }
 
-.section{
-  padding:20px 0;
-  border-top:1px solid var(--border);
-}
+    .section {
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+    }
 
-.section h2{
-  font-size:22px;
-  margin-bottom:14px;
-}
+    .section h2 {
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
 
-.section p{
-  color:var(--muted);
-  max-width:75ch;
-}
+    .section p {
+      color: var(--muted);
+      max-width: 75ch;
+    }
 
-.footer{
-  padding:40px 0;
-  color:var(--muted);
-  font-size:13px;
-  border-top:1px solid var(--border);
-}
-</style>
+    .cta-band {
+      background: var(--accent);
+      color: white;
+      border-radius: 18px;
+      padding: 52px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 64px;
+    }
 
+    .cta-band h2 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      max-width: 28ch;
+    }
+
+    .cta-band .btn.white {
+      background: white;
+      color: var(--accent);
+      border: none;
+      padding: 14px 28px;
+      font-size: 15px;
+      flex-shrink: 0;
+      text-decoration: none;
+      border-radius: 12px;
+    }
+
+    .footer {
+      padding: 40px 0;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 768px) {
+      .cta-band {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 32px 24px;
+      }
+
+      .cta-band .btn.white {
+        text-align: center;
+      }
+
+      .cta-band h2 {
+        max-width: 100%;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div class="container">
 
-<div class="container">
+    <nav>
+      <div class="logo">
+        <img src="/static/images/logo.png" alt="PrintQ logo">
+      </div>
+    </nav>
 
-  <nav>
-    <div class="logo">
-      <img src="/static/images/logo.png" alt="">
+    <section class="hero">
+      <h1>Print Any Document Without Leaving Your Room</h1>
+
+      
+    </section>
+
+    <div class="cta-band">
+      <h2>Upload and Let PrintQ Handle the Boring Stuff.</h2>
+      <a class="btn white" href="/get-started">Print Now →</a>
     </div>
-  </nav>
-
-  <section class="hero">
-    <h1>Print Any Document Without Leaving Your Room</h1>
 
     <div class="cta">
-      <a class="button primary" href="/get-started">Print Now</a>
       <a class="button">How it works</a>
     </div>
-  </section>
 
-  <section class="section">
-    <h2>PrintQ</h2>
-    <p style="font-size:18px;color:var(--text)">
-      Upload it. Pick it up. Done.
-    </p>
-  </section>
+    <footer class="footer">
+      © PrintQ. Built for speed & trust. Print your all your documents from ANYWHERE.
+    </footer>
 
-  <div class="footer">
-    © PrintQ. Built for speed, trust, and campus printing.
   </div>
-
-</div>
-
 </body>
 </html>
