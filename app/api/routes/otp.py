@@ -59,6 +59,7 @@ class VerifyRequest(BaseModel):
 @router.post("/send")
 async def send_otp(
     payload: SendRequest,
+    request: Request,
     db: AsyncSession = Depends(get_db_session),
 ):
     if not payload.phone:

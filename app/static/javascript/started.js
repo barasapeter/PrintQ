@@ -89,7 +89,7 @@ verifyBtn.addEventListener("click", async () => {
             try {
                 data = await res.json();
             } catch (_) {}
-            setStatus(data?.detail || "Invalid OTP", "error");
+            setStatus(data?.detail || "Something went wrong", "error");
         }
 
     } catch (e) {
