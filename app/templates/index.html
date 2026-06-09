@@ -14,7 +14,6 @@
   --muted:#475569;
   --border:#e2e8f0;
   --accent:#5b5cff;
-  --accent2:#16a34a;
 }
 
 *{
@@ -43,11 +42,11 @@ nav{
 }
 
 .logo img {
-  max-width: 140px;
+  max-width: 100px;
 }
 
 .hero{
-  padding:34px 0 72px;
+  padding:34px 0 40px;
 }
 
 .hero h1{
@@ -57,16 +56,11 @@ nav{
   max-width:20ch;
 }
 
-.hero p{
-  margin-top:20px;
-  max-width:60ch;
-  line-height:1.6;
-}
 .cta{
   margin-top:28px;
   display:flex;
   gap:14px;
-  text-decoration: none;
+  text-decoration:none;
 }
 
 .button{
@@ -77,17 +71,17 @@ nav{
   border:1px solid var(--border);
   background:var(--panel);
   color:var(--text);
+  text-decoration:none;
 }
 
 .button.primary{
   background:var(--accent);
   color:white;
   border:none;
-  text-decoration: none;
 }
 
 .section{
-  padding:15px 0;
+  padding:20px 0;
   border-top:1px solid var(--border);
 }
 
@@ -101,54 +95,11 @@ nav{
   max-width:75ch;
 }
 
-.steps{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  margin-top:20px;
-}
-
-.step{
-  padding:16px;
-  border:1px solid var(--border);
-  border-radius:14px;
-  background:var(--panel);
-}
-
-.step strong{
-  display:block;
-  margin-bottom:6px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(2, minmax(0,1fr));
-  gap:16px;
-  margin-top:20px;
-}
-
-.card{
-  padding:18px;
-  border-radius:14px;
-  border:1px solid var(--border);
-  background:var(--panel);
-}
-
-.highlight{
-  color:var(--accent2);
-  font-weight:600;
-}
-
 .footer{
   padding:40px 0;
   color:var(--muted);
   font-size:13px;
   border-top:1px solid var(--border);
-}
-
-@media(max-width:800px){
-  .hero h1{font-size:40px;}
-  .grid{grid-template-columns:1fr;}
 }
 </style>
 
@@ -171,80 +122,6 @@ nav{
       <a class="button primary" href="/get-started">Print Now</a>
       <a class="button">How it works</a>
     </div>
-
-    <p>
-      Your document is ready, but printing still means queues, cables and standing there watching a stranger scroll through your stuff.
-      PrintQ removes all of that.
-      Upload your file, choose a pickup point, and collect when it is ready.
-      No waiting, no file transfer stress, no disruption.
-    </p>
-  </section>
-
-  <section class="section">
-    <h2>The real problem</h2>
-    <p>
-      Printing is not just inconvenient. It is unpredictable.
-      You lose time in queues, risk file issues at the counter and often end up waiting when you should already be on your way.
-    </p>
-  </section>
-
-  <section class="section">
-    <h2>So we try to help</h2>
-    <p>
-      Instead of trekking to a cafe, you send your file first.
-      PrintQ routes your job to a verified print shop near you, already queued and prepared before you arrive.
-    </p>
-
-    <div class="steps">
-      <div class="step">
-        <strong>1. Upload</strong>
-        Send your document from anywhere: hostel, class, or on the move.
-      </div>
-
-      <div class="step">
-        <strong>2. Configure</strong>
-        Select pages, colour, copies, and binding exactly as needed.
-      </div>
-
-      <div class="step">
-        <strong>3. Pay</strong>
-        Complete checkout via M-Pesa with instant confirmation.
-      </div>
-
-      <div class="step">
-        <strong>4. Pick up</strong>
-        Walk in, show your SMS, collect your printout and leave.
-      </div>
-
-      <div class="step">
-        <strong>5. Optionally, get the priontout delivered</strong>
-        Pay for convenience and comfort. Let us handle the boring stuff for you.
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <h2>Trust is not an add-on</h2>
-
-    <div class="grid">
-      <div class="card">
-        Funds are held until you confirm the print is correct.
-        <span class="highlight">Nothing is released prematurely.</span>
-      </div>
-
-      <div class="card">
-        Any issue is handled inside the platform, not negotiated at the counter. Refunds are processed instantly.
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <h2>Designed for student pressure</h2>
-    <p>
-      Assignments, CATs, thesis work, internship documents, exam cards.
-      Printing is constant, urgent, and rarely convenient.
-      PrintQ is built around that reality.
-    </p>
   </section>
 
   <section class="section">

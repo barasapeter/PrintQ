@@ -34,8 +34,6 @@
             justify-content:center;
             padding:24px;
             font-weight:500;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         .card{
@@ -48,15 +46,14 @@
             box-shadow:0 10px 30px rgba(0,0,0,0.05);
         }
 
-        .logo img {
-            max-width: 140px;
-            margin-bottom: 10px;
+        .logo img{
+            max-width:100px;
+            margin-bottom:10px;
         }
 
         h1{
             font-size:22px;
             font-weight:750;
-            letter-spacing:-0.3px;
             margin-bottom:6px;
         }
 
@@ -68,7 +65,6 @@
             font-size:13px;
             font-weight:600;
             margin-bottom:18px;
-            color:#1e293b;
         }
 
         .field{
@@ -88,15 +84,21 @@
             padding:12px;
             border:1px solid var(--border);
             border-radius:10px;
-            outline:none;
             font-size:14px;
-            font-weight:550;
             width:100%;
         }
 
         input:focus{
             border-color:var(--accent);
             box-shadow:0 0 0 3px rgba(91,92,255,0.12);
+            outline:none;
+        }
+
+        input:disabled{
+            background:#f1f5f9;
+            color:#94a3b8;
+            cursor:not-allowed;
+            border-color:#d1d5db;
         }
 
         button{
@@ -114,17 +116,27 @@
             color:white;
         }
 
-        .primary:hover{
-            opacity:0.92;
-        }
-
         .secondary{
             background:var(--accent2);
             color:white;
         }
 
+        .primary:hover,
         .secondary:hover{
             opacity:0.92;
+        }
+
+        button:disabled{
+            opacity:0.5;
+            cursor:not-allowed;
+            pointer-events:none;
+            filter:grayscale(0.2);
+        }
+
+        button:disabled:hover{
+            opacity:0.5;
+            transform:none;
+            box-shadow:none;
         }
 
         .hidden{
@@ -138,8 +150,13 @@
             font-weight:600;
         }
 
-        .error{ color:var(--danger); }
-        .success{ color:var(--accent2); }
+        .error{
+            color:var(--danger);
+        }
+
+        .success{
+            color:var(--accent2);
+        }
 
         @media (max-width:420px){
             .card{
@@ -147,16 +164,10 @@
             }
         }
 
-        @media (max-width: 600px){
+        @media (max-width:600px){
             body{
                 align-items:flex-start;
-                justify-content:center;
                 padding-top:32px;
-            }
-
-            .card{
-                width:100%;
-                max-width:440px;
             }
         }
     </style>
@@ -168,7 +179,6 @@
     <div class="logo">
         <img src="/static/images/logo.png" alt="">
     </div>
-
 
     <div class="service-banner">
         <h1>Get Started</h1>
@@ -192,7 +202,6 @@
     </div>
 
     <div id="status" class="status"></div>
-
 </div>
 
 <script src="/static/javascript/started.js"></script>
