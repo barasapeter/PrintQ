@@ -5,6 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.middleware.sessions import SessionMiddleware
 
 from app.api.router import api_router
 from app.web.router import home_router
@@ -26,6 +27,10 @@ def create_app() -> FastAPI:
         title=settings.app_name,
         debug=settings.debug,
         lifespan=lifespan,
+    )
+
+    app.add_middleware(
+        SessionMiddleware, secret_key=settings.starlette_session_middleware_secret_key
     )
 
     @app.exception_handler(StarletteHTTPException)

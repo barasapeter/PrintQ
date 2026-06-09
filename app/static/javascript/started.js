@@ -40,14 +40,21 @@ sendBtn.addEventListener("click", async () => {
             body: JSON.stringify({ phone })
         });
 
-        const data = await res.json();
+        let data = null;
+        try {
+            data = await res.json();
+        } catch (_) {}
 
         if (res.ok) {
             otpSection.classList.remove("hidden");
             setStatus("OTP sent. Enter the code.", "success");
             lockPhoneOnly();
         } else {
-            setStatus(data.message || "Failed to send OTP", "error");
+            setStatus(data?.detail || "Failed to send OTP", "error");
+            if (data.redirect) {
+                lockAll();
+                window.location.href = "/dashboard";
+            }
         }
 
     } catch (e) {
@@ -67,20 +74,22 @@ verifyBtn.addEventListener("click", async () => {
     setStatus("Verifying...");
 
     try {
-        const res = await fetch("/api/verify-otp", {
+        const res = await fetch("/api/v1/otp/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ phone, otp })
+            body: JSON.stringify({ phone, code: otp })
         });
-
-        const data = await res.json();
 
         if (res.ok) {
             setStatus("Verified. Redirecting...", "success");
             lockAll();
-            // window.location.href = "/dashboard";
+            window.location.href = "/dashboard";
         } else {
-            setStatus(data.message || "Invalid OTP", "error");
+            let data = null;
+            try {
+                data = await res.json();
+            } catch (_) {}
+            setStatus(data?.detail || "Invalid OTP", "error");
         }
 
     } catch (e) {
