@@ -32,4 +32,4 @@ async def dashboard(
     if not customer:
         return RedirectResponse(url="/get-started")
 
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    return templates.TemplateResponse("dashboard.html", {"request": request, "phone": customer.properties.get("phone")})

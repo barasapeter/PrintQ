@@ -191,16 +191,18 @@ async def verify_otp(
                 "detail": f"Invalid OTP. You have {max(remaining, 0)} attempts remaining",
             },
         )
+    
+    # # i have a weird attachment to this code block so i wont delete 😭
+    # stored_otp["verified"] = True
+    # stored_otp["verified_at"] = _now().isoformat()
+    # customer.properties = {**customer.properties, "otp": stored_otp}
 
-    stored_otp["verified"] = True
-    stored_otp["verified_at"] = _now().isoformat()
-    customer.properties = {**customer.properties, "otp": stored_otp}
-
+    customer.properties.pop("otp", None)
     flag_modified(customer, "properties")
     await db.commit()
     await db.refresh(customer)
 
-    request.session["customer"] = str(customer.uuid)
+    request.session["customer"] = str(customer.uuid) # we just need this. this is the point of sending an otp
 
     return JSONResponse(
         status_code=200,
