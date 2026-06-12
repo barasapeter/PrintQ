@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi.responses import JSONResponse
-
+from app.core.security import hash_password
 
 from app.schemas.vendor import VendorCreate, VendorRead
 from app.api.deps import get_db_session
@@ -29,4 +29,9 @@ async def create_vendor(
             },
         )
 
-    return await service.create(payload)
+    hashed_password = hash_password(payload.password)
+
+    data = payload.model_dump(exclude={"password"})
+    data["password_hash"] = hashed_password
+
+    return await service.create(data)

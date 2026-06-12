@@ -8,7 +8,7 @@ class VendorBase(BaseModel):
     name: str
     username: str
     email_address: EmailStr
-    password_hash: str
+    password: str
 
 
 class VendorCreate(VendorBase):
