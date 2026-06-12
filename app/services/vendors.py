@@ -13,6 +13,9 @@ class VendorService:
     async def get(self, vendor_uuid) -> Vendor | None:
         return await self.repository.get(vendor_uuid)
 
+    async def get_all(self) -> list[Vendor]:
+        return await self.repository.get_all()
+
     async def get_by_email(self, email_address) -> Vendor | None:
         return await self.repository.get_by_email(email_address)
 
@@ -20,4 +23,9 @@ class VendorService:
         return await self.repository.get_by_username(username)
 
     async def create(self, payload: VendorCreate) -> Vendor:
+        vendors = await self.repository.get_all()
+
+        if len(vendors) >= 5:
+            raise ValueError("Maximum number of vendors reached")
+
         return await self.repository.create(payload)
