@@ -14,6 +14,8 @@ from app.core.templating import STATIC_DIR
 from app.db.init_db import init_db
 from app.core.config import settings
 
+import traceback
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
@@ -30,11 +32,36 @@ def create_app() -> FastAPI:
     )
 
     app.add_middleware(
-        SessionMiddleware, secret_key=settings.starlette_session_middleware_secret_key
+        SessionMiddleware,
+        secret_key=settings.starlette_session_middleware_secret_key,
     )
 
+    @app.middleware("http")
+    async def exception_middleware(request: Request, call_next):
+        try:
+            return await call_next(request)
+
+        except Exception as exc:
+            if request.url.path.startswith(settings.api_v1_prefix):
+                from fastapi.responses import JSONResponse
+
+                traceback.print_exc()
+
+                return JSONResponse(
+                    status_code=500,
+                    content={"detail": "Internal server error"},
+                )
+
+            return HTMLResponse(
+                content=settings.custom_error(exc_status_code=500),
+                status_code=500,
+            )
+
     @app.exception_handler(StarletteHTTPException)
-    async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    async def http_exception_handler(
+        request: Request,
+        exc: StarletteHTTPException,
+    ):
         return HTMLResponse(
             content=settings.custom_error(exc_status_code=exc.status_code),
             status_code=exc.status_code,
@@ -43,6 +70,7 @@ def create_app() -> FastAPI:
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
     app.include_router(api_router, prefix=settings.api_v1_prefix)
     app.include_router(home_router, prefix="")
+
     return app
 
 
