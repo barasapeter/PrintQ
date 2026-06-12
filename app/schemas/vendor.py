@@ -20,3 +20,8 @@ class VendorRead(VendorBase):
     uuid: _uuid.UUID
     username: str
     email_address: EmailStr
+
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
