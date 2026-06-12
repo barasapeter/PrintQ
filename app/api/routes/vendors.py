@@ -29,9 +29,6 @@ async def create_vendor(
             },
         )
 
-    hashed_password = hash_password(payload.password)
+    payload.password_hash = hash_password(payload.password_hash)
 
-    data = payload.model_dump(exclude={"password"})
-    data["password_hash"] = hashed_password
-
-    return await service.create(data)
+    return await service.create(payload)

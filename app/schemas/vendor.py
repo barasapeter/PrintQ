@@ -8,11 +8,10 @@ class VendorBase(BaseModel):
     name: str
     username: str
     email_address: EmailStr
-    password: str
 
 
 class VendorCreate(VendorBase):
-    pass
+    password_hash: str
 
 
 class VendorRead(VendorBase):
