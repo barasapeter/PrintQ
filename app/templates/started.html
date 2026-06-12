@@ -4,200 +4,276 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <title>Get Started</title>
 
     <style>
-        :root{
-            --bg:#f7f8fc;
-            --panel:#ffffff;
-            --text:#0f172a;
-            --muted:#475569;
-            --border:#e2e8f0;
-            --accent:#5b5cff;
-            --accent2:#16a34a;
-            --danger:#dc2626;
+        :root {
+            --bg: #f8fafc;
+            --panel: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --accent2: #16a34a;
+            --danger: #dc2626;
         }
 
-        *{
-            box-sizing:border-box;
-            margin:0;
-            padding:0;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
         }
 
-        body{
-            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-            background:var(--bg);
-            color:var(--text);
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            padding:24px;
-            font-weight:500;
+        .card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 36px 32px 32px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+            animation: card-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        .card{
-            width:100%;
-            max-width:440px;
-            background:var(--panel);
-            border:1px solid var(--border);
-            border-radius:16px;
-            padding:24px;
-            box-shadow:0 10px 30px rgba(0,0,0,0.05);
+        @keyframes card-in {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .logo img{
-            max-width:100px;
-            margin-bottom:10px;
+        .logo img {
+            max-width: 90px;
+            margin-bottom: 28px;
+            animation: fade-in 0.5s ease 0.1s both;
         }
 
-        h1{
-            font-size:22px;
-            font-weight:750;
-            margin-bottom:6px;
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to   { opacity: 1; }
         }
 
-        .service-banner{
-            background:#eef2ff;
-            border:1px solid #dbeafe;
-            padding:12px;
-            border-radius:12px;
-            font-size:13px;
-            font-weight:600;
-            margin-bottom:18px;
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .field{
-            display:flex;
-            flex-direction:column;
-            gap:6px;
-            margin-bottom:14px;
+        @keyframes pill-in {
+            from { opacity: 0; transform: scale(0.88); }
+            to   { opacity: 1; transform: scale(1); }
         }
 
-        label{
-            font-size:12px;
-            color:var(--muted);
-            font-weight:650;
+        .hero-heading {
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+            margin-bottom: 6px;
         }
 
-        input{
-            padding:12px;
-            border:1px solid var(--border);
-            border-radius:10px;
-            font-size:14px;
-            width:100%;
+        .hero-heading .line-1 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 42px;
+            font-weight: 800;
+            animation: fade-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
         }
 
-        input:focus{
-            border-color:var(--accent);
-            box-shadow:0 0 0 3px rgba(91,92,255,0.12);
-            outline:none;
+        .hero-heading .word-any {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-weight: 700;
+            font-size: 38px;
+            background: var(--accent);
+            color: white;
+            padding: 1px 14px 4px 12px;
+            border-radius: 7px;
+            display: inline-block;
+            animation: pill-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
         }
 
-        input:disabled{
-            background:#f1f5f9;
-            color:#94a3b8;
-            cursor:not-allowed;
-            border-color:#d1d5db;
+        .hero-heading .line-2 {
+            display: inline-block;
+            font-size: 42px;
+            font-weight: 800;
+            border-bottom: 2.5px solid var(--text);
+            box-shadow: 0 3px 0 var(--accent);
+            padding-bottom: 3px;
+            animation: fade-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
         }
 
-        button{
-            width:100%;
-            padding:12px;
-            border:none;
-            border-radius:10px;
-            font-size:14px;
-            font-weight:700;
-            cursor:pointer;
+        .hero-heading .line-3 {
+            display: block;
+            font-size: 17px;
+            font-weight: 400;
+            color: var(--muted);
+            letter-spacing: -0.2px;
+            margin-top: 8px;
+            animation: fade-up 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.38s both;
         }
 
-        .primary{
-            background:var(--accent);
-            color:white;
+        .hero-heading .word-leaving {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-weight: 700;
+            color: var(--text);
         }
 
-        .secondary{
-            background:var(--accent2);
-            color:white;
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 24px 0;
+            animation: fade-in 0.4s ease 0.45s both;
         }
 
-        .primary:hover,
-        .secondary:hover{
-            opacity:0.92;
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 14px;
+            animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.48s both;
         }
 
-        button:disabled{
-            opacity:0.5;
-            cursor:not-allowed;
-            pointer-events:none;
-            filter:grayscale(0.2);
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
 
-        button:disabled:hover{
-            opacity:0.5;
-            transform:none;
-            box-shadow:none;
+        input {
+            padding: 13px 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            width: 100%;
+            color: var(--text);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            background: var(--panel);
         }
 
-        .hidden{
-            display:none;
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+            outline: none;
         }
 
-        .status{
-            font-size:12px;
-            margin-top:10px;
-            color:var(--muted);
-            font-weight:600;
+        input:disabled {
+            background: #f8fafc;
+            color: #94a3b8;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
         }
 
-        .error{
-            color:var(--danger);
+        .btn-wrap {
+            animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.54s both;
         }
 
-        .success{
-            color:var(--accent2);
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.1s ease;
         }
 
-        @media (max-width:420px){
-            .card{
-                padding:18px;
-            }
+        button:active { transform: translateY(1px); }
+
+        .primary {
+            background: var(--accent);
+            color: white;
         }
 
-        @media (max-width:600px){
-            body{
-                align-items:flex-start;
-                padding-top:32px;
-            }
+        .primary:hover { background: var(--accent-hover); }
+
+        .secondary {
+            background: var(--accent2);
+            color: white;
+        }
+
+        .secondary:hover { opacity: 0.92; }
+
+        button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .hidden { display: none; }
+
+        #otpSection {
+            margin-top: 14px;
+        }
+
+        #otpSection .field {
+            animation: fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) 0s both;
+        }
+
+        .status {
+            font-size: 13px;
+            margin-top: 12px;
+            font-weight: 500;
+            color: var(--muted);
+            min-height: 18px;
+        }
+
+        .status.error   { color: var(--danger); }
+        .status.success { color: var(--accent2); }
+
+        @media (max-width: 480px) {
+            .card { padding: 28px 22px 24px; }
+            .hero-heading .line-1,
+            .hero-heading .line-2 { font-size: 34px; }
+            .hero-heading .word-any { font-size: 30px; }
+        }
+
+        @media (max-width: 600px) {
+            body { align-items: flex-start; padding-top: 32px; }
         }
     </style>
 </head>
 
 <body>
-
 <div class="card">
     <div class="logo">
-        <img src="/static/images/logo.png" alt="">
+        <img src="/static/images/logo.png" alt="PrintQ">
     </div>
 
-    <div class="service-banner">
-        <h1>Get Started</h1>
-        Print Any Document Without Leaving Your Room
-    </div>
+    <h1 class="hero-heading">
+        <span class="line-1">Print <span class="word-any">Any</span></span>
+        <span class="line-2">Document</span>
+        <span class="line-3">Without <span class="word-leaving">Leaving</span> Your Room</span>
+    </h1>
+
+    <div class="divider"></div>
 
     <div class="field">
         <label>Phone Number</label>
         <input id="phone" type="tel" placeholder="+2547XXXXXXXX">
     </div>
 
-    <button class="primary" id="sendOtpBtn">Send OTP</button>
+    <div class="btn-wrap">
+        <button class="primary" id="sendOtpBtn">Send OTP</button>
+    </div>
 
     <div id="otpSection" class="hidden">
-        <div class="field" style="margin-top:16px;">
+        <div class="field">
             <label>OTP Code</label>
             <input id="otp" type="text" placeholder="Enter OTP">
         </div>
-
         <button class="secondary" id="verifyBtn">Verify OTP</button>
     </div>
 
@@ -205,6 +281,5 @@
 </div>
 
 <script src="/static/javascript/started.js"></script>
-
 </body>
 </html>

@@ -8,12 +8,13 @@
 
   <style>
     :root {
-      --bg: #f7f8fc;
+      --bg: #f8fafc;
       --panel: #ffffff;
       --text: #0f172a;
-      --muted: #475569;
+      --muted: #64748b;
       --border: #e2e8f0;
-      --accent: #5b5cff;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
     }
 
     * {
@@ -23,15 +24,21 @@
     }
 
     body {
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
       background: var(--bg);
       color: var(--text);
       line-height: 1.55;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     .container {
       width: min(1100px, 92%);
       margin: 0 auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     nav {
@@ -45,15 +52,109 @@
       max-width: 100px;
     }
 
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&display=swap');
+
     .hero {
       padding: 34px 0 40px;
     }
 
-    .hero h1 {
-      font-size: 42px;
-      line-height: 1.1;
+    .hero p {
+      margin-top: 16px;
+      font-weight: 400;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .hero-heading {
+      line-height: 1.0;
+      letter-spacing: -2px;
+    }
+
+    .hero-heading .line {
+      display: block;
+    }
+
+    .hero-heading .line-1 {
+      font-size: clamp(52px, 7.5vw, 80px);
+      font-weight: 800;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .hero-heading .word-any {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: clamp(48px, 7vw, 74px);
       letter-spacing: -1px;
-      max-width: 20ch;
+      background: var(--accent);
+      color: white;
+      padding: 0 18px 4px 16px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+
+    .hero-heading .line-2 {
+      font-size: clamp(52px, 7.5vw, 80px);
+      font-weight: 800;
+      color: var(--text);
+      display: inline-block;
+      border-bottom: 3px solid var(--text);
+      padding-bottom: 4px;
+      box-shadow: 0 3px 0 var(--accent);
+    }
+
+    .hero-heading .line-3 {
+      font-size: clamp(18px, 2.8vw, 24px);
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 10px;
+      letter-spacing: -0.3px;
+    }
+
+    .hero-heading .word-leaving {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes pill-in {
+      from { opacity: 0; transform: translateY(24px) scale(0.9); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .hero-heading .line-1 {
+      animation: fade-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+    }
+
+    .hero-heading .word-any {
+      display: inline-block;
+      animation: pill-in 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+    }
+
+    .hero-heading .line-2 {
+      animation: fade-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+    }
+
+    .hero-heading .line-3 {
+      animation: fade-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.38s both;
+    }
+
+    .hero p {
+      animation: fade-in 0.6s ease 0.55s both;
     }
 
     .cta {
@@ -73,12 +174,22 @@
       color: var(--text);
       text-decoration: none;
       display: inline-block;
+      transition: border-color 0.15s ease;
+    }
+
+    .button:hover {
+      border-color: #cbd5e1;
     }
 
     .button.primary {
       background: var(--accent);
       color: white;
       border: none;
+      transition: background 0.15s ease;
+    }
+
+    .button.primary:hover {
+      background: var(--accent-hover);
     }
 
     .section {
@@ -96,6 +207,17 @@
       max-width: 75ch;
     }
 
+    @keyframes drop-in {
+      from {
+        opacity: 0;
+        transform: translateY(-18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .cta-band {
       background: var(--accent);
       color: white;
@@ -106,6 +228,7 @@
       justify-content: space-between;
       gap: 24px;
       margin-bottom: 64px;
+      animation: drop-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
     .cta-band h2 {
@@ -121,9 +244,15 @@
       border: none;
       padding: 14px 28px;
       font-size: 15px;
+      font-weight: 600;
       flex-shrink: 0;
       text-decoration: none;
       border-radius: 12px;
+      transition: opacity 0.15s ease;
+    }
+
+    .cta-band .btn.white:hover {
+      opacity: 0.92;
     }
 
     .footer {
@@ -131,7 +260,22 @@
       color: var(--muted);
       font-size: 13px;
       border-top: 1px solid var(--border);
+      margin-top: auto;
     }
+
+    .logo {
+        display: flex;
+        align-items: flex-start;
+        gap: 0px;
+      }
+
+      sup {
+        line-height: 0;
+        font-weight: 900;
+        letter-spacing: 0px;
+        color: #197729;
+        margin-top: 2px;
+      }
 
     @media (max-width: 768px) {
       .cta-band {
@@ -157,26 +301,30 @@
     <nav>
       <div class="logo">
         <img src="/static/images/logo.png" alt="PrintQ logo">
-      </div>
+    </div>
     </nav>
+    <sup>ERGERTON</sup>
 
     <section class="hero">
-      <h1>Print Any Document Without Leaving Your Room</h1>
-
-      
+      <h1 class="hero-heading">
+        <span class="line line-1">Print <span class="word-any">Any</span></span>
+        <span class="line line-2">Document</span>
+        <span class="line line-3">Without <span class="word-leaving">Leaving</span> Your Room</span>
+      </h1>
+      <p>You upload, it gets printed instantly.</p>
     </section>
 
     <div class="cta-band">
-      <h2>Let PrintQ Handle the Boring Stuff.</h2>
+      <h2>Pick it up, or get it delivered right at your doorstep.</h2>
       <a class="btn white" href="/get-started">Print Now →</a>
     </div>
 
     <div class="cta">
-      <a class="button">How it works</a>
+      <a class="button" href="/vendor-signup">I'm a Vendor</a>
     </div>
 
     <footer class="footer">
-      © PrintQ. Built for speed & trust. Print your all your documents from ANYWHERE.
+      © 2026 PrintQ. 
     </footer>
 
   </div>
