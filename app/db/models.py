@@ -40,7 +40,7 @@ class JsonMixin:
     )
 
 
-class Vendor(Base, TimestampMixin, JsonMixin):
+class Vendor(Base, TimestampMixin, JsonMixin): 
     __tablename__ = "vendor"
 
     uuid: Mapped[_uuid.UUID] = mapped_column(
