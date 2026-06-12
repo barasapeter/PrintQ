@@ -150,22 +150,42 @@ button:disabled {
     cursor: not-allowed;
 }
 
+.alert-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transform: translateY(-4px);
+    margin-bottom: 0;
+    transition:
+        grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        margin-bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.alert-wrapper.show {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    transform: translateY(0);
+    margin-bottom: 20px;
+}
+
+.alert-inner {
+    overflow: hidden;
+}
+
 .alert {
-    display: none;
     padding: 14px;
     border-radius: 14px;
-    margin-bottom: 20px;
     font-size: 0.9rem;
 }
 
 .alert.success {
-    display: block;
     background: var(--success-bg);
     color: var(--success-text);
 }
 
 .alert.error {
-    display: block;
     background: var(--error-bg);
     color: var(--error-text);
 }
@@ -198,7 +218,11 @@ button:disabled {
 
         <h1>Sign Up</h1>
 
-        <div id="alert" class="alert"></div>
+        <div id="alertWrapper" class="alert-wrapper">
+            <div class="alert-inner">
+                <div id="alert" class="alert"></div>
+            </div>
+        </div>
 
         <form id="vendorForm">
 
@@ -259,10 +283,16 @@ button:disabled {
 const form = document.getElementById("vendorForm");
 const submitBtn = document.getElementById("submitBtn");
 const alertBox = document.getElementById("alert");
+const alertWrapper = document.getElementById("alertWrapper");
 
 function showAlert(message, type) {
     alertBox.textContent = message;
     alertBox.className = `alert ${type}`;
+    alertWrapper.className = "alert-wrapper show";
+}
+
+function hideAlert() {
+    alertWrapper.className = "alert-wrapper";
 }
 
 form.addEventListener("submit", async (e) => {
@@ -271,7 +301,7 @@ form.addEventListener("submit", async (e) => {
     submitBtn.disabled = true;
     submitBtn.textContent = "Creating account...";
 
-    alertBox.className = "alert";
+    hideAlert();
 
     try {
         const payload = {
@@ -292,9 +322,22 @@ form.addEventListener("submit", async (e) => {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(
-                data.detail || "Unable to create account."
-            );
+            let message = "Unable to create account.";
+
+            if (data?.detail) {
+                if (typeof data.detail === "string") {
+                    message = data.detail;
+                } else if (Array.isArray(data.detail)) {
+                    message = data.detail
+                        .map(err => err?.msg)
+                        .filter(Boolean)
+                        .join("\n");
+                } else if (typeof data.detail === "object") {
+                    message = data.detail.msg || message;
+                }
+            }
+
+            throw new Error(message);
         }
 
         showAlert(
