@@ -18,6 +18,10 @@ class VendorRepository:
         result = await self.session.execute(select(Vendor).where(Vendor.email_address == email_address))
         return result.scalar_one_or_none()
     
+    async def get_by_username(self, username: str) -> Vendor | None:
+        result = await self.session.execute(select(Vendor).where(Vendor.username == username))
+        return result.scalar_one_or_none()
+    
     async def create(self, payload: VendorCreate) -> Vendor:
         user = Vendor(**payload.model_dump())
         self.session.add(user)

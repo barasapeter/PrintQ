@@ -9,7 +9,6 @@ class VendorBase(BaseModel):
     username: str
     email_address: EmailStr
     password_hash: str
-    properties: dict
 
 
 class VendorCreate(VendorBase):

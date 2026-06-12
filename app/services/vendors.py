@@ -15,6 +15,9 @@ class VendorService:
     async def get_by_email(self, email_address) -> Vendor | None:
         return await self.repository.get_by_email(email_address)
     
+    async def get_by_username(self, username) -> Vendor | None:
+        return await self.repository.get_by_username(username)
+    
     async def create(self, payload: VendorCreate) -> Vendor:
         return await self.repository.create(payload)
 

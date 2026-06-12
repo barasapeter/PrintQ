@@ -32,4 +32,17 @@ async def dashboard(
     if not customer:
         return RedirectResponse(url="/get-started")
 
-    return templates.TemplateResponse("dashboard.html", {"request": request, "phone": customer.properties.get("phone")})
+    return templates.TemplateResponse(
+        "dashboard.html",
+        {"request": request, "phone": customer.properties.get("phone")},
+    )
+
+
+@router.get("/vendor-signup")
+async def vendor_signup(
+    request: Request,
+):
+    return templates.TemplateResponse(
+        "vendor-signup.html",
+        {"request": request},
+    )
