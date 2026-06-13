@@ -11,7 +11,7 @@ from app.api.deps import get_db_session
 from app.db.models import Customer
 
 from app.services.vendors import VendorService
-from app.services.vendors import VendorService
+from app.services.shops import ShopService
 
 
 router = APIRouter()
@@ -34,8 +34,8 @@ async def dashboard(
     customer = result.scalar_one_or_none()
     # TODO: Split into a layered architecture
 
-    vendor_service = VendorService(db)
-    vendors = await vendor_service.get_all()
+    shop_service = ShopService(db)
+    shops = await shop_service.get_all()
 
     if not customer:
         return RedirectResponse(url="/get-started")
@@ -45,7 +45,7 @@ async def dashboard(
         {
             "request": request,
             "phone": customer.properties.get("phone"),
-            "vendors": vendors,
+            "shops": shops,
         },
     )
 

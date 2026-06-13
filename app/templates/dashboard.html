@@ -3,11 +3,899 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - {{ phone }}</title>
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <title>Document Upload - {{ phone }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f3f4f6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .upload-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-card-body {
+            padding: 1.5rem;
+        }
+
+        .upload-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .upload-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .upload-btn-primary {
+            background: #3b82f6;
+            border: none;
+            color: white;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.625rem 1.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .upload-btn-primary:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .upload-btn-primary:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .clear-btn {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            color: #dc2626;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .clear-btn:hover {
+            background: #fee2e2;
+            border-color: #fecaca;
+        }
+
+        .file-info-row {
+            margin-top: 1rem;
+        }
+
+        .file-detail {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: #f9fafb;
+            padding: 0.625rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        .file-detail-icon {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-detail-name {
+            font-weight: 600;
+            color: #111827;
+            word-break: break-all;
+            flex: 1;
+        }
+
+        .file-detail-meta {
+            color: #6b7280;
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+
+        .selection-panel {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+        }
+
+        .selection-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 1.25rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .shops-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .shop-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 0.875rem 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .shop-card.enabled {
+            cursor: pointer;
+        }
+
+        .shop-card.enabled:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        .shop-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #f9fafb;
+        }
+
+        .shop-card.selected {
+            background: #eff6ff;
+            border-color: #3b82f6;
+        }
+
+        .shop-radio {
+            flex-shrink: 0;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            background: white;
+            margin-top: 0.125rem;
+            position: relative;
+        }
+
+        .shop-card.selected .shop-radio {
+            border-color: #3b82f6;
+        }
+
+        .shop-card.selected .shop-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0.625rem;
+            height: 0.625rem;
+            border-radius: 50%;
+            background: #3b82f6;
+        }
+
+        .shop-card.disabled .shop-radio {
+            background: #e5e7eb;
+            border-color: #d1d5db;
+        }
+
+        .shop-content {
+            flex: 1;
+        }
+
+        .shop-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.25rem;
+        }
+
+        .shop-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 0.2rem 0.5rem;
+            border-radius: 9999px;
+        }
+
+        .status-badge.open {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.closed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .shop-location {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-bottom: 0.375rem;
+        }
+
+        .shop-uuid {
+            font-size: 0.7rem;
+            font-family: monospace;
+            color: #9ca3af;
+            padding-top: 0.375rem;
+            margin-top: 0.375rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+        }
+
+        .btn-success {
+            background: #10b981;
+            border: none;
+            color: white;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            background: #059669;
+        }
+
+        .btn-success:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        #cancelBtn {
+            display: none;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            color: #374151;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        .hidden-input {
+            display: none;
+        }
+
+        .empty-state {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 3rem;
+            text-align: center;
+            color: #6b7280;
+        }
+
+        .toast-message {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(1rem);
+            background: #111827;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .toast-message.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast-message.success {
+            background: #10b981;
+        }
+
+        .toast-message.error {
+            background: #ef4444;
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+            .toast-message {
+                white-space: normal;
+                max-width: 90%;
+                text-align: center;
+            }
+            .action-buttons {
+                flex-direction: column-reverse;
+            }
+            .btn-success, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+            .shops-grid {
+                grid-template-columns: 1fr;
+            }
+            .upload-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .upload-actions {
+                justify-content: space-between;
+            }
+            .file-detail {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
 </head>
 <body>
+<div class="dashboard">
+    <div class="header">
+        <h1>Hi👋</h1>
+        <p>{{ phone }} - What are we printing today? <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -0.125em; margin-left: 0.25em;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></p>
+    </div>
 
-    <h1>{{ vendors }}</h1>
-    
+    {% if not shops %}
+        <div class="empty-state">
+            No shops available
+        </div>
+    {% else %}
+        <div class="upload-card">
+            <div class="upload-card-body">
+                <div class="upload-header">
+                    <div class="upload-actions">
+                        <button class="upload-btn-primary" id="triggerFileBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            Select File
+                        </button>
+                        <button class="clear-btn" id="clearFileBtn" style="display: none;">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+                <div id="fileInfoContainer" class="file-info-row" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div id="selectionPanel" class="selection-panel" style="display: none;">
+            <div class="selection-title">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                </svg>
+                Nearby shops - Select one
+                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -0.125em; margin-left: 0.25em;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </div>
+            <div class="shops-grid" id="shopsContainer">
+                {% for shop in shops %}
+                {% set is_open = shop.properties.get("open", True) if shop.properties else True %}
+                <div class="shop-card {% if is_open %}enabled{% else %}disabled{% endif %}" 
+                     data-uuid="{{ shop.uuid }}" 
+                     data-name="{{ shop.name }}"
+                     data-open="{{ is_open|lower }}">
+                    <div class="shop-radio"></div>
+                    <div class="shop-content">
+                        <div class="shop-header">
+                            <span class="shop-name">{{ shop.name }}</span>
+                            {% if is_open %}
+                            <span class="status-badge open">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/>
+                                </svg>
+                                Open
+                            </span>
+                            {% else %}
+                            <span class="status-badge closed">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"/>
+                                    <line x1="6" y1="6" x2="18" y2="18"/>
+                                </svg>
+                                Closed
+                            </span>
+                            {% endif %}
+                        </div>
+                        <div class="shop-location">{{ shop.location }}</div>
+                        <div class="shop-uuid">{{ shop.uuid }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="action-buttons">
+                <button class="btn-secondary" id="cancelBtn">
+                    Unselect
+                </button>
+                <button class="btn-success" id="confirmUploadBtn" disabled>
+                    Print
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"/>
+                        <path d="M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+                
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<input type="file" id="fileInput" class="hidden-input" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
+
+<div id="toast" class="toast-message"></div>
+
+<script>
+    (function() {
+        var shopsContainer = document.getElementById('shopsContainer');
+        if (!shopsContainer) {
+            return;
+        }
+
+        var triggerFileBtn = document.getElementById('triggerFileBtn');
+        var clearFileBtn = document.getElementById('clearFileBtn');
+        var fileInput = document.getElementById('fileInput');
+        var fileInfoContainer = document.getElementById('fileInfoContainer');
+        var selectionPanel = document.getElementById('selectionPanel');
+        var confirmUploadBtn = document.getElementById('confirmUploadBtn');
+        var cancelBtn = document.getElementById('cancelBtn');
+        var toast = document.getElementById('toast');
+
+        var currentFile = null;
+        var selectedShopUuid = null;
+        var selectedShopElement = null;
+        var isUploading = false;
+
+        function getFileIcon(filename) {
+            var ext = filename.split('.').pop().toLowerCase();
+            
+            if (ext === 'pdf') {
+                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#E53935" stroke="#E53935" stroke-width="1.5"/><path d="M14 2V8H20" fill="#E53935"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="8" y="17" font-size="7" font-weight="bold" fill="white" font-family="Arial">PDF</text></svg>';
+            }
+            
+            if (ext === 'doc' || ext === 'docx') {
+                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#1E88E5" stroke="#1E88E5" stroke-width="1.5"/><path d="M14 2V8H20" fill="#1E88E5"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">DOC</text></svg>';
+            }
+            
+            if (ext === 'xls' || ext === 'xlsx') {
+                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#43A047" stroke="#43A047" stroke-width="1.5"/><path d="M14 2V8H20" fill="#43A047"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">XLS</text></svg>';
+            }
+            
+            if (ext === 'ppt' || ext === 'pptx') {
+                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#FB8C00" stroke="#FB8C00" stroke-width="1.5"/><path d="M14 2V8H20" fill="#FB8C00"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6.5" y="17" font-size="6" font-weight="bold" fill="white" font-family="Arial">PPT</text></svg>';
+            }
+            
+            if (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif' || ext === 'webp' || ext === 'bmp') {
+                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#8E24AA" stroke="#8E24AA" stroke-width="1.5"/><path d="M14 2V8H20" fill="#8E24AA"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="10" r="1.5" fill="white"/><path d="M17 16L14 13L9 17L7 15L4 18" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+            }
+            
+            if (ext === 'txt') {
+                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#757575" stroke="#757575" stroke-width="1.5"/><path d="M14 2V8H20" fill="#757575"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="7" y1="12" x2="15" y2="12" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="15" x2="13" y2="15" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="18" x2="11" y2="18" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>';
+            }
+            
+            if (ext === 'csv') {
+                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#2E7D32" stroke="#2E7D32" stroke-width="1.5"/><path d="M14 2V8H20" fill="#2E7D32"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">CSV</text></svg>';
+            }
+            
+            return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#607D8B" stroke="#607D8B" stroke-width="1.5"/><path d="M14 2V8H20" fill="#607D8B"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 14L11 16L15 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+        }
+
+        function showToast(message, type) {
+            toast.textContent = message;
+            toast.className = 'toast-message';
+            if (type === 'success') {
+                toast.classList.add('success');
+            } else if (type === 'error') {
+                toast.classList.add('error');
+            }
+            toast.classList.add('show');
+            setTimeout(function() {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function renderFileInfo() {
+            if (!fileInfoContainer) return;
+            
+            if (currentFile) {
+                var sizeLabel = formatFileSize(currentFile.size);
+                var fileExt = currentFile.name.split('.').pop().toUpperCase() || 'FILE';
+                var fileIcon = getFileIcon(currentFile.name);
+                
+                fileInfoContainer.innerHTML = 
+                    '<div class="file-detail">' +
+                        '<span class="file-detail-icon">' + fileIcon + '</span>' +
+                        '<span class="file-detail-name">' + escapeHtml(currentFile.name) + '</span>' +
+                        '<span class="file-detail-meta">' + sizeLabel + ' · ' + escapeHtml(fileExt) + '</span>' +
+                    '</div>';
+                fileInfoContainer.style.display = 'block';
+                clearFileBtn.style.display = 'inline-flex';
+                triggerFileBtn.disabled = true;
+            } else {
+                fileInfoContainer.style.display = 'none';
+                clearFileBtn.style.display = 'none';
+                triggerFileBtn.disabled = false;
+            }
+        }
+
+        function resetShopSelection() {
+            if (selectedShopElement) {
+                selectedShopElement.classList.remove('selected');
+            }
+            selectedShopUuid = null;
+            selectedShopElement = null;
+            if (confirmUploadBtn) {
+                confirmUploadBtn.disabled = true;
+            }
+        }
+
+        function updateShopSelection(uuid, element) {
+            if (selectedShopElement) {
+                selectedShopElement.classList.remove('selected');
+            }
+            
+            if (uuid && element) {
+                element.classList.add('selected');
+                selectedShopUuid = uuid;
+                selectedShopElement = element;
+                if (confirmUploadBtn) {
+                    confirmUploadBtn.disabled = false;
+                }
+            } else {
+                selectedShopUuid = null;
+                selectedShopElement = null;
+                if (confirmUploadBtn) {
+                    confirmUploadBtn.disabled = true;
+                }
+            }
+        }
+
+        function handleShopClick(event) {
+            var card = event.target.closest('.shop-card');
+            if (!card) return;
+            
+            if (card.classList.contains('disabled')) {
+                showToast('This shop is closed and cannot receive documents', 'error');
+                return;
+            }
+            
+            var uuid = card.getAttribute('data-uuid');
+            if (!uuid) return;
+            
+            if (selectedShopUuid === uuid && selectedShopElement === card) {
+                return;
+            }
+            
+            updateShopSelection(uuid, card);
+        }
+
+        if (shopsContainer) {
+            shopsContainer.addEventListener('click', handleShopClick);
+        }
+
+        function resetUploadFlow(keepFileSelection) {
+            if (!keepFileSelection) {
+                currentFile = null;
+                if (fileInput) {
+                    fileInput.value = '';
+                }
+                renderFileInfo();
+            }
+            
+            resetShopSelection();
+            
+            if (selectionPanel && !currentFile) {
+                selectionPanel.style.display = 'none';
+            } else if (selectionPanel && currentFile) {
+                selectionPanel.style.display = 'block';
+            }
+            
+            isUploading = false;
+            if (confirmUploadBtn) {
+                confirmUploadBtn.disabled = !selectedShopUuid;
+            }
+        }
+
+        function clearDocument() {
+            if (isUploading) {
+                showToast('Upload in progress, please wait', 'error');
+                return;
+            }
+            
+            currentFile = null;
+            if (fileInput) {
+                fileInput.value = '';
+            }
+            
+            renderFileInfo();
+            resetShopSelection();
+            
+            if (selectionPanel) {
+                selectionPanel.style.display = 'none';
+            }
+            
+            showToast('Document cleared. You can select a new file.', 'success');
+        }
+
+        function prepareAndUpload() {
+            if (!currentFile) {
+                showToast('No document selected', 'error');
+                return false;
+            }
+            
+            if (!selectedShopUuid) {
+                showToast('Please select a destination shop', 'error');
+                return false;
+            }
+            
+            if (isUploading) {
+                showToast('Upload already in progress', 'error');
+                return false;
+            }
+            
+            isUploading = true;
+            confirmUploadBtn.disabled = true;
+            
+            var formData = new FormData();
+            formData.append('file', currentFile);
+            formData.append('shop_uuid', selectedShopUuid);
+            
+            console.log('Upload payload prepared:');
+            console.log('  shop_uuid:', selectedShopUuid);
+            console.log('  file name:', currentFile.name);
+            console.log('  file size:', currentFile.size, 'bytes');
+            console.log('  file type:', currentFile.type);
+            
+            for (var pair of formData.entries()) {
+                if (pair[0] === 'file') {
+                    console.log('  formData.file:', pair[1].name);
+                } else {
+                    console.log('  formData.' + pair[0] + ':', pair[1]);
+                }
+            }
+            
+            var shopElement = selectedShopElement;
+            var shopName = shopElement ? shopElement.getAttribute('data-name') : 'selected shop';
+            var fileName = currentFile.name;
+            
+            setTimeout(function() {
+                showToast('Document "' + fileName + '" uploaded to ' + shopName, 'success');
+                console.log('Upload complete. Ready for server integration.');
+                
+                currentFile = null;
+                if (fileInput) {
+                    fileInput.value = '';
+                }
+                renderFileInfo();
+                resetShopSelection();
+                
+                if (selectionPanel) {
+                    selectionPanel.style.display = 'none';
+                }
+                
+                isUploading = false;
+                if (confirmUploadBtn) {
+                    confirmUploadBtn.disabled = true;
+                }
+            }, 500);
+            
+            return true;
+        }
+
+        function onConfirmUpload() {
+            if (!currentFile) {
+                showToast('No document selected. Please choose a file first.', 'error');
+                resetUploadFlow(false);
+                return;
+            }
+            
+            if (!selectedShopUuid) {
+                showToast('Please select a shop from the list', 'error');
+                return;
+            }
+            
+            prepareAndUpload();
+        }
+
+        function onCancelFlow() {
+            if (isUploading) {
+                showToast('Upload in progress, cannot cancel', 'error');
+                return;
+            }
+            resetUploadFlow(true);
+            showToast('Selection cancelled', 'error');
+        }
+
+        function onFileSelected(event) {
+            if (isUploading) {
+                showToast('Upload in progress, please wait', 'error');
+                fileInput.value = '';
+                return;
+            }
+            
+            var files = event.target.files;
+            if (!files || files.length === 0) {
+                return;
+            }
+            
+            var file = files[0];
+            var maxSize = 10 * 1024 * 1024;
+            if (file.size > maxSize) {
+                showToast('File size exceeds 10MB limit', 'error');
+                fileInput.value = '';
+                return;
+            }
+            
+            currentFile = file;
+            renderFileInfo();
+            
+            if (selectionPanel) {
+                selectionPanel.style.display = 'block';
+            }
+            
+            resetShopSelection();
+            
+            showToast('Document selected: ' + file.name + '. Now choose a shop.', 'success');
+        }
+
+        function onTriggerFileClick() {
+            if (isUploading) {
+                showToast('Upload in progress, please wait', 'error');
+                return;
+            }
+            
+            if (selectionPanel && selectionPanel.style.display === 'block' && currentFile) {
+                var confirmReset = confirm('You have an ongoing selection. Clear and select a new document?');
+                if (confirmReset) {
+                    clearDocument();
+                    fileInput.value = '';
+                    fileInput.click();
+                }
+                return;
+            }
+            
+            fileInput.value = '';
+            fileInput.click();
+        }
+
+        if (triggerFileBtn) {
+            triggerFileBtn.addEventListener('click', onTriggerFileClick);
+        }
+        
+        if (clearFileBtn) {
+            clearFileBtn.addEventListener('click', clearDocument);
+        }
+        
+        if (fileInput) {
+            fileInput.addEventListener('change', onFileSelected);
+        }
+        
+        if (confirmUploadBtn) {
+            confirmUploadBtn.addEventListener('click', onConfirmUpload);
+        }
+        
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', onCancelFlow);
+        }
+        
+        renderFileInfo();
+        
+        window.getCurrentUploadState = function() {
+            return {
+                hasFile: !!currentFile,
+                fileName: currentFile ? currentFile.name : null,
+                selectedShop: selectedShopUuid,
+                isUploading: isUploading
+            };
+        };
+        
+        if (selectionPanel) {
+            selectionPanel.style.display = 'none';
+        }
+    })();
+</script>
 </body>
 </html>
