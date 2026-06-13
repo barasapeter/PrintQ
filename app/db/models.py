@@ -116,7 +116,7 @@ class Shop(Base, TimestampMixin, JsonMixin):
         return f"<Shop uuid={self.uuid!s} name={self.name!r} vendor_uuid={self.vendor_uuid!s}>"
 
 
-class PrintJob(Base, TimestampMixin, JsonMixin):
+class PrintJob(Base, TimestampMixin, JsonMixin): # workorder
     __tablename__ = "print_jobs"
 
     uuid: Mapped[_uuid.UUID] = mapped_column(

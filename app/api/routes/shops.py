@@ -7,7 +7,7 @@ from app.schemas.shop import ShopCreate, ShopRead
 from app.api.deps import get_db_session
 from app.services.shops import ShopService
 
-from app.core.utils import process_phone
+from app.core.phone import process_phone
 
 import json
 

@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 from app.api.deps import get_db_session
 from app.db.models import Customer
-from app.core.utils import process_phone
+from app.core.phone import process_phone
 
 from sqlalchemy.orm.attributes import flag_modified
 

@@ -316,7 +316,7 @@
         }
 
         #cancelBtn {
-            display: none;
+            display: inline-flex;
         }
 
         .btn-secondary {
@@ -381,6 +381,20 @@
 
         .toast-message.error {
             background: #ef4444;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         @media (max-width: 640px) {
@@ -509,7 +523,6 @@
 </div>
 
 <input type="file" id="fileInput" class="hidden-input" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
-
 <div id="toast" class="toast-message"></div>
 
 <script>
@@ -532,6 +545,8 @@
         var selectedShopUuid = null;
         var selectedShopElement = null;
         var isUploading = false;
+
+        var API_BASE = '/api/v1/workorder';
 
         function getFileIcon(filename) {
             var ext = filename.split('.').pop().toLowerCase();
@@ -720,7 +735,38 @@
             showToast('Document cleared. You can select a new file.', 'success');
         }
 
-        function prepareAndUpload() {
+        async function submitWorkOrder(file, shopUuid, customerUuid) {
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('shop_uuid', shopUuid);
+            formData.append('customer_uuid', customerUuid);
+            
+            console.log('Submitting to:', API_BASE);
+            console.log('Payload:');
+            for (var pair of formData.entries()) {
+                if (pair[0] === 'file') {
+                    console.log('  file:', pair[1].name, pair[1].size, 'bytes');
+                } else {
+                    console.log('  ' + pair[0] + ':', pair[1]);
+                }
+            }
+            
+            var response = await fetch(API_BASE, {
+                method: 'POST',
+                body: formData,
+                credentials: 'same-origin'
+            });
+            
+            if (!response.ok) {
+                var errorText = await response.text();
+                throw new Error('Server returned ' + response.status + ': ' + errorText);
+            }
+            
+            var result = await response.json();
+            return result;
+        }
+
+        async function prepareAndUpload() {
             if (!currentFile) {
                 showToast('No document selected', 'error');
                 return false;
@@ -739,31 +785,19 @@
             isUploading = true;
             confirmUploadBtn.disabled = true;
             
-            var formData = new FormData();
-            formData.append('file', currentFile);
-            formData.append('shop_uuid', selectedShopUuid);
+            var originalButtonText = confirmUploadBtn.innerHTML;
+            confirmUploadBtn.innerHTML = '<span class="loading-spinner"></span> Sending...';
             
-            console.log('Upload payload prepared:');
-            console.log('  shop_uuid:', selectedShopUuid);
-            console.log('  file name:', currentFile.name);
-            console.log('  file size:', currentFile.size, 'bytes');
-            console.log('  file type:', currentFile.type);
-            
-            for (var pair of formData.entries()) {
-                if (pair[0] === 'file') {
-                    console.log('  formData.file:', pair[1].name);
-                } else {
-                    console.log('  formData.' + pair[0] + ':', pair[1]);
-                }
-            }
-            
+            var customerUuid = "{{ customer_uuid }}";
             var shopElement = selectedShopElement;
             var shopName = shopElement ? shopElement.getAttribute('data-name') : 'selected shop';
             var fileName = currentFile.name;
             
-            setTimeout(function() {
-                showToast('Document "' + fileName + '" uploaded to ' + shopName, 'success');
-                console.log('Upload complete. Ready for server integration.');
+            try {
+                var result = await submitWorkOrder(currentFile, selectedShopUuid, customerUuid);
+                
+                showToast('Document "' + fileName + '" sent to ' + shopName + ' successfully!', 'success');
+                console.log('Work order created:', result);
                 
                 currentFile = null;
                 if (fileInput) {
@@ -776,13 +810,20 @@
                     selectionPanel.style.display = 'none';
                 }
                 
+                return true;
+            } catch (error) {
+                console.error('Upload failed:', error);
+                showToast('Failed to send document: ' + error.message, 'error');
+                return false;
+            } finally {
                 isUploading = false;
-                if (confirmUploadBtn) {
+                confirmUploadBtn.innerHTML = originalButtonText;
+                if (confirmUploadBtn && !selectedShopUuid) {
                     confirmUploadBtn.disabled = true;
+                } else if (confirmUploadBtn && selectedShopUuid && currentFile) {
+                    confirmUploadBtn.disabled = false;
                 }
-            }, 500);
-            
-            return true;
+            }
         }
 
         function onConfirmUpload() {
@@ -806,7 +847,7 @@
                 return;
             }
             resetUploadFlow(true);
-            showToast('Selection cancelled', 'error');
+            showToast('Selection cleared', 'error');
         }
 
         function onFileSelected(event) {

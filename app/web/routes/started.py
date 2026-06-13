@@ -46,6 +46,7 @@ async def dashboard(
             "request": request,
             "phone": customer.properties.get("phone"),
             "shops": shops,
+            "customer_uuid": customer.uuid
         },
     )
 
