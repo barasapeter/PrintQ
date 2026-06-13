@@ -82,7 +82,7 @@ class Customer(Base, TimestampMixin, JsonMixin):
         return f"<Customer uuid={self.uuid!s} name={self.name!r}>"
 
 
-class Shop(Base, TimestampMixin, JsonMixin):
+class Shop(Base, TimestampMixin, JsonMixin): 
     __tablename__ = "shop"
 
     uuid: Mapped[_uuid.UUID] = mapped_column(

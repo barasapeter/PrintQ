@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
+    <title>Update Shop - PrintQ</title>
+
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #0f172a;
+            --muted: #64748b;
+            --subtle: #94a3b8;
+            --border: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --accent-ring: rgba(37,99,235,0.12);
+            --success-bg: #ecfdf5;
+            --success-text: #047857;
+            --error-bg: #fef2f2;
+            --error-text: #b91c1c;
+            --info-bg: #eff6ff;
+            --info-text: #1e40af;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100svh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 460px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 44px 40px 40px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04), 0 16px 48px rgba(0,0,0,0.07);
+            animation: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+
+        @keyframes rise {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fade-up {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        @keyframes pill-pop {
+            from { opacity: 0; transform: scale(0.86); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes slide-down {
+            from { opacity: 0; transform: translateY(-5px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo img {
+            max-width: 90px;
+            margin-bottom: 28px;
+            display: none;
+        }
+
+        .hero-heading {
+            line-height: 1.05;
+            letter-spacing: -1.5px;
+            animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+        }
+
+        .hero-heading .line-1 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 40px;
+            font-weight: 800;
+        }
+
+        .hero-heading .word-pill {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-weight: 700;
+            font-size: 36px;
+            background: var(--accent);
+            color: white;
+            padding: 1px 14px 4px 12px;
+            border-radius: 7px;
+            display: inline-block;
+            animation: pill-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both;
+        }
+
+        .hero-heading .line-2 {
+            display: inline-block;
+            font-size: 40px;
+            font-weight: 800;
+            padding-bottom: 3px;
+            border-bottom: 2.5px solid var(--text);
+            box-shadow: 0 3px 0 var(--accent);
+            animation: fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 28px 0 24px;
+            animation: fade-in 0.4s ease 0.3s both;
+        }
+
+        .alert-wrap {
+            display: grid;
+            grid-template-rows: 0fr;
+            opacity: 0;
+            margin-bottom: 0;
+            transition:
+                grid-template-rows 0.28s cubic-bezier(0.4,0,0.2,1),
+                opacity 0.22s ease,
+                margin-bottom 0.28s ease;
+        }
+
+        .alert-wrap.show {
+            grid-template-rows: 1fr;
+            opacity: 1;
+            margin-bottom: 20px;
+        }
+
+        .alert-inner { overflow: hidden; }
+
+        .alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 9px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            line-height: 1.5;
+            animation: slide-down 0.2s ease both;
+        }
+
+        .alert i { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+        .alert.success { background: var(--success-bg); color: var(--success-text); }
+        .alert.error   { background: var(--error-bg);   color: var(--error-text); }
+        .alert.info    { background: var(--info-bg);    color: var(--info-text); }
+
+        .field {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .field:nth-child(1) { animation: fade-up 0.5s cubic-bezier(0.22,1,0.36,1) 0.34s both; }
+        .field:nth-child(2) { animation: fade-up 0.5s cubic-bezier(0.22,1,0.36,1) 0.40s both; }
+        .field:nth-child(3) { animation: fade-up 0.5s cubic-bezier(0.22,1,0.36,1) 0.46s both; }
+        .field:nth-child(4) { animation: fade-up 0.5s cubic-bezier(0.22,1,0.36,1) 0.52s both; }
+
+        .field input,
+        .field select {
+            width: 100%;
+            height: 58px;
+            padding: 22px 44px 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            font-size: 15px;
+            font-family: inherit;
+            color: var(--text);
+            background: white;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .field input::placeholder { color: transparent; }
+
+        .field label {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--subtle);
+            font-size: 14px;
+            pointer-events: none;
+            transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .field input:hover,
+        .field select:hover { border-color: var(--border-hover); }
+
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-ring);
+        }
+
+        .field input:focus + label,
+        .field input:not(:placeholder-shown) + label,
+        .field select:focus + label,
+        .field select:valid + label {
+            top: 11px;
+            transform: translateY(0);
+            font-size: 10.5px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .field-icon {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 17px;
+            color: var(--subtle);
+            pointer-events: none;
+            transition: color 0.15s ease;
+        }
+
+        .field input:focus ~ .field-icon,
+        .field select:focus ~ .field-icon { color: var(--accent); }
+
+        .field-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 17px;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        .field-btn:hover { background: var(--bg); color: var(--accent); }
+        .field-btn.spinning i { animation: spin 0.75s linear infinite; }
+
+        .field input.locating {
+            background: #f8fafc;
+            color: var(--muted);
+        }
+
+        .btn-wrap {
+            margin-top: 22px;
+            animation: fade-up 0.5s cubic-bezier(0.22,1,0.36,1) 0.58s both;
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 52px;
+            border: none;
+            border-radius: 14px;
+            background: var(--accent);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.15s ease, transform 0.1s ease;
+        }
+
+        .submit-btn:hover  { background: var(--accent-hover); }
+        .submit-btn:active { transform: translateY(1px); }
+        .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+
+        .btn-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.35);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+
+        .submit-btn.loading .btn-spinner { display: block; }
+        .submit-btn.loading .btn-label   { display: none; }
+
+        .footer {
+            text-align: center;
+            margin-top: 22px;
+            color: var(--subtle);
+            font-size: 12.5px;
+            animation: fade-in 0.4s ease 0.64s both;
+        }
+
+        @media (max-width: 480px) {
+            .card { padding: 32px 22px 28px; }
+            .hero-heading .line-1,
+            .hero-heading .line-2 { font-size: 32px; }
+            .hero-heading .word-pill { font-size: 28px; }
+        }
+
+        @media (max-width: 600px) {
+            body { align-items: flex-start; padding-top: 32px; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="card">
+
+        <div class="logo">
+            <img src="/static/images/logo.png" alt="PrintQ">
+        </div>
+
+        <h1 class="hero-heading">
+            <span class="line-1">Update <span class="word-pill">Your</span></span>
+            <span class="line-2">Shop</span>
+        </h1>
+
+        <div class="divider"></div>
+
+        <div id="alertWrap" class="alert-wrap">
+            <div class="alert-inner">
+                <div id="alert" class="alert"></div>
+            </div>
+        </div>
+
+        <div class="field" id="locationField">
+            <input id="location" type="text" placeholder="Location" required autocomplete="off">
+            <label for="location">Location</label>
+            <button type="button" class="field-btn" id="geoBtn" title="Detect my location">
+                <i class="ti ti-current-location"></i>
+            </button>
+        </div>
+
+        <div class="field">
+            <select id="vendor_uuid" required>
+                <option value="" disabled selected></option>
+                {% for vendor in vendors %}
+                    <option value="{{ vendor.uuid }}">{{ vendor.username }} - {{ vendor.name }}</option>
+                {% endfor %}
+            </select>
+            <label for="vendor_uuid">Select Vendor</label>
+            <i class="ti ti-chevron-down field-icon"></i>
+        </div>
+
+        <div class="field">
+            <input id="name" type="text" placeholder="Shop Name" required autocomplete="off">
+            <label for="name">Shop Name</label>
+            <i class="ti ti-building-store field-icon"></i>
+        </div>
+
+        <div class="field">
+            <input id="phone_contact" type="tel" placeholder="Phone Contact" required autocomplete="off">
+            <label for="phone_contact">Phone Contact</label>
+            <i class="ti ti-phone field-icon"></i>
+        </div>
+
+        <div class="btn-wrap">
+            <button type="button" id="submitBtn" class="submit-btn">
+                <div class="btn-spinner"></div>
+                <span class="btn-label">Update Shop</span>
+            </button>
+        </div>
+
+        <p class="footer">PrintQ Vendor Portal</p>
+
+    </div>
+</div>
+
+<script>
+    const submitBtn     = document.getElementById('submitBtn');
+    const alertBox      = document.getElementById('alert');
+    const alertWrap     = document.getElementById('alertWrap');
+    const vendorSelect  = document.getElementById('vendor_uuid');
+    const locationInput = document.getElementById('location');
+    const geoBtn        = document.getElementById('geoBtn');
+
+    let detectedCoords = null;
+    let alertTimer     = null;
+
+    const alertIcons = { success: 'ti-circle-check', error: 'ti-circle-x', info: 'ti-info-circle' };
+
+    function showAlert(msg, type) {
+        clearTimeout(alertTimer);
+        alertBox.className = `alert ${type}`;
+        alertBox.innerHTML = `<i class="ti ${alertIcons[type]}"></i><span>${msg}</span>`;
+        alertWrap.classList.add('show');
+        if (type !== 'error') alertTimer = setTimeout(hideAlert, 5000);
+    }
+
+    function hideAlert() {
+        alertWrap.classList.remove('show');
+    }
+
+    vendorSelect.addEventListener('change', () => {
+        vendorSelect.value
+            ? vendorSelect.setAttribute('value', vendorSelect.value)
+            : vendorSelect.removeAttribute('value');
+    });
+
+    async function getLocation() {
+        if (!navigator.geolocation) return;
+        geoBtn.classList.add('spinning');
+        locationInput.classList.add('locating');
+        locationInput.value = '';
+        detectedCoords = null;
+
+        navigator.geolocation.getCurrentPosition(
+            async ({ coords: { latitude, longitude } }) => {
+                detectedCoords = { latitude, longitude };
+                try {
+                    const res  = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`);
+                    const data = await res.json();
+                    let loc = '';
+                    if (data?.address) {
+                        const a = data.address;
+                        const parts = [];
+                        if (a.house_number && a.road) parts.push(`${a.house_number} ${a.road}`);
+                        else if (a.road) parts.push(a.road);
+                        if (a.suburb) parts.push(a.suburb);
+                        parts.push(a.city || a.town || a.village || '');
+                        if (a.state) parts.push(a.state);
+                        loc = parts.filter(Boolean).join(', ');
+                    } else {
+                        loc = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+                    }
+                    locationInput.value = loc;
+                    locationInput.dispatchEvent(new Event('input'));
+                } catch {
+                    locationInput.value = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+                    locationInput.dispatchEvent(new Event('input'));
+                    showAlert('Saved as coordinates, you can edit the address.', 'info');
+                } finally {
+                    geoBtn.classList.remove('spinning');
+                    locationInput.classList.remove('locating');
+                }
+            },
+            (err) => {
+                geoBtn.classList.remove('spinning');
+                locationInput.classList.remove('locating');
+                const msgs = {
+                    1: 'Location permission denied. Enter your address manually.',
+                    2: 'Location unavailable. Enter your address manually.',
+                    3: 'Location timed out. Enter your address manually.',
+                };
+                showAlert(msgs[err.code] || 'Unable to detect location.', 'info');
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+    }
+
+    geoBtn.addEventListener('click', getLocation);
+    document.addEventListener('DOMContentLoaded', () => setTimeout(getLocation, 400));
+
+    locationInput.addEventListener('input', () => {
+        if (!locationInput.value.trim()) detectedCoords = null;
+    });
+
+    submitBtn.addEventListener('click', async () => {
+        const vendor_uuid   = vendorSelect.value.trim();
+        const name          = document.getElementById('name').value.trim();
+        const location_val  = locationInput.value.trim();
+        const phone_contact = document.getElementById('phone_contact').value.trim();
+
+        if (!vendor_uuid || !name || !location_val || !phone_contact) {
+            showAlert('Please fill in all fields before continuing.', 'error');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.classList.add('loading');
+        hideAlert();
+
+        const payload = {
+            vendor_uuid,
+            name,
+            properties: {
+                location_metadata: {
+                latitude:  detectedCoords?.latitude  ?? null,
+                longitude: detectedCoords?.longitude ?? null,
+                custom:    location_val,
+            }
+            },
+            location: location_val,
+            phone_contact,
+        };
+
+        try {
+            const res  = await fetch('/api/v1/shop', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify(payload),
+            });
+            const data = await res.json();
+
+            if (!res.ok) {
+                let msg = 'Unable to Update shop.';
+                if (data?.detail) {
+                    if (typeof data.detail === 'string')      msg = data.detail;
+                    else if (Array.isArray(data.detail))      msg = data.detail.map(e => e?.msg).filter(Boolean).join(' · ');
+                    else if (typeof data.detail === 'object') msg = data.detail.msg || msg;
+                }
+                throw new Error(msg);
+            }
+
+            showAlert(`${data.name} Updated successfully.`, 'success');
+            setTimeout(getLocation, 400);
+
+        } catch (err) {
+            showAlert(err.message || 'Something went wrong. Try again.', 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('loading');
+        }
+    });
+</script>
+
+</body>
+</html>

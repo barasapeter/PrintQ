@@ -4,14 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models import Vendor
 from app.schemas.vendor import VendorCreate
 
-import uuid as _uuid
 
 
 class VendorRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
 
-    async def get(self, vendor_uuid: _uuid.UUID) -> Vendor | None:
+    async def get(self, vendor_uuid: str) -> Vendor | None:
         return await self.session.get(Vendor, vendor_uuid)
 
     async def get_by_email(self, email_address: str) -> Vendor | None:

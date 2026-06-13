@@ -11,6 +11,7 @@ from app.api.deps import get_db_session
 from app.db.models import Customer
 
 from app.services.vendors import VendorService
+from app.services.vendors import VendorService
 
 
 router = APIRouter()
@@ -56,4 +57,17 @@ async def vendor_signup(
     return templates.TemplateResponse(
         "vendor-signup.html",
         {"request": request},
+    )
+
+
+@router.get("/shop-create")
+async def shop_create(
+    request: Request,
+    session: AsyncSession = Depends(get_db_session),
+):
+    service = VendorService(session)
+    vendors = await service.get_all()
+    return templates.TemplateResponse(
+        "shop-create.html",
+        {"request": request, "vendors": vendors},
     )
