@@ -3,6 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import PrintJob
 from app.schemas.workorder import PrintJobCreate
+from app.core.storage import FileStorage
+from typing import Union, IO
+from pathlib import Path
+
+from fastapi import UploadFile
 
 
 class PrintJobRepository:
@@ -54,9 +59,25 @@ class PrintJobRepository:
         result = await self.session.execute(select(PrintJob))
         return list(result.scalars().all())
 
-    async def create(self, payload: PrintJobCreate) -> PrintJob:
-        user = PrintJob(**payload.model_dump())
-        self.session.add(user)
+    async def create(
+        self,
+        payload: PrintJobCreate,
+        file_object: Union[UploadFile, bytes, str, IO[bytes], Path],
+    ) -> PrintJob:
+        file_storage = FileStorage(f"storage/{payload.customer_uuid}")
+
+        saved_path = await file_storage.save(file_object, payload.uuid)
+
+        file_metadata = {
+            "filepath": saved_path,
+            "filename": file_object.filename,
+            "filesize": getattr(file_object, "size", None),
+        }
+
+        printjob = PrintJob(**payload.model_dump())
+        printjob.properties["file_metadata"] = file_metadata
+        self.session.add(printjob)
         await self.session.commit()
-        await self.session.refresh(user)
-        return user
+        await self.session.refresh(printjob)
+
+        return printjob

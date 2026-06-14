@@ -5,7 +5,6 @@ from app.db.models import Vendor
 from app.schemas.vendor import VendorCreate
 
 
-
 class VendorRepository:
     def __init__(self, session: AsyncSession) -> None:
         self.session = session
@@ -30,8 +29,8 @@ class VendorRepository:
         return list(result.scalars().all())
 
     async def create(self, payload: VendorCreate) -> Vendor:
-        user = Vendor(**payload.model_dump())
-        self.session.add(user)
+        vendor = Vendor(**payload.model_dump())
+        self.session.add(vendor)
         await self.session.commit()
-        await self.session.refresh(user)
-        return user
+        await self.session.refresh(vendor)
+        return vendor

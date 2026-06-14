@@ -14,90 +14,71 @@ class StorageError(Exception):
 
 
 class FileStorage:
-    """
-    Local filesystem storage handler. all paths are relative to `base_dir`.
-    """
-
     def __init__(self, base_dir: str):
         self.base_dir = Path(base_dir)
+        self._ensure_base_dir()
 
-    def _resolve_path(self, file_path: str) -> Path:
-        """
-        Convert a relative file path into an absolute safe path
-        inside the base directory.
-        """
-        # normalize path to prevent traversal like ../
-        safe_path = Path(file_path).as_posix().lstrip("/")
+    def _ensure_base_dir(self) -> None:
+        self.base_dir.mkdir(parents=True, exist_ok=True)
+
+    def _resolve_path(self, filepath: str) -> Path:
+        safe_path = Path(filepath).as_posix().lstrip("/")
         return self.base_dir / safe_path
 
     def _ensure_dir(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-
-    async def save(
+    
+    async def write(
         self,
-        file: Union[UploadFile, bytes, str, IO[bytes], Path],
-        file_path: Optional[str] = None,
+        file_object: Union[UploadFile, bytes, str, IO[bytes], Path],
+        filepath: str,
     ) -> str:
-        """
-        Save a file from multiple input types.
 
-        Supported inputs:
-        - UploadFile (FastAPI multipart upload)
-        - bytes (raw binary)
-        - str (base64 or data URI)
-        - IO[bytes] (file-like stream)
-        - Path (existing file on disk)
-
-        Returns:
-            str: saved file path (relative to base_dir)
-        """
-
-        if file_path is None:
-            file_path = f"{uuid.uuid4().hex}"
-
-        path = self._resolve_path(file_path)
+        path = self._resolve_path(filepath)
         self._ensure_dir(path)
 
-        # Check for UploadFile by class name or type
-        # This is more reliable than isinstance in some cases
-        file_type = type(file).__name__
+        file_type = type(file_object).__name__
+        print("File type:", file_type)
 
-        if (
-            file_type == "UploadFile"
-            or hasattr(file, "filename")
-            and hasattr(file, "file")
+        if file_type == "UploadFile" or (
+            hasattr(file_object, "filename") and hasattr(file_object, "file")
         ):
-            await self._save_upload(file, path)
-        elif isinstance(file, bytes):
-            self._save_bytes(file, path)
-        elif isinstance(file, str):
-            self._save_string(file, path)
-        elif isinstance(file, Path):
-            self._save_path(file, path)
-        elif hasattr(file, "read"):
-            # Synchronous stream
-            self._save_stream_sync(file, path)
+            await self._save_upload(file_object, path)
+
+        elif isinstance(file_object, bytes):
+            self._save_bytes(file_object, path)
+
+        elif isinstance(file_object, str):
+            self._save_string(file_object, path)
+
+        elif isinstance(file_object, Path):
+            self._save_path(file_object, path)
+
+        elif hasattr(file_object, "read"):
+            self._save_stream_sync(file_object, path)
+
         else:
-            raise StorageError(f"Unsupported file type: {type(file)}")
+            raise StorageError(f"Unsupported file type: {type(file_object)}")
 
         return str(path)
 
+    async def save(self, file_object: Union[UploadFile, bytes, str, IO[bytes], Path], basename_uuid: str) -> str:
+        extension = Path(file_object.filename).suffix if file_object.filename else ""
+        filename = f"{basename_uuid}{extension}"
+        return await self.write(file_object, filename)
+
     async def _save_upload(self, file: UploadFile, path: Path) -> None:
-        """Save UploadFile asynchronously by reading chunks."""
         try:
-            # Reset file position to beginning if seeking is supported
             if hasattr(file, "file") and hasattr(file.file, "seek"):
                 file.file.seek(0)
 
             with path.open("wb") as buffer:
-                # Read file in chunks asynchronously
                 while True:
                     chunk = await file.read(8192)
                     if not chunk:
                         break
                     buffer.write(chunk)
 
-            # Reset for any future reads
             if hasattr(file, "file") and hasattr(file.file, "seek"):
                 file.file.seek(0)
 
@@ -112,7 +93,6 @@ class FileStorage:
             raise StorageError(f"Failed to save bytes: {e}") from e
 
     def _save_stream_sync(self, stream: IO[bytes], path: Path) -> None:
-        """Save synchronous file-like object to disk."""
         try:
             with path.open("wb") as buffer:
                 shutil.copyfileobj(stream, buffer)
@@ -120,9 +100,8 @@ class FileStorage:
             raise StorageError(f"Failed to save stream: {e}") from e
 
     def _save_path(self, src: Path, dest: Path) -> None:
-        """copy an existing file into storage."""
         if not src.exists():
-            raise StorageError("Source file does not exist")
+            raise StorageError(f"Source file does not exist: {src}")
         try:
             shutil.copy2(src, dest)
         except Exception as e:
@@ -142,20 +121,20 @@ class FileStorage:
         try:
             if "," in data:
                 data = data.split(",", 1)[1]
-
             return base64.b64decode(data, validate=False)
-
         except Exception as e:
             raise StorageError("Invalid base64 input") from e
 
-    def delete(self, file_path: str) -> None:
-        path = self._resolve_path(file_path)
+    def delete(self, filepath: str) -> None:
+        path = self._resolve_path(filepath)
         if path.exists():
             path.unlink()
 
-    def exists(self, file_path: str) -> bool:
-        return self._resolve_path(file_path).exists()
+    def exists(self, filepath: str) -> bool:
+        return self._resolve_path(filepath).exists()
 
-    def read(self, file_path: str) -> bytes:
-        """Read file contents as bytes."""
-        return self._resolve_path(file_path).read_bytes()
+    def read(self, filepath: str) -> bytes:
+        return self._resolve_path(filepath).read_bytes()
+
+    def get_full_path(self, filepath: str) -> Path:
+        return self._resolve_path(filepath)

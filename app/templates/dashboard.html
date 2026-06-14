@@ -735,9 +735,9 @@
             showToast('Document cleared. You can select a new file.', 'success');
         }
 
-        async function submitWorkOrder(file, shopUuid, customerUuid) {
+        async function submitWorkOrder(file_object, shopUuid, customerUuid) {
             var formData = new FormData();
-            formData.append('file', file);
+            formData.append('file_object', file_object);
             formData.append('shop_uuid', shopUuid);
             formData.append('customer_uuid', customerUuid);
             

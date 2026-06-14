@@ -1,13 +1,13 @@
-from datetime import datetime
-
-from pydantic import BaseModel, ConfigDict
-
+from pydantic import BaseModel, ConfigDict, Field
 import uuid as _uuid
+from datetime import datetime
 
 
 class PrintJobBase(BaseModel):
+    uuid: _uuid.UUID = Field(default_factory=_uuid.uuid4)
     customer_uuid: _uuid.UUID
     shop_uuid: _uuid.UUID
+    properties: dict
 
 
 class PrintJobCreate(PrintJobBase):
@@ -15,9 +15,6 @@ class PrintJobCreate(PrintJobBase):
 
 
 class PrintJobRead(PrintJobBase):
-    uuid: _uuid.UUID
-    shop_uuid: _uuid.UUID
-
     created_at: datetime
     updated_at: datetime
 
