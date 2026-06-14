@@ -15,9 +15,26 @@ async def create_workorder(
     customer_uuid: str = Form(...),
     session: AsyncSession = Depends(get_db_session),
 ) -> PrintJobRead:
-    print(f"Received file: {file_object.filename}")
-    print(f"Shop UUID: {shop_uuid}")
-    print(f"Customer UUID: {customer_uuid}")
+    """
+    Sequence of statuses:
+        Uploaded
+        ↓
+        Awaiting Payment
+        ↓
+        Paid
+        ↓
+        Processing
+        ↓
+        Queued
+        ↓
+        Printing
+        ↓
+        Printed
+        ↓
+        Ready for Pickup
+        ↓
+        Completed
+    """
 
     payload = PrintJobCreate(
         shop_uuid=shop_uuid, customer_uuid=customer_uuid, properties={}

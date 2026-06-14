@@ -75,6 +75,23 @@ class PrintJobRepository:
         }
 
         printjob = PrintJob(**payload.model_dump())
+        printjob.properties["status"] = "Uploaded"
+        # Sequence of statuses:
+        #     Uploaded
+        #     ↓
+        #     Awaiting Payment
+        #     ↓
+        #     Paid
+        #     ↓
+        #     Queued
+        #     ↓
+        #     Printing
+        #     ↓
+        #     Printed
+        #     ↓
+        #     Ready for Pickup
+        #     ↓
+        #     Completed
         printjob.properties["file_metadata"] = file_metadata
         self.session.add(printjob)
         await self.session.commit()
