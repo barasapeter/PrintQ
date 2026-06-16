@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Union, IO, Optional
+from typing import Union, IO
 import base64
 import shutil
 import uuid
@@ -27,13 +27,12 @@ class FileStorage:
 
     def _ensure_dir(self, path: Path) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
-    
+
     async def write(
         self,
         file_object: Union[UploadFile, bytes, str, IO[bytes], Path],
         filepath: str,
     ) -> str:
-
         path = self._resolve_path(filepath)
         self._ensure_dir(path)
 
@@ -138,3 +137,9 @@ class FileStorage:
 
     def get_full_path(self, filepath: str) -> Path:
         return self._resolve_path(filepath)
+
+    def list_files(self, directory: str = "") -> list[Path]:
+        search_path = self._resolve_path(directory)
+        if not search_path.exists():
+            return []
+        return [f for f in search_path.rglob("*") if f.is_file()]
