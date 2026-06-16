@@ -9,7 +9,6 @@ from app.services.shops import ShopService
 
 from app.core.phone import process_phone
 
-import json
 
 router = APIRouter()
 
@@ -22,9 +21,6 @@ async def create_shop(
     service = ShopService(session)
     processed_phone = process_phone(payload.phone_contact)
     if processed_phone is None:
-        return JSONResponse(
-            status_code=400,
-            content={"detail": "Invalid phone number"}
-        )
+        return JSONResponse(status_code=400, content={"detail": "Invalid phone number"})
 
     return await service.create(payload)

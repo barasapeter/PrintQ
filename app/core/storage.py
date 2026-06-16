@@ -37,7 +37,6 @@ class FileStorage:
         self._ensure_dir(path)
 
         file_type = type(file_object).__name__
-        print("File type:", file_type)
 
         if file_type == "UploadFile" or (
             hasattr(file_object, "filename") and hasattr(file_object, "file")

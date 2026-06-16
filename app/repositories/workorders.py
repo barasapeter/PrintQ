@@ -77,7 +77,6 @@ class PrintJobRepository:
             "filesize": getattr(file_object, "size", None),
             "page_count": count_pages(saved_path),
         }
-        print(file_metadata)
 
         printjob = PrintJob(**payload.model_dump())
         printjob.properties["status"] = "Uploaded"

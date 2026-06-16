@@ -2,6 +2,18 @@ from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from http import HTTPStatus
 
+default_template = """<!doctype html>
+<html>
+    <head>
+        <title>{title}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    </head>
+    <body>
+        <h1 style="color: #E63F31">{heading}</h1>
+    </body>
+</html>"""
+
 
 class Settings(BaseSettings):
     app_container_name: str
@@ -31,18 +43,7 @@ class Settings(BaseSettings):
 
     @staticmethod
     def _error_page(title: str, heading: str) -> str:
-        return f"""
-        <!doctype html>
-        <html>
-            <head>
-                <title>{title}</title>
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
-            </head>
-            <body>
-                <h1 style="color: #E63F31">{heading}</h1>
-            </body>
-        </html>"""
+        return default_template.format(title=title, heading=heading)
 
     @property
     def not_found(self) -> str:

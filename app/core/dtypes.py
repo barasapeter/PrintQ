@@ -50,7 +50,6 @@ def _resolve_file_type(filepath: str) -> str | None:
     mime_type = magic.from_file(filepath, mime=True)
     if not mime_type:
         mime_type, _ = mimetypes.guess_type(filepath)
-        print("Mime Type:", mime_type)
     return MIME_MAP.get(mime_type)
 
 
