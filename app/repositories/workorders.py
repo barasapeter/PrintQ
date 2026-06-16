@@ -20,7 +20,9 @@ class PrintJobRepository:
 
     async def get_by_customer_uuid(self, customer_uuid: str) -> list[PrintJob]:
         result = await self.session.execute(
-            select(PrintJob).where(PrintJob.customer_uuid == customer_uuid)
+            select(PrintJob)
+            .where(PrintJob.customer_uuid == customer_uuid)
+            .order_by(PrintJob.updated_at.desc())
         )
         return result.scalars().all()
 
