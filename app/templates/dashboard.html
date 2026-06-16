@@ -796,26 +796,19 @@
             try {
                 var result = await submitWorkOrder(currentFile, selectedShopUuid, customerUuid);
                 
-                showToast('Document "' + fileName + '" sent to ' + shopName + ' successfully!', 'success');
-                console.log('Work order created:', result);
-                
-                currentFile = null;
-                if (fileInput) {
-                    fileInput.value = '';
+                if (result && result.uuid) {
+                    showToast('Document "' + fileName + '" sent to ' + shopName + ' successfully!', 'success');
+                    console.log('Work order created:', result);
+                    
+                    window.location.href = '/queue/' + result.uuid;
+                    return true;
+                } else {
+                    throw new Error('No UUID returned from server');
                 }
-                renderFileInfo();
-                resetShopSelection();
-                
-                if (selectionPanel) {
-                    selectionPanel.style.display = 'none';
-                }
-                
-                return true;
             } catch (error) {
                 console.error('Upload failed:', error);
                 showToast('Failed to send document: ' + error.message, 'error');
-                return false;
-            } finally {
+                
                 isUploading = false;
                 confirmUploadBtn.innerHTML = originalButtonText;
                 if (confirmUploadBtn && !selectedShopUuid) {
@@ -823,9 +816,10 @@
                 } else if (confirmUploadBtn && selectedShopUuid && currentFile) {
                     confirmUploadBtn.disabled = false;
                 }
+                return false;
             }
         }
-
+        
         function onConfirmUpload() {
             if (!currentFile) {
                 showToast('No document selected. Please choose a file first.', 'error');
