@@ -49,7 +49,7 @@ def create_app() -> FastAPI:
 
                 return JSONResponse(
                     status_code=500,
-                    content={"detail": "Internal server error"},
+                    content={"detail": f"Internal server error: {str(exc)}"},
                 )
 
             return HTMLResponse(

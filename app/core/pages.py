@@ -82,7 +82,6 @@ def _count_pptx(filepath: str) -> int:
 
 
 def _count_text(filepath: str) -> int:
-    """Estimates pages from line count using LINES_PER_PAGE."""
     try:
         lines = Path(filepath).read_text(errors="ignore").splitlines()
         non_empty = [l for l in lines if l.strip()]

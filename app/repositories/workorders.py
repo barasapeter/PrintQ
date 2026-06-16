@@ -8,6 +8,7 @@ from typing import Union, IO
 from pathlib import Path
 
 from fastapi import UploadFile
+from app.core.pages import count_pages
 
 
 class PrintJobRepository:
@@ -72,7 +73,9 @@ class PrintJobRepository:
             "filepath": saved_path,
             "filename": file_object.filename,
             "filesize": getattr(file_object, "size", None),
+            "page_count": count_pages(saved_path),
         }
+        print(file_metadata)
 
         printjob = PrintJob(**payload.model_dump())
         printjob.properties["status"] = "Uploaded"
