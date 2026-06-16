@@ -13,7 +13,7 @@
         }
 
         body {
-            background: #f3f4f6;
+            background: #f5f6f8;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             padding: 2rem;
             min-height: 100vh;
@@ -25,33 +25,14 @@
         }
 
         .header {
-            margin-bottom: 1.5rem;
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 0.75rem;
+            padding: 1.75rem 2rem;
+            margin-bottom: 2rem;
         }
 
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 0.25rem;
-        }
-
-        .header p {
-            color: #6b7280;
-            font-size: 0.875rem;
-        }
-
-        .upload-card {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .upload-card-body {
-            padding: 1.5rem;
-        }
-
-        .upload-header {
+        .header-content {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -59,21 +40,196 @@
             gap: 1rem;
         }
 
-        .upload-actions {
+        .header-left {
             display: flex;
             align-items: center;
             gap: 1rem;
+        }
+
+        .header-text h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.1rem;
+        }
+
+        .header-text p {
+            color: #4a4a4a;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-text p svg {
+            color: #666;
+        }
+
+        .upload-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-card-body {
+            padding: 1.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 0.75rem;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            background: #fafbfc;
+        }
+
+        .upload-zone:hover {
+            border-color: #43a047;
+            background: #f1f8e9;
+        }
+
+        .upload-zone.dragover {
+            border-color: #43a047;
+            background: #e8f5e9;
+        }
+
+        .upload-zone.has-file {
+            border-color: #43a047;
+            background: #f1f8e9;
+            padding: 1.5rem 2rem;
+        }
+
+        .upload-zone-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            background: #e8f5e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #43a047;
+        }
+
+        .upload-zone:hover .upload-zone-icon {
+            background: #c8e6c9;
+        }
+
+        .upload-zone.has-file .upload-zone-icon {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .upload-zone-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .upload-zone-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+
+        .upload-zone-subtitle {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .upload-zone-formats {
+            margin-top: 0.75rem;
+            display: flex;
             flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .upload-zone-formats span {
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: #4a4a4a;
+            background: #f3f4f6;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+        }
+
+        .upload-zone .file-selected-info {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .upload-zone.has-file .file-selected-info {
+            display: flex;
+        }
+
+        .upload-zone.has-file .upload-zone-title,
+        .upload-zone.has-file .upload-zone-subtitle,
+        .upload-zone.has-file .upload-zone-formats {
+            display: none;
+        }
+
+        .file-selected-icon {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-selected-details {
+            flex: 1;
+            text-align: left;
+        }
+
+        .file-selected-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 0.875rem;
+            word-break: break-all;
+        }
+
+        .file-selected-meta {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .file-selected-remove {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-selected-remove:hover {
+            background: #fce4ec;
+            color: #c62828;
         }
 
         .upload-btn-primary {
-            background: #3b82f6;
+            background: #43a047;
             border: none;
             color: white;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 0.875rem;
-            padding: 0.625rem 1.5rem;
-            border-radius: 0.375rem;
+            padding: 0.625rem 1.75rem;
+            border-radius: 0.5rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -82,23 +238,23 @@
         }
 
         .upload-btn-primary:hover:not(:disabled) {
-            background: #2563eb;
+            background: #2e7d32;
         }
 
         .upload-btn-primary:disabled {
-            background: #9ca3af;
+            background: #bdbdbd;
             cursor: not-allowed;
             opacity: 0.7;
         }
 
         .clear-btn {
-            background: #f3f4f6;
-            border: 1px solid #e5e7eb;
-            color: #dc2626;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            color: #616161;
             font-weight: 500;
             font-size: 0.875rem;
             padding: 0.625rem 1.25rem;
-            border-radius: 0.375rem;
+            border-radius: 0.5rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -107,56 +263,22 @@
         }
 
         .clear-btn:hover {
-            background: #fee2e2;
-            border-color: #fecaca;
-        }
-
-        .file-info-row {
-            margin-top: 1rem;
-        }
-
-        .file-detail {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            background: #f9fafb;
-            padding: 0.625rem 1rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
-            color: #374151;
-        }
-
-        .file-detail-icon {
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .file-detail-name {
-            font-weight: 600;
-            color: #111827;
-            word-break: break-all;
-            flex: 1;
-        }
-
-        .file-detail-meta {
-            color: #6b7280;
-            font-size: 0.75rem;
-            font-family: monospace;
+            background: #fce4ec;
+            border-color: #ef9a9a;
+            color: #c62828;
         }
 
         .selection-panel {
             background: white;
             border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             padding: 1.5rem;
+            margin-top: 1.5rem;
         }
 
         .selection-title {
             font-weight: 600;
-            color: #374151;
+            color: #1a1a1a;
             margin-bottom: 1.25rem;
             font-size: 0.875rem;
             display: flex;
@@ -186,8 +308,8 @@
         }
 
         .shop-card.enabled:hover {
-            background: #f3f4f6;
-            border-color: #d1d5db;
+            background: #f1f8e9;
+            border-color: #a5d6a7;
         }
 
         .shop-card.disabled {
@@ -197,8 +319,8 @@
         }
 
         .shop-card.selected {
-            background: #eff6ff;
-            border-color: #3b82f6;
+            background: #e8f5e9;
+            border-color: #43a047;
         }
 
         .shop-radio {
@@ -213,7 +335,7 @@
         }
 
         .shop-card.selected .shop-radio {
-            border-color: #3b82f6;
+            border-color: #43a047;
         }
 
         .shop-card.selected .shop-radio::after {
@@ -225,7 +347,7 @@
             width: 0.625rem;
             height: 0.625rem;
             border-radius: 50%;
-            background: #3b82f6;
+            background: #43a047;
         }
 
         .shop-card.disabled .shop-radio {
@@ -248,7 +370,7 @@
         .shop-name {
             font-size: 1rem;
             font-weight: 600;
-            color: #111827;
+            color: #1a1a1a;
         }
 
         .status-badge {
@@ -262,13 +384,13 @@
         }
 
         .status-badge.open {
-            background: #d1fae5;
-            color: #065f46;
+            background: #e8f5e9;
+            color: #2e7d32;
         }
 
         .status-badge.closed {
-            background: #fee2e2;
-            color: #991b1b;
+            background: #fce4ec;
+            color: #c62828;
         }
 
         .shop-location {
@@ -292,13 +414,13 @@
         }
 
         .btn-success {
-            background: #10b981;
+            background: #43a047;
             border: none;
             color: white;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 0.875rem;
-            padding: 0.5rem 1.25rem;
-            border-radius: 0.375rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.5rem;
             cursor: pointer;
             font-family: inherit;
             display: inline-flex;
@@ -307,26 +429,22 @@
         }
 
         .btn-success:hover:not(:disabled) {
-            background: #059669;
+            background: #2e7d32;
         }
 
         .btn-success:disabled {
-            background: #9ca3af;
+            background: #bdbdbd;
             cursor: not-allowed;
         }
 
-        #cancelBtn {
-            display: inline-flex;
-        }
-
         .btn-secondary {
-            background: #f3f4f6;
-            border: 1px solid #e5e7eb;
-            color: #374151;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            color: #424242;
             font-weight: 500;
             font-size: 0.875rem;
             padding: 0.5rem 1.25rem;
-            border-radius: 0.375rem;
+            border-radius: 0.5rem;
             cursor: pointer;
             font-family: inherit;
             display: inline-flex;
@@ -335,7 +453,7 @@
         }
 
         .btn-secondary:hover {
-            background: #e5e7eb;
+            background: #eeeeee;
         }
 
         .hidden-input {
@@ -345,7 +463,7 @@
         .empty-state {
             background: white;
             border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             padding: 3rem;
             text-align: center;
             color: #6b7280;
@@ -353,10 +471,10 @@
 
         .toast-message {
             position: fixed;
-            bottom: 2rem;
+            top: 2rem;
             left: 50%;
-            transform: translateX(-50%) translateY(1rem);
-            background: #111827;
+            transform: translateX(-50%) translateY(-1rem);
+            background: #1a1a1a;
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 0.5rem;
@@ -366,7 +484,6 @@
             visibility: hidden;
             transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
             white-space: nowrap;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .toast-message.show {
@@ -376,11 +493,11 @@
         }
 
         .toast-message.success {
-            background: #10b981;
+            background: #43a047;
         }
 
         .toast-message.error {
-            background: #ef4444;
+            background: #e53935;
         }
 
         .loading-spinner {
@@ -397,14 +514,222 @@
             to { transform: rotate(360deg); }
         }
 
+        .printjobs-section {
+            margin-top: 2rem;
+        }
+
+        .printjobs-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .printjobs-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .printjobs-count {
+            background: #e8eaf6;
+            color: #283593;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.125rem 0.625rem;
+            border-radius: 9999px;
+        }
+
+        .printjobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1rem;
+        }
+
+        .printjob-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .printjob-card:hover {
+            border-color: #a5d6a7;
+        }
+
+        .printjob-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.875rem;
+        }
+
+        .printjob-icon {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            background: #f5f5f5;
+        }
+
+        .printjob-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .printjob-filename {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 0.875rem;
+            word-break: break-all;
+            margin-bottom: 0.25rem;
+        }
+
+        .printjob-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .printjob-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .printjob-meta-item svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        .printjob-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .printjob-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-dot.uploaded { background: #757575; }
+        .status-dot.awaiting-payment { background: #ffa726; }
+        .status-dot.paid { background: #66bb6a; }
+        .status-dot.queued { background: #42a5f5; }
+        .status-dot.printing { background: #ab47bc; }
+        .status-dot.printed { background: #26c6da; }
+        .status-dot.ready-for-pickup { background: #ffa726; }
+        .status-dot.completed { background: #43a047; }
+        .status-dot.payment-failed { background: #ef5350; }
+
+        .printjob-timestamps {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.7rem;
+            color: #9ca3af;
+            text-align: right;
+            gap: 0.125rem;
+        }
+
+        .printjob-timestamps span {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.25rem;
+        }
+
+        .printjob-timestamps svg {
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
+        }
+
+        .printjob-view-btn {
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            color: #424242;
+            font-size: 0.75rem;
+            font-weight: 500;
+            padding: 0.375rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-family: inherit;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.375rem;
+            text-align: center;
+        }
+
+        .printjob-view-btn:hover {
+            background: #eeeeee;
+            text-decoration: none;
+            color: #424242;
+        }
+
+        .printjob-empty {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+
+        .printjob-empty svg {
+            margin-bottom: 0.5rem;
+            color: #d1d5db;
+        }
+
         @media (max-width: 640px) {
             body {
                 padding: 1rem;
+            }
+            .header {
+                padding: 1.25rem;
+            }
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header-badge {
+                align-self: flex-start;
             }
             .toast-message {
                 white-space: normal;
                 max-width: 90%;
                 text-align: center;
+                top: 1rem;
             }
             .action-buttons {
                 flex-direction: column-reverse;
@@ -416,15 +741,24 @@
             .shops-grid {
                 grid-template-columns: 1fr;
             }
-            .upload-header {
+            .upload-zone {
+                padding: 1.5rem 1rem;
+            }
+            .printjobs-grid {
+                grid-template-columns: 1fr;
+            }
+            .printjob-bottom {
                 flex-direction: column;
                 align-items: stretch;
             }
-            .upload-actions {
-                justify-content: space-between;
-            }
-            .file-detail {
+            .printjob-timestamps {
+                text-align: left;
+                flex-direction: row;
                 flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .printjob-timestamps span {
+                justify-content: flex-start;
             }
         }
     </style>
@@ -432,8 +766,18 @@
 <body>
 <div class="dashboard">
     <div class="header">
-        <h1>Hi👋</h1>
-        <p>{{ phone }} - What are we printing today? <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -0.125em; margin-left: 0.25em;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></p>
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-text">
+                    <h1>Hi, +{{ phone }}</h1>
+                    <p>
+                         What are we printing today?
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </p>
+                </div>
+            </div>
+            
+        </div>
     </div>
 
     {% if not shops %}
@@ -443,22 +787,40 @@
     {% else %}
         <div class="upload-card">
             <div class="upload-card-body">
-                <div class="upload-header">
-                    <div class="upload-actions">
-                        <button class="upload-btn-primary" id="triggerFileBtn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                <polyline points="17 8 12 3 7 8"/>
-                                <line x1="12" y1="3" x2="12" y2="15"/>
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-zone-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <div class="upload-zone-title">Drop your document here</div>
+                    <div class="upload-zone-subtitle">or click to browse</div>
+                    <div class="upload-zone-formats">
+                        <span>PDF</span>
+                        <span>DOC</span>
+                        <span>XLS</span>
+                        <span>PPT</span>
+                        <span>IMG</span>
+                        <span>TXT</span>
+                        <span>CSV</span>
+                    </div>
+                    <div class="file-selected-info" id="fileSelectedInfo">
+                        <div class="file-selected-icon" id="fileSelectedIcon"></div>
+                        <div class="file-selected-details">
+                            <div class="file-selected-name" id="fileSelectedName"></div>
+                            <div class="file-selected-meta" id="fileSelectedMeta"></div>
+                        </div>
+                        <button class="file-selected-remove" id="fileSelectedRemove" title="Remove file">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"/>
+                                <line x1="6" y1="6" x2="18" y2="18"/>
                             </svg>
-                            Select File
-                        </button>
-                        <button class="clear-btn" id="clearFileBtn" style="display: none;">
-                            Reset
                         </button>
                     </div>
                 </div>
-                <div id="fileInfoContainer" class="file-info-row" style="display: none;"></div>
+                <input type="file" id="fileInput" class="hidden-input" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
             </div>
         </div>
 
@@ -468,8 +830,8 @@
                     <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
                     <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
                 </svg>
-                Nearby shops - Select one
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: -0.125em; margin-left: 0.25em;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                Select a shop
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             </div>
             <div class="shops-grid" id="shopsContainer">
                 {% for shop in shops %}
@@ -516,13 +878,117 @@
                         <path d="M12 5l7 7-7 7"/>
                     </svg>
                 </button>
-                
             </div>
         </div>
     {% endif %}
+
+    <div class="printjobs-section">
+        <div class="printjobs-header">
+            <div class="printjobs-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 6 2 18 2 18 9"/>
+                    <path d="M18 9H6"/>
+                    <path d="M18 9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/>
+                    <rect x="10" y="13" width="4" height="4"/>
+                </svg>
+                Your Print Jobs
+                <span class="printjobs-count" id="printjobsCount">{{ printjobs|length if printjobs else 0 }}</span>
+            </div>
+        </div>
+
+        <div class="printjobs-grid" id="printjobsGrid">
+            {% if printjobs and printjobs|length > 0 %}
+                {% for printjob in printjobs %}
+                {% set status = printjob.properties.get("status", "Uploaded") if printjob.properties else "Uploaded" %}
+                {% set status_class = status|lower|replace(" ", "-") %}
+                {% set file_meta = printjob.properties.get("file_metadata", {}) if printjob.properties else {} %}
+                {% set filename = file_meta.get("filename", "Untitled") %}
+                {% set filesize = file_meta.get("filesize", 0) %}
+                {% set pagecount = file_meta.get("page_count", 0) %}
+                
+                <div class="printjob-card" data-uuid="{{ printjob.uuid }}">
+                    <div class="printjob-top">
+                        <div class="printjob-icon">
+                            {{ get_file_icon(filename)|safe }}
+                        </div>
+                        <div class="printjob-info">
+                            <div class="printjob-filename">{{ filename }}</div>
+                            <div class="printjob-meta">
+                                {% if filesize %}
+                                <span class="printjob-meta-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="17 8 12 3 7 8"/>
+                                        <line x1="12" y1="3" x2="12" y2="15"/>
+                                    </svg>
+                                    {{ format_file_size(filesize) }}
+                                </span>
+                                {% endif %}
+                                {% if pagecount %}
+                                <span class="printjob-meta-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14 2 14 8 20 8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                    </svg>
+                                    {{ pagecount }} pages
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="printjob-bottom">
+                        <div class="printjob-status">
+                            <span class="status-dot {{ status_class }}"></span>
+                            <span>{{ status }}</span>
+                        </div>
+                        <div class="printjob-timestamps">
+                            {% if printjob.created_at %}
+                            <span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                {{ printjob.created_at|time_ago }}
+                            </span>
+                            {% endif %}
+                            {% if printjob.updated_at and printjob.updated_at != printjob.created_at %}
+                            <span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                {{ printjob.updated_at|time_ago }}
+                            </span>
+                            {% endif %}
+                        </div>
+                        <a href="/queue/{{ printjob.uuid }}" class="printjob-view-btn">
+                            View
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14"/>
+                                <path d="M12 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="printjob-empty" id="printjobEmpty">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 6 2 18 2 18 9"/>
+                        <path d="M18 9H6"/>
+                        <path d="M18 9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/>
+                        <rect x="10" y="13" width="4" height="4"/>
+                    </svg>
+                    <div>No print jobs yet</div>
+                    <div style="font-size:0.75rem; color:#d1d5db; margin-top:0.25rem;">Upload a document to get started</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
-<input type="file" id="fileInput" class="hidden-input" accept=".pdf,.jpg,.jpeg,.png,.gif,.webp,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv">
 <div id="toast" class="toast-message"></div>
 
 <script>
@@ -532,54 +998,88 @@
             return;
         }
 
-        var triggerFileBtn = document.getElementById('triggerFileBtn');
-        var clearFileBtn = document.getElementById('clearFileBtn');
+        var uploadZone = document.getElementById('uploadZone');
         var fileInput = document.getElementById('fileInput');
-        var fileInfoContainer = document.getElementById('fileInfoContainer');
+        var fileSelectedIcon = document.getElementById('fileSelectedIcon');
+        var fileSelectedName = document.getElementById('fileSelectedName');
+        var fileSelectedMeta = document.getElementById('fileSelectedMeta');
+        var fileSelectedRemove = document.getElementById('fileSelectedRemove');
         var selectionPanel = document.getElementById('selectionPanel');
         var confirmUploadBtn = document.getElementById('confirmUploadBtn');
         var cancelBtn = document.getElementById('cancelBtn');
         var toast = document.getElementById('toast');
+        var printjobsGrid = document.getElementById('printjobsGrid');
+        var printjobsCount = document.getElementById('printjobsCount');
+        var printjobEmpty = document.getElementById('printjobEmpty');
 
         var currentFile = null;
         var selectedShopUuid = null;
         var selectedShopElement = null;
         var isUploading = false;
-
         var API_BASE = '/api/v1/workorder';
 
         function getFileIcon(filename) {
             var ext = filename.split('.').pop().toLowerCase();
-            
             if (ext === 'pdf') {
                 return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#E53935" stroke="#E53935" stroke-width="1.5"/><path d="M14 2V8H20" fill="#E53935"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="8" y="17" font-size="7" font-weight="bold" fill="white" font-family="Arial">PDF</text></svg>';
             }
-            
             if (ext === 'doc' || ext === 'docx') {
                 return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#1E88E5" stroke="#1E88E5" stroke-width="1.5"/><path d="M14 2V8H20" fill="#1E88E5"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">DOC</text></svg>';
             }
-            
             if (ext === 'xls' || ext === 'xlsx') {
                 return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#43A047" stroke="#43A047" stroke-width="1.5"/><path d="M14 2V8H20" fill="#43A047"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">XLS</text></svg>';
             }
-            
             if (ext === 'ppt' || ext === 'pptx') {
                 return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#FB8C00" stroke="#FB8C00" stroke-width="1.5"/><path d="M14 2V8H20" fill="#FB8C00"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6.5" y="17" font-size="6" font-weight="bold" fill="white" font-family="Arial">PPT</text></svg>';
             }
-            
             if (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif' || ext === 'webp' || ext === 'bmp') {
                 return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#8E24AA" stroke="#8E24AA" stroke-width="1.5"/><path d="M14 2V8H20" fill="#8E24AA"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="10" r="1.5" fill="white"/><path d="M17 16L14 13L9 17L7 15L4 18" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
             }
-            
             if (ext === 'txt') {
                 return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#757575" stroke="#757575" stroke-width="1.5"/><path d="M14 2V8H20" fill="#757575"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="7" y1="12" x2="15" y2="12" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="15" x2="13" y2="15" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="18" x2="11" y2="18" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>';
             }
-            
             if (ext === 'csv') {
                 return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#2E7D32" stroke="#2E7D32" stroke-width="1.5"/><path d="M14 2V8H20" fill="#2E7D32"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">CSV</text></svg>';
             }
-            
             return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#607D8B" stroke="#607D8B" stroke-width="1.5"/><path d="M14 2V8H20" fill="#607D8B"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 14L11 16L15 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+        }
+
+        function formatFileSize(bytes) {
+            if (!bytes) return '0 B';
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function timeAgo(dateStr) {
+            try {
+                var date = new Date(dateStr);
+                var now = new Date();
+                var seconds = Math.floor((now - date) / 1000);
+                if (seconds < 60) return seconds + 's ago';
+                var minutes = Math.floor(seconds / 60);
+                if (minutes < 60) return minutes + 'm ago';
+                var hours = Math.floor(minutes / 60);
+                if (hours < 24) return hours + 'h ago';
+                var days = Math.floor(hours / 24);
+                if (days < 30) return days + 'd ago';
+                var months = Math.floor(days / 30);
+                if (months < 12) return months + 'mo ago';
+                var years = Math.floor(days / 365);
+                return years + 'y ago';
+            } catch (e) {
+                return 'just now';
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
         }
 
         function showToast(message, type) {
@@ -596,43 +1096,79 @@
             }, 3000);
         }
 
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        function getStatusDotClass(status) {
+            var classes = {
+                'uploaded': 'uploaded',
+                'awaiting payment': 'awaiting-payment',
+                'paid': 'paid',
+                'queued': 'queued',
+                'printing': 'printing',
+                'printed': 'printed',
+                'ready for pickup': 'ready-for-pickup',
+                'completed': 'completed',
+                'payment failed': 'payment-failed'
+            };
+            return classes[status.toLowerCase()] || 'uploaded';
         }
 
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
-
-        function renderFileInfo() {
-            if (!fileInfoContainer) return;
+        function createPrintJobCard(printjob) {
+            var fileMeta = printjob.properties && printjob.properties.file_metadata ? printjob.properties.file_metadata : {};
+            var filename = fileMeta.filename || 'Untitled';
+            var filesize = fileMeta.filesize || 0;
+            var pagecount = fileMeta.page_count || 0;
+            var status = printjob.properties && printjob.properties.status ? printjob.properties.status : 'Uploaded';
+            var statusClass = getStatusDotClass(status);
             
-            if (currentFile) {
-                var sizeLabel = formatFileSize(currentFile.size);
-                var fileExt = currentFile.name.split('.').pop().toUpperCase() || 'FILE';
-                var fileIcon = getFileIcon(currentFile.name);
-                
-                fileInfoContainer.innerHTML = 
-                    '<div class="file-detail">' +
-                        '<span class="file-detail-icon">' + fileIcon + '</span>' +
-                        '<span class="file-detail-name">' + escapeHtml(currentFile.name) + '</span>' +
-                        '<span class="file-detail-meta">' + sizeLabel + ' · ' + escapeHtml(fileExt) + '</span>' +
-                    '</div>';
-                fileInfoContainer.style.display = 'block';
-                clearFileBtn.style.display = 'inline-flex';
-                triggerFileBtn.disabled = true;
+            var card = document.createElement('div');
+            card.className = 'printjob-card';
+            card.setAttribute('data-uuid', printjob.uuid);
+            card.innerHTML = 
+                '<div class="printjob-top">' +
+                    '<div class="printjob-icon">' + getFileIcon(filename) + '</div>' +
+                    '<div class="printjob-info">' +
+                        '<div class="printjob-filename">' + escapeHtml(filename) + '</div>' +
+                        '<div class="printjob-meta">' +
+                            (filesize ? '<span class="printjob-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> ' + formatFileSize(filesize) + '</span>' : '') +
+                            (pagecount ? '<span class="printjob-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> ' + pagecount + ' pages</span>' : '') +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="printjob-bottom">' +
+                    '<div class="printjob-status">' +
+                        '<span class="status-dot ' + statusClass + '"></span>' +
+                        '<span>' + status + '</span>' +
+                    '</div>' +
+                    '<div class="printjob-timestamps">' +
+                        (printjob.created_at ? '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ' + timeAgo(printjob.created_at) + '</span>' : '') +
+                        (printjob.updated_at && printjob.updated_at !== printjob.created_at ? '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> ' + timeAgo(printjob.updated_at) + '</span>' : '') +
+                    '</div>' +
+                    '<a href="/queue/' + printjob.uuid + '" class="printjob-view-btn">View <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>' +
+                '</div>';
+            return card;
+        }
+
+        function addPrintJobToTop(printjob) {
+            if (printjobEmpty) {
+                printjobEmpty.remove();
+            }
+            var card = createPrintJobCard(printjob);
+            printjobsGrid.insertBefore(card, printjobsGrid.firstChild);
+            var currentCount = parseInt(printjobsCount.textContent) || 0;
+            printjobsCount.textContent = currentCount + 1;
+        }
+
+        function updateFileSelectedUI(file) {
+            if (file) {
+                var icon = getFileIcon(file.name);
+                var size = formatFileSize(file.size);
+                fileSelectedIcon.innerHTML = icon;
+                fileSelectedName.textContent = file.name;
+                fileSelectedMeta.textContent = size + ' · ' + file.name.split('.').pop().toUpperCase();
+                uploadZone.classList.add('has-file');
+                selectionPanel.style.display = 'block';
             } else {
-                fileInfoContainer.style.display = 'none';
-                clearFileBtn.style.display = 'none';
-                triggerFileBtn.disabled = false;
+                uploadZone.classList.remove('has-file');
+                selectionPanel.style.display = 'none';
             }
         }
 
@@ -651,7 +1187,6 @@
             if (selectedShopElement) {
                 selectedShopElement.classList.remove('selected');
             }
-            
             if (uuid && element) {
                 element.classList.add('selected');
                 selectedShopUuid = uuid;
@@ -671,19 +1206,15 @@
         function handleShopClick(event) {
             var card = event.target.closest('.shop-card');
             if (!card) return;
-            
             if (card.classList.contains('disabled')) {
                 showToast('This shop is closed and cannot receive documents', 'error');
                 return;
             }
-            
             var uuid = card.getAttribute('data-uuid');
             if (!uuid) return;
-            
             if (selectedShopUuid === uuid && selectedShopElement === card) {
                 return;
             }
-            
             updateShopSelection(uuid, card);
         }
 
@@ -697,20 +1228,15 @@
                 if (fileInput) {
                     fileInput.value = '';
                 }
-                renderFileInfo();
+                updateFileSelectedUI(null);
             }
-            
             resetShopSelection();
-            
-            if (selectionPanel && !currentFile) {
+            if (!currentFile) {
                 selectionPanel.style.display = 'none';
-            } else if (selectionPanel && currentFile) {
-                selectionPanel.style.display = 'block';
             }
-            
             isUploading = false;
             if (confirmUploadBtn) {
-                confirmUploadBtn.disabled = !selectedShopUuid;
+                confirmUploadBtn.disabled = !selectedShopUuid || !currentFile;
             }
         }
 
@@ -719,19 +1245,13 @@
                 showToast('Upload in progress, please wait', 'error');
                 return;
             }
-            
             currentFile = null;
             if (fileInput) {
                 fileInput.value = '';
             }
-            
-            renderFileInfo();
+            updateFileSelectedUI(null);
             resetShopSelection();
-            
-            if (selectionPanel) {
-                selectionPanel.style.display = 'none';
-            }
-            
+            selectionPanel.style.display = 'none';
             showToast('Document cleared. You can select a new file.', 'success');
         }
 
@@ -740,28 +1260,15 @@
             formData.append('file_object', file_object);
             formData.append('shop_uuid', shopUuid);
             formData.append('customer_uuid', customerUuid);
-            
-            console.log('Submitting to:', API_BASE);
-            console.log('Payload:');
-            for (var pair of formData.entries()) {
-                if (pair[0] === 'file') {
-                    console.log('  file:', pair[1].name, pair[1].size, 'bytes');
-                } else {
-                    console.log('  ' + pair[0] + ':', pair[1]);
-                }
-            }
-            
             var response = await fetch(API_BASE, {
                 method: 'POST',
                 body: formData,
                 credentials: 'same-origin'
             });
-            
             if (!response.ok) {
                 var errorText = await response.text();
                 throw new Error('Server returned ' + response.status + ': ' + errorText);
             }
-            
             var result = await response.json();
             return result;
         }
@@ -771,35 +1278,28 @@
                 showToast('No document selected', 'error');
                 return false;
             }
-            
             if (!selectedShopUuid) {
                 showToast('Please select a destination shop', 'error');
                 return false;
             }
-            
             if (isUploading) {
                 showToast('Upload already in progress', 'error');
                 return false;
             }
-            
             isUploading = true;
             confirmUploadBtn.disabled = true;
-            
             var originalButtonText = confirmUploadBtn.innerHTML;
             confirmUploadBtn.innerHTML = '<span class="loading-spinner"></span> Sending...';
-            
             var customerUuid = "{{ customer_uuid }}";
             var shopElement = selectedShopElement;
             var shopName = shopElement ? shopElement.getAttribute('data-name') : 'selected shop';
             var fileName = currentFile.name;
-            
             try {
                 var result = await submitWorkOrder(currentFile, selectedShopUuid, customerUuid);
-                
                 if (result && result.uuid) {
                     showToast('Document "' + fileName + '" sent to ' + shopName + ' successfully!', 'success');
-                    console.log('Work order created:', result);
-                    
+                    addPrintJobToTop(result);
+                    resetUploadFlow(false);
                     window.location.href = '/queue/' + result.uuid;
                     return true;
                 } else {
@@ -808,7 +1308,6 @@
             } catch (error) {
                 console.error('Upload failed:', error);
                 showToast('Failed to send document: ' + error.message, 'error');
-                
                 isUploading = false;
                 confirmUploadBtn.innerHTML = originalButtonText;
                 if (confirmUploadBtn && !selectedShopUuid) {
@@ -819,19 +1318,17 @@
                 return false;
             }
         }
-        
+
         function onConfirmUpload() {
             if (!currentFile) {
                 showToast('No document selected. Please choose a file first.', 'error');
                 resetUploadFlow(false);
                 return;
             }
-            
             if (!selectedShopUuid) {
                 showToast('Please select a shop from the list', 'error');
                 return;
             }
-            
             prepareAndUpload();
         }
 
@@ -850,12 +1347,10 @@
                 fileInput.value = '';
                 return;
             }
-            
             var files = event.target.files;
             if (!files || files.length === 0) {
                 return;
             }
-            
             var file = files[0];
             var maxSize = 10 * 1024 * 1024;
             if (file.size > maxSize) {
@@ -863,16 +1358,9 @@
                 fileInput.value = '';
                 return;
             }
-            
             currentFile = file;
-            renderFileInfo();
-            
-            if (selectionPanel) {
-                selectionPanel.style.display = 'block';
-            }
-            
+            updateFileSelectedUI(file);
             resetShopSelection();
-            
             showToast('Document selected: ' + file.name + '. Now choose a shop.', 'success');
         }
 
@@ -881,27 +1369,63 @@
                 showToast('Upload in progress, please wait', 'error');
                 return;
             }
-            
-            if (selectionPanel && selectionPanel.style.display === 'block' && currentFile) {
-                var confirmReset = confirm('You have an ongoing selection. Clear and select a new document?');
-                if (confirmReset) {
-                    clearDocument();
-                    fileInput.value = '';
-                    fileInput.click();
-                }
-                return;
-            }
-            
             fileInput.value = '';
             fileInput.click();
         }
 
-        if (triggerFileBtn) {
-            triggerFileBtn.addEventListener('click', onTriggerFileClick);
+        function onDragOver(e) {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        }
+
+        function onDragLeave(e) {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+        }
+
+        function onDrop(e) {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            if (isUploading) {
+                showToast('Upload in progress, please wait', 'error');
+                return;
+            }
+            var files = e.dataTransfer.files;
+            if (files && files.length > 0) {
+                var file = files[0];
+                var maxSize = 10 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    showToast('File size exceeds 10MB limit', 'error');
+                    return;
+                }
+                var allowedTypes = ['.pdf', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.txt', '.csv'];
+                var ext = '.' + file.name.split('.').pop().toLowerCase();
+                if (!allowedTypes.includes(ext)) {
+                    showToast('File type not supported. Please use: ' + allowedTypes.join(', '), 'error');
+                    return;
+                }
+                currentFile = file;
+                var dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+                updateFileSelectedUI(file);
+                resetShopSelection();
+                showToast('Document selected: ' + file.name + '. Now choose a shop.', 'success');
+            }
+        }
+
+        if (uploadZone) {
+            uploadZone.addEventListener('click', onTriggerFileClick);
+            uploadZone.addEventListener('dragover', onDragOver);
+            uploadZone.addEventListener('dragleave', onDragLeave);
+            uploadZone.addEventListener('drop', onDrop);
         }
         
-        if (clearFileBtn) {
-            clearFileBtn.addEventListener('click', clearDocument);
+        if (fileSelectedRemove) {
+            fileSelectedRemove.addEventListener('click', function(e) {
+                e.stopPropagation();
+                clearDocument();
+            });
         }
         
         if (fileInput) {
@@ -916,7 +1440,8 @@
             cancelBtn.addEventListener('click', onCancelFlow);
         }
         
-        renderFileInfo();
+        updateFileSelectedUI(null);
+        selectionPanel.style.display = 'none';
         
         window.getCurrentUploadState = function() {
             return {
@@ -926,10 +1451,6 @@
                 isUploading: isUploading
             };
         };
-        
-        if (selectionPanel) {
-            selectionPanel.style.display = 'none';
-        }
     })();
 </script>
 </body>

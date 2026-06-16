@@ -42,10 +42,9 @@ def create_app() -> FastAPI:
             return await call_next(request)
 
         except Exception as exc:
+            traceback.print_exc()
             if request.url.path.startswith(settings.api_v1_prefix):
                 from fastapi.responses import JSONResponse
-
-                traceback.print_exc()
 
                 return JSONResponse(
                     status_code=500,

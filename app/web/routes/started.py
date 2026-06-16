@@ -12,6 +12,8 @@ from app.db.models import Customer
 
 from app.services.vendors import VendorService
 from app.services.shops import ShopService
+from app.services.workorders import PrintJobService
+from app.core.templating import get_file_icon, format_file_size, time_ago
 
 
 router = APIRouter()
@@ -28,14 +30,18 @@ async def dashboard(
     request: Request,
     db: AsyncSession = Depends(get_db_session),
 ):
+    customer_uuid = request.session.get("customer")
     # TODO: Split into a layered architecture
-    stmt = select(Customer).where(Customer.uuid == request.session.get("customer"))
+    stmt = select(Customer).where(Customer.uuid == customer_uuid)
     result = await db.execute(stmt)
     customer = result.scalar_one_or_none()
     # TODO: Split into a layered architecture
 
     shop_service = ShopService(db)
     shops = await shop_service.get_all()
+
+    printjob_service = PrintJobService(db)
+    printjobs = await printjob_service.get_by_customer_uuid(customer_uuid)
 
     if not customer:
         return RedirectResponse(url="/get-started")
@@ -46,7 +52,11 @@ async def dashboard(
             "request": request,
             "phone": customer.properties.get("phone"),
             "shops": shops,
-            "customer_uuid": customer.uuid
+            "customer_uuid": customer.uuid,
+            "printjobs": printjobs,
+            "get_file_icon": get_file_icon,
+            "format_file_size": format_file_size,
+            "time_ago": time_ago,
         },
     )
 
