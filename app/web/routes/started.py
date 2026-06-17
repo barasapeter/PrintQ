@@ -19,12 +19,6 @@ from app.core.templating import get_file_icon, format_file_size, time_ago
 router = APIRouter()
 
 
-@router.get("/get-started")
-async def index(request: Request):
-    request.session.pop("customer", None)
-    return templates.TemplateResponse("started.html", {"request": request})
-
-
 @router.get("/dashboard")
 async def dashboard(
     request: Request,
@@ -61,20 +55,35 @@ async def dashboard(
     )
 
 
+@router.get("/get-started")
+async def index(request: Request):
+    request.session.pop("customer", None)
+    return templates.TemplateResponse("started.html", {"request": request})
+
+
 @router.get("/vendor")
 async def vendor(
     request: Request,
     session: AsyncSession = Depends(get_db_session),
 ):
     vendor_uuid = request.session.get("vendor")
-
     vendor_service = VendorService(session)
     vendor = await vendor_service.get(vendor_uuid)
     if not vendor:
         return RedirectResponse("/vendor/login")
+
+    shop_service = ShopService(session)
+    shop = await shop_service.get_by_vendor(vendor_uuid)
+
+    if not shop:
+        workorders = None
+    else:
+        workorder_service = PrintJobService(session)
+        workorders = await workorder_service.get_by_shop_uuid(shop.uuid, status="Uploaded")
+
     return templates.TemplateResponse(
         "vendor.html",
-        {"request": request, "workorders": None},
+        {"request": request, "workorders": workorders},
     )
 
 
@@ -98,7 +107,7 @@ async def vendor_signup(
     )
 
 
-@router.get("/shop-create")
+@router.get("/shop/create")
 async def shop_create(
     request: Request,
     session: AsyncSession = Depends(get_db_session),

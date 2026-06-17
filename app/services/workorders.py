@@ -33,7 +33,7 @@ class PrintJobService:
     async def get_by_shop_uuid(
         self,
         shop_uuid: str,
-        status: str | None = "queued",
+        status: str | None = None,
     ) -> list[PrintJob]:
         """`status=None` means no filtering."""
         return await self.repository.get_by_shop_uuid(shop_uuid, status)

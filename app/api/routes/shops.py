@@ -22,5 +22,5 @@ async def create_shop(
     processed_phone = process_phone(payload.phone_contact)
     if processed_phone is None:
         return JSONResponse(status_code=400, content={"detail": "Invalid phone number"})
-
+    payload.phone_contact = processed_phone
     return await service.create(payload)

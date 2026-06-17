@@ -24,7 +24,7 @@ class ShopService:
         has_created_shop = await self.get_by_vendor(payload.vendor_uuid)
 
         if has_created_shop:
-            raise ValueError("Maximum number of shops for user reached")
+            raise ValueError("Vendor shop capacity reached")
 
         if len(shops) >= 5:
             raise ValueError("System shop capacity reached")
