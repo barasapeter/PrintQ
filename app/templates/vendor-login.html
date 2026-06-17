@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+  <title>Vendor Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8fafc;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --success-bg: #ecfdf5;
+      --success-text: #047857;
+      --error-bg: #fef2f2;
+      --error-text: #b91c1c;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-600: #475569;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 460px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 40px 32px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.03);
+    }
+
+    .logo {
+      max-width: 180px;
+      display: none;
+    }
+
+    h1 {
+      color: var(--text);
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .field {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .field input {
+      width: 100%;
+      height: 60px;
+      padding: 24px 44px 8px 16px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: white;
+      color: var(--text);
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field input::placeholder {
+      color: transparent;
+    }
+
+    .field label {
+      position: absolute;
+      left: 16px;
+      top: 19px;
+      color: #94a3b8;
+      font-size: 0.95rem;
+      pointer-events: none;
+      transition: all 0.2s ease;
+    }
+
+    .field input:hover {
+      border-color: #cbd5e1;
+    }
+
+    .field input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
+    }
+
+    .field input:focus + label,
+    .field input:not(:placeholder-shown) + label {
+      top: 10px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+
+    .password-toggle:hover {
+      color: var(--text);
+    }
+
+    .btn-primary {
+      width: 100%;
+      height: 56px;
+      border: none;
+      border-radius: 16px;
+      background: var(--primary);
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+      margin-top: 4px;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px 0 20px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .btn-google {
+      width: 100%;
+      height: 56px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: white;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-google svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .btn-google:hover {
+      background: var(--gray-100);
+      border-color: #cbd5e1;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .btn-google:active {
+      transform: scale(0.98);
+    }
+
+    .alert-wrapper {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transform: translateY(-4px);
+      margin-bottom: 0;
+      transition: grid-template-rows 0.3s cubic-bezier(0.4,0,0.2,1),
+                  opacity 0.25s cubic-bezier(0.4,0,0.2,1),
+                  transform 0.25s cubic-bezier(0.4,0,0.2,1),
+                  margin-bottom 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .alert-wrapper.show {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      transform: translateY(0);
+      margin-bottom: 20px;
+    }
+
+    .alert-inner {
+      overflow: hidden;
+    }
+
+    .alert {
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .alert.success {
+      background: var(--success-bg);
+      color: var(--success-text);
+    }
+
+    .alert.error {
+      background: var(--error-bg);
+      color: var(--error-text);
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 640px) {
+      .card {
+        padding: 28px 20px;
+        border-radius: 20px;
+      }
+      h1 {
+        font-size: 1.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <img src="/static/images/logo.png" alt="Logo" class="logo">
+    <h1>Welcome back</h1>
+
+    <div id="alertWrapper" class="alert-wrapper">
+      <div class="alert-inner">
+        <div id="alert" class="alert"></div>
+      </div>
+    </div>
+
+    <form id="loginForm">
+      <div class="field">
+        <input id="email" type="text" placeholder="Email Address" required>
+        <label for="email">Email or username</label>
+      </div>
+
+      <div class="field">
+        <input id="password" type="password" placeholder="Password" required>
+        <label for="password">Password</label>
+        <button type="button" class="password-toggle" id="togglePassword" aria-label="Toggle password visibility">
+          <i class="fas fa-eye"></i>
+        </button>
+      </div>
+
+      <button id="submitBtn" class="btn-primary" type="submit">
+        Log In
+      </button>
+    </form>
+
+    <div class="divider">
+      <span>or continue with</span>
+    </div>
+
+    <button id="googleBtn" class="btn-google" type="button">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
+      </svg>
+      Google
+    </button>
+
+    <div class="footer">
+      Don't have an account? <a href="#">Sign up</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const form = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const alertBox = document.getElementById('alert');
+    const alertWrapper = document.getElementById('alertWrapper');
+    const googleBtn = document.getElementById('googleBtn');
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const emailInput = document.getElementById('email');
+
+    togglePassword.addEventListener('click', function() {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.querySelector('i').classList.toggle('fa-eye');
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+
+    function showAlert(message, type) {
+      alertBox.textContent = message;
+      alertBox.className = `alert ${type}`;
+      alertWrapper.className = 'alert-wrapper show';
+    }
+
+    function hideAlert() {
+      alertWrapper.className = 'alert-wrapper';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Logging in…';
+      hideAlert();
+
+      try {
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+          throw new Error('Email and password are required.');
+        }
+
+        const payload = {
+          email_address: email,
+          password: password
+        };
+
+        const response = await fetch('/api/v1/vendor/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          let message = 'Unable to log in.';
+
+          if (data?.detail) {
+            if (typeof data.detail === 'string') {
+              message = data.detail;
+            } else if (Array.isArray(data.detail)) {
+              message = data.detail.map(err => err?.msg).filter(Boolean).join('\n');
+            } else if (typeof data.detail === 'object') {
+              message = data.detail.msg || message;
+            }
+          }
+          throw new Error(message);
+        }
+
+        emailInput.value = '';
+        passwordInput.value = '';
+        showAlert('Login successful. Redirecting…', 'success');
+        
+        setTimeout(() => {
+          window.location.href = '/vendor';
+        }, 500);
+      } catch (error) {
+        showAlert(error.message || 'Something went wrong. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Log In';
+      }
+    });
+
+    googleBtn.addEventListener('click', () => {
+      hideAlert();
+      googleBtn.disabled = true;
+      googleBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Connecting…';
+
+      setTimeout(() => {
+        emailInput.value = '';
+        passwordInput.value = '';
+        showAlert('Google authentication successful! Redirecting…', 'success');
+        googleBtn.disabled = false;
+        googleBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
+          </svg>
+          Google
+        `;
+        
+        setTimeout(() => {
+          window.location.href = '/vendor';
+        }, 1000);
+      }, 600);
+    });
+
+    document.querySelectorAll('#loginForm input').forEach(input => {
+      input.addEventListener('input', hideAlert);
+    });
+  })();
+</script>
+
+</body>
+</html>

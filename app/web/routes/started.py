@@ -61,7 +61,34 @@ async def dashboard(
     )
 
 
-@router.get("/vendor-signup")
+@router.get("/vendor")
+async def vendor(
+    request: Request,
+    session: AsyncSession = Depends(get_db_session),
+):
+    vendor_uuid = request.session.get("vendor")
+
+    vendor_service = VendorService(session)
+    vendor = await vendor_service.get(vendor_uuid)
+    if not vendor:
+        return RedirectResponse("/vendor/login")
+    return templates.TemplateResponse(
+        "vendor.html",
+        {"request": request, "workorders": None},
+    )
+
+
+@router.get("/vendor/login")
+async def vendor_login(
+    request: Request,
+):
+    return templates.TemplateResponse(
+        "vendor-login.html",
+        {"request": request},
+    )
+
+
+@router.get("/vendor/signup")
 async def vendor_signup(
     request: Request,
 ):

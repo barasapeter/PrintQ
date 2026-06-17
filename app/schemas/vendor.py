@@ -48,3 +48,8 @@ class VendorRead(VendorBase):
     updated_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class VendorLogin(BaseModel):
+    email_address: EmailStr
+    password: str
