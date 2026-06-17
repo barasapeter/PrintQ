@@ -26,6 +26,6 @@ class VendorService:
         vendors = await self.repository.get_all()
 
         if len(vendors) >= 5:
-            raise ValueError("Maximum number of vendors reached")
+            raise ValueError("Vendor capacity reached")
 
         return await self.repository.create(payload)
