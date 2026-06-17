@@ -14,7 +14,7 @@ from app.services.vendors import VendorService
 from app.services.shops import ShopService
 from app.services.workorders import PrintJobService
 from app.core.templating import get_file_icon, format_file_size, time_ago
-
+from app.core.templating import time_ago
 
 router = APIRouter()
 
@@ -83,7 +83,7 @@ async def vendor(
 
     return templates.TemplateResponse(
         "vendor.html",
-        {"request": request, "workorders": workorders},
+        {"request": request, "workorders": workorders, "time_ago": time_ago},
     )
 
 

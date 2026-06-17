@@ -4,9 +4,626 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
-    <title>Vendor</title>
+    <title>Vendor Dashboard - Print Jobs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f1f5f9;
+            --panel: #ffffff;
+            --text: #0f172a;
+            --muted: #475569;
+            --border: #e2e8f0;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --pdf-red: #dc2626;
+            --pdf-red-hover: #b91c1c;
+            --word-blue: #2b5797;
+            --word-blue-hover: #1a3a6b;
+            --odt-green: #4caf50;
+            --odt-green-hover: #388e3c;
+            --txt-gray: #6b7280;
+            --txt-gray-hover: #4b5563;
+            --img-purple: #8b5cf6;
+            --img-purple-hover: #7c3aed;
+            --ppt-orange: #d24726;
+            --ppt-orange-hover: #b83a1a;
+            --excel-green: #217346;
+            --excel-green-hover: #165a33;
+            --rtf-blue: #0d6efd;
+            --rtf-blue-hover: #0a58ca;
+            --default-gray: #94a3b8;
+            --default-gray-hover: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.55;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .container {
+            width: min(1200px, 100%);
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 24px;
+        }
+
+        .btn-options {
+            padding: 12px 28px;
+            background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
+            transition: all 0.15s ease;
+            position: relative;
+            min-width: 80px;
+            justify-content: center;
+        }
+
+        .btn-options::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 25%;
+            right: 25%;
+            height: 25%;
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.6) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .btn-options::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 30%;
+            right: 30%;
+            height: 6px;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.06) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+
+        .btn-options:hover {
+            background: linear-gradient(145deg, #ffffff, #e8edf4);
+            transform: translateY(-1px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.9);
+            border-color: #cbd5e1;
+        }
+
+        .btn-options:active {
+            transform: translateY(1px) scale(0.98);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.6);
+        }
+
+        .btn-options i {
+            font-size: 1.1rem;
+            color: var(--muted);
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-options span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .workorders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+        }
+
+        .workorder-card {
+            background: var(--panel);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: box-shadow 0.15s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .workorder-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        .file-type-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            display: none;
+        }
+
+        .file-type-pdf .file-type-indicator { background: var(--pdf-red); }
+        .file-type-word .file-type-indicator { background: var(--word-blue); }
+        .file-type-odt .file-type-indicator { background: var(--odt-green); }
+        .file-type-txt .file-type-indicator { background: var(--txt-gray); }
+        .file-type-image .file-type-indicator { background: var(--img-purple); }
+        .file-type-ppt .file-type-indicator { background: var(--ppt-orange); }
+        .file-type-excel .file-type-indicator { background: var(--excel-green); }
+        .file-type-rtf .file-type-indicator { background: var(--rtf-blue); }
+        .file-type-default .file-type-indicator { background: var(--default-gray); }
+
+        .file-icon {
+            font-size: 1.4rem;
+            width: 32px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .file-type-pdf .file-icon { color: var(--pdf-red); }
+        .file-type-word .file-icon { color: var(--word-blue); }
+        .file-type-odt .file-icon { color: var(--odt-green); }
+        .file-type-txt .file-icon { color: var(--txt-gray); }
+        .file-type-image .file-icon { color: var(--img-purple); }
+        .file-type-ppt .file-icon { color: var(--ppt-orange); }
+        .file-type-excel .file-icon { color: var(--excel-green); }
+        .file-type-rtf .file-icon { color: var(--rtf-blue); }
+        .file-type-default .file-icon { color: var(--default-gray); }
+
+        .workorder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .workorder-id {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+
+        .workorder-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .workorder-amount .currency {
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .workorder-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .workorder-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .info-row .label {
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .info-row .value {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .file-name-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+        }
+
+        .file-name-row .file-name {
+            font-weight: 500;
+            color: var(--text);
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+
+        .file-name-row .file-extension {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: var(--muted);
+            flex-shrink: 0;
+        }
+
+        .file-type-pdf .file-extension { background: #fee2e2; color: var(--pdf-red); }
+        .file-type-word .file-extension { background: #dbeafe; color: var(--word-blue); }
+        .file-type-odt .file-extension { background: #dcfce7; color: var(--odt-green); }
+        .file-type-txt .file-extension { background: #f3f4f6; color: var(--txt-gray); }
+        .file-type-image .file-extension { background: #ede9fe; color: var(--img-purple); }
+        .file-type-ppt .file-extension { background: #fef3c7; color: var(--ppt-orange); }
+        .file-type-excel .file-extension { background: #d1fae5; color: var(--excel-green); }
+        .file-type-rtf .file-extension { background: #dbeafe; color: var(--rtf-blue); }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 4px 12px 4px 8px;
+            border-radius: 20px;
+            background: #f1f5f9;
+        }
+
+        .status-circle {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .status-uploaded .status-circle { background: #94a3b8; }
+        .status-uploaded { color: #64748b; }
+
+        .status-awaiting-payment .status-circle { background: #f59e0b; }
+        .status-awaiting-payment { color: #92400e; }
+
+        .status-paid .status-circle { background: #8b5cf6; }
+        .status-paid { color: #5b21b6; }
+
+        .status-queued .status-circle { background: #3b82f6; }
+        .status-queued { color: #1e40af; }
+
+        .status-printing .status-circle { background: #f97316; }
+        .status-printing { color: #9a3412; }
+
+        .status-printed .status-circle { background: #06b6d4; }
+        .status-printed { color: #164e63; }
+
+        .status-ready-for-pickup .status-circle { background: #10b981; }
+        .status-ready-for-pickup { color: #065f46; }
+
+        .status-completed .status-circle { background: #22c55e; }
+        .status-completed { color: #14532d; }
+
+        .workorder-footer {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .btn-view {
+            padding: 10px 22px;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.2);
+            position: relative;
+            transition: all 0.15s ease;
+        }
+
+        .btn-view::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 20%;
+            right: 20%;
+            height: 30%;
+            background: radial-gradient(ellipse at center, rgba(255,255,255,0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .btn-view i {
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-view span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .file-type-pdf .btn-view {
+            background: linear-gradient(145deg, #dc2626, #b91c1c);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .file-type-pdf .btn-view:hover {
+            background: linear-gradient(145deg, #b91c1c, #991b1b);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .file-type-word .btn-view {
+            background: linear-gradient(145deg, #2b5797, #1a3a6b);
+            box-shadow: 0 4px 12px rgba(43, 87, 151, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .file-type-word .btn-view:hover {
+            background: linear-gradient(145deg, #1a3a6b, #0f2847);
+            box-shadow: 0 6px 20px rgba(43, 87, 151, 0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .file-type-odt .btn-view {
+            background: linear-gradient(145deg, #4caf50, #388e3c);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .file-type-odt .btn-view:hover {
+            background: linear-gradient(145deg, #388e3c, #2e7d32);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .file-type-txt .btn-view {
+            background: linear-gradient(145deg, #6b7280, #4b5563);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .file-type-txt .btn-view:hover {
+            background: linear-gradient(145deg, #4b5563, #374151);
+            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .file-type-image .btn-view {
+            background: linear-gradient(145deg, #8b5cf6, #7c3aed);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .file-type-image .btn-view:hover {
+            background: linear-gradient(145deg, #7c3aed, #6d28d9);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .file-type-ppt .btn-view {
+            background: linear-gradient(145deg, #d24726, #b83a1a);
+            box-shadow: 0 4px 12px rgba(210, 71, 38, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .file-type-ppt .btn-view:hover {
+            background: linear-gradient(145deg, #b83a1a, #9a2f15);
+            box-shadow: 0 6px 20px rgba(210, 71, 38, 0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .file-type-excel .btn-view {
+            background: linear-gradient(145deg, #217346, #165a33);
+            box-shadow: 0 4px 12px rgba(33, 115, 70, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .file-type-excel .btn-view:hover {
+            background: linear-gradient(145deg, #165a33, #0e4426);
+            box-shadow: 0 6px 20px rgba(33, 115, 70, 0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .file-type-rtf .btn-view {
+            background: linear-gradient(145deg, #0d6efd, #0a58ca);
+            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .file-type-rtf .btn-view:hover {
+            background: linear-gradient(145deg, #0a58ca, #084298);
+            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .file-type-default .btn-view {
+            background: linear-gradient(145deg, #94a3b8, #64748b);
+            box-shadow: 0 4px 12px rgba(148, 163, 184, 0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .file-type-default .btn-view:hover {
+            background: linear-gradient(145deg, #64748b, #475569);
+            box-shadow: 0 6px 20px rgba(148, 163, 184, 0.45), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            color: var(--text);
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .timestamp {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            .workorders-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .workorder-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-view {
+                justify-content: center;
+            }
+
+            .top-bar {
+                justify-content: center;
+            }
+
+            .btn-options {
+                padding: 10px 24px;
+                min-width: 60px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .workorder-card {
+                padding: 18px;
+            }
+
+            .workorder-amount {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ workorders }}</h1>
+    <div class="container">
+        <div class="top-bar">
+            <a href="#" class="btn-options">
+                <i class="fas fa-sliders-h"></i>
+                <span>Options</span>
+            </a>
+        </div>
+
+        {% if workorders %}
+        <div class="workorders-grid">
+            {% for workorder in workorders %}
+            {% set status = workorder.properties.get('status', 'Uploaded') if workorder.properties else 'Uploaded' %}
+            {% set status_class = status|lower|replace(' ', '-') %}
+            {% set amount = workorder.amount if workorder.amount is not none else 0 %}
+            {% set page_count = workorder.properties.get('file_metadata', {}).get('page_count') if workorder.properties else None %}
+            {% set file_name = workorder.properties.get('file_metadata', {}).get('filename') if workorder.properties else 'document' %}
+            
+            {% set extension = file_name.split('.')[-1].lower() if '.' in file_name else '' %}
+            {% set file_class = 'file-type-default' %}
+            {% set file_icon = 'fa-file' %}
+            
+            {% if extension in ['pdf'] %}
+                {% set file_class = 'file-type-pdf' %}
+                {% set file_icon = 'fa-file-pdf' %}
+            {% elif extension in ['doc', 'docx'] %}
+                {% set file_class = 'file-type-word' %}
+                {% set file_icon = 'fa-file-word' %}
+            {% elif extension in ['odt'] %}
+                {% set file_class = 'file-type-odt' %}
+                {% set file_icon = 'fa-file-alt' %}
+            {% elif extension in ['txt'] %}
+                {% set file_class = 'file-type-txt' %}
+                {% set file_icon = 'fa-file-alt' %}
+            {% elif extension in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'] %}
+                {% set file_class = 'file-type-image' %}
+                {% set file_icon = 'fa-file-image' %}
+            {% elif extension in ['ppt', 'pptx'] %}
+                {% set file_class = 'file-type-ppt' %}
+                {% set file_icon = 'fa-file-powerpoint' %}
+            {% elif extension in ['xls', 'xlsx'] %}
+                {% set file_class = 'file-type-excel' %}
+                {% set file_icon = 'fa-file-excel' %}
+            {% elif extension in ['rtf'] %}
+                {% set file_class = 'file-type-rtf' %}
+                {% set file_icon = 'fa-file-alt' %}
+            {% endif %}
+            
+            <div class="workorder-card {{ file_class }}">
+                <div class="file-type-indicator"></div>
+                <div class="workorder-header">
+                    <span class="workorder-id">
+                        <i class="fas fa-print"></i> Order {{ loop.index }}
+                    </span>
+                    <span class="workorder-amount">
+                        <span class="currency">Kshs </span>{{ "%.2f"|format(amount) }}
+                    </span>
+                </div>
+
+                <div class="workorder-body">
+                    <div class="workorder-info">
+                        <div class="file-name-row">
+                            <i class="fas {{ file_icon }} file-icon"></i>
+                            <span class="file-name">{{ file_name }}</span>
+                            <span class="file-extension">{{ extension if extension else 'file' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Pages</span>
+                            <span class="value">{{ page_count if page_count is not none else 'N/A' }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Created</span>
+                            <span class="timestamp">{{ time_ago(workorder.created_at) }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Status</span>
+                            <span class="status-badge {{ status_class }}">
+                                <span class="status-circle"></span>
+                                {{ status }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="workorder-footer">
+                    <a href="/orders/{{ workorder.uuid }}" class="btn-view">
+                        <i class="fas fa-arrow-right"></i>
+                        <span>Print Document</span>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-print"></i>
+            <h3>No Print Jobs Found</h3>
+            <p>There are no print jobs available to display.</p>
+        </div>
+        {% endif %}
+    </div>
 </body>
 </html>
