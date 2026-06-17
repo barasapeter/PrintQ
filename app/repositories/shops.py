@@ -43,4 +43,7 @@ class ShopRepository:
         flag_modified(shop, "properties")
         await self.session.commit()
         await self.session.refresh(shop)
-        return {"detail": "Print preferences updated successfully"}
+        return {
+            "detail": "Print preferences updated successfully",
+            "properties": shop.properties,
+        }

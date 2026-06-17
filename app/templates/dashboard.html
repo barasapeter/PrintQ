@@ -1167,13 +1167,7 @@
         }
 
         function addPrintJobToTop(printjob) {
-            if (printjobEmpty) {
-                printjobEmpty.remove();
-            }
-            var card = createPrintJobCard(printjob);
-            printjobsGrid.insertBefore(card, printjobsGrid.firstChild);
-            var currentCount = parseInt(printjobsCount.textContent) || 0;
-            printjobsCount.textContent = currentCount + 1;
+            
         }
 
         function updateFileSelectedUI(file) {

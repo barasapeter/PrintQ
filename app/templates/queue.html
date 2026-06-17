@@ -14,7 +14,7 @@
 
         body {
             background: #f5f6f8;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             padding: 2rem;
             min-height: 100vh;
         }
@@ -137,15 +137,33 @@
             flex-shrink: 0;
         }
 
-        .status-dot.uploaded { background: #757575; }
-        .status-dot.awaiting-payment { background: #ffa726; }
-        .status-dot.paid { background: #66bb6a; }
-        .status-dot.queued { background: #42a5f5; }
-        .status-dot.printing { background: #ab47bc; }
-        .status-dot.printed { background: #26c6da; }
-        .status-dot.ready-for-pickup { background: #ffa726; }
-        .status-dot.completed { background: #43a047; }
-        .status-dot.payment-failed { background: #ef5350; }
+        .status-dot.uploaded {
+            background: #757575;
+        }
+        .status-dot.awaiting-payment {
+            background: #ffa726;
+        }
+        .status-dot.paid {
+            background: #66bb6a;
+        }
+        .status-dot.queued {
+            background: #42a5f5;
+        }
+        .status-dot.printing {
+            background: #ab47bc;
+        }
+        .status-dot.printed {
+            background: #26c6da;
+        }
+        .status-dot.ready-for-pickup {
+            background: #ffa726;
+        }
+        .status-dot.completed {
+            background: #43a047;
+        }
+        .status-dot.payment-failed {
+            background: #ef5350;
+        }
 
         .status-label {
             font-weight: 500;
@@ -171,7 +189,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            cursor: pointer;
+            cursor: default;
             user-select: none;
             padding: 0.25rem 0;
         }
@@ -385,31 +403,36 @@
             background: #e53935;
         }
 
+        .discount-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 0.15rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 1rem;
             }
-
             .grid-2col {
                 grid-template-columns: 1fr;
                 gap: 1rem;
             }
-
             .settings-row {
                 grid-template-columns: 1fr;
                 gap: 0.75rem;
             }
-
             .doc-status {
                 flex-wrap: wrap;
             }
-
             .status-time {
                 margin-left: 0;
                 width: 100%;
                 justify-content: flex-start;
             }
-
             .toast-message {
                 white-space: normal;
                 max-width: 90%;
@@ -422,11 +445,9 @@
             .doc-name {
                 font-size: 0.9rem;
             }
-
             .card {
                 padding: 1rem;
             }
-
             .cost-total-value {
                 font-size: 1.1rem;
             }
@@ -434,385 +455,453 @@
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="grid-2col">
-        <div class="card">
-            <div class="card-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                </svg>
-                Document Details
+    <div class="container">
+        <div class="grid-2col">
+            <div class="card">
+                <div class="card-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    Document Details
+                </div>
+                <div class="doc-preview">
+                    {% if printjob.preview_image_url %}
+                    <img src="{{ printjob.preview_image_url }}" alt="Document preview">
+                    {% else %}
+                    <div class="doc-preview-placeholder">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 6 2 18 2 18 9"/>
+                            <path d="M18 9H6"/>
+                            <path d="M18 9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/>
+                            <rect x="10" y="13" width="4" height="4"/>
+                        </svg>
+                        <div style="font-size:0.875rem;">No preview available</div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="doc-info">
+                    {% set filename = printjob.properties.get("file_metadata", {}).get("filename", "document.pdf") %}
+                    {% set name_parts = filename.rsplit('.', 1) %}
+                    {% set name = name_parts[0] if name_parts|length > 1 else filename %}
+                    {% set ext = '.' + name_parts[1] if name_parts|length > 1 else '' %}
+                    <div class="doc-name">
+                        {{ name }}
+                        <span class="ext">{{ ext }}</span>
+                    </div>
+                    <div class="doc-meta">
+                        <span class="doc-meta-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            {{ format_file_size(printjob.properties.get("file_metadata", {}).get("filesize", 0)) }}
+                        </span>
+                        <span class="doc-meta-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            <span id="pageCountDisplay">{{ printjob.properties.get("file_metadata", {}).get("page_count", 1) }}</span> pages
+                        </span>
+                        <span class="doc-meta-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                            {{ printjob.created_at|time_ago }}
+                        </span>
+                    </div>
+                </div>
+                <div class="doc-status">
+                    <span class="status-dot {{ printjob.properties.get("status", "uploaded")|lower|replace(' ', '-') }}"></span>
+                    <span class="status-label">{{ printjob.properties.get("status", "Uploaded") }}</span>
+                    {% if printjob.updated_at and printjob.updated_at != printjob.created_at %}
+                    <span class="status-time">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                        Updated {{ printjob.updated_at|time_ago }}
+                    </span>
+                    {% endif %}
+                </div>
             </div>
 
-            <div class="doc-preview">
-                {% if printjob.preview_image_url %}
-                <img src="{{ printjob.preview_image_url }}" alt="Document preview">
-                {% else %}
-                <div class="doc-preview-placeholder">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v4"/>
+                        <path d="M12 19v4"/>
+                        <path d="M4.22 4.22l2.83 2.83"/>
+                        <path d="M16.95 16.95l2.83 2.83"/>
+                        <path d="M1 12h4"/>
+                        <path d="M19 12h4"/>
+                        <path d="M4.22 19.78l2.83-2.83"/>
+                        <path d="M16.95 7.05l2.83-2.83"/>
+                    </svg>
+                    Print Settings
+                    <span style="font-weight:400;font-size:0.75rem;color:#9ca3af;margin-left:auto;">Real‑time update</span>
+                </div>
+                <div class="settings-toggle" id="settingsToggle">
+                    <span class="settings-toggle-text">Customize print settings</span>
+                    <span class="settings-toggle-icon" id="settingsToggleIcon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </span>
+                </div>
+                <div class="settings-content closed" id="settingsContent">
+                    <div class="settings-group">
+                        <label class="settings-label" for="pageSize">Page Size <span class="default-badge">Default: A4</span></label>
+                        <select class="settings-control" id="pageSize">
+                            <option value="A4">A4</option>
+                            <option value="Letter">Letter</option>
+                        </select>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label" for="colorMode">Color Mode <span class="default-badge">Default: Color</span></label>
+                        <select class="settings-control" id="colorMode">
+                            <option value="color">Color</option>
+                            <option value="bw">Black &amp; White</option>
+                        </select>
+                    </div>
+                    <div class="settings-row">
+                        <div class="settings-group">
+                            <label class="settings-label" for="copies">Copies <span class="default-badge">Default: 1</span></label>
+                            <input class="settings-control" type="number" id="copies" value="1" min="1">
+                        </div>
+                        <div class="settings-group">
+                            <label class="settings-label" for="pageRange">Page Range <span class="default-badge">Default: All</span></label>
+                            <input class="settings-control" type="text" id="pageRange" placeholder="e.g. 1,3,5-8" value="All">
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label" for="orientation">Orientation <span class="default-badge">Default: Portrait</span></label>
+                        <select class="settings-control" id="orientation">
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
+                        </select>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label" for="paperType">Paper Type <span class="default-badge">Default: Standard</span></label>
+                        <select class="settings-control" id="paperType">
+                            <option value="standard">Standard</option>
+                            <option value="premium">Premium</option>
+                            <option value="glossy">Glossy</option>
+                        </select>
+                    </div>
+                    <div class="settings-group">
+                        <label class="settings-label" for="binding">Binding / Stapling <span class="default-badge">Default: Stapled</span></label>
+                        <select class="settings-control" id="binding">
+                            <option value="stapled">Stapled</option>
+                            <option value="spiral">Spiral</option>
+                            <option value="tape">Tape</option>
+                            <option value="none">None</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-title">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                    Cost Summary
+                    <span id="discountBadge" class="discount-badge" style="display:none;">10% off</span>
+                </div>
+                <div class="cost-breakdown">
+                    <div class="cost-item">
+                        <span class="cost-label">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                            Pages
+                        </span>
+                        <span class="cost-value" id="pageCountCost">{{ printjob.properties.get("file_metadata", {}).get("page_count", 1) }}</span>
+                    </div>
+                    <div class="cost-item">
+                        <span class="cost-label">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                            </svg>
+                            Copies
+                        </span>
+                        <span class="cost-value" id="copyCount">1</span>
+                    </div>
+                    <div class="cost-item">
+                        <span class="cost-label">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M12 1v4"/>
+                                <path d="M12 19v4"/>
+                                <path d="M4.22 4.22l2.83 2.83"/>
+                                <path d="M16.95 16.95l2.83 2.83"/>
+                                <path d="M1 12h4"/>
+                                <path d="M19 12h4"/>
+                                <path d="M4.22 19.78l2.83-2.83"/>
+                                <path d="M16.95 7.05l2.83-2.83"/>
+                            </svg>
+                            Cost per page
+                        </span>
+                        <span class="cost-value" id="costPerPage">Kshs 5.00</span>
+                    </div>
+                    <div class="cost-item" id="bindingCostRow" style="display:none;">
+                        <span class="cost-label">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                                <path d="M2 17l10 5 10-5"/>
+                                <path d="M2 12l10 5 10-5"/>
+                            </svg>
+                            Binding (<span id="bindingUnits">1</span>)
+                        </span>
+                        <span class="cost-value" id="bindingCost">Kshs 0.00</span>
+                    </div>
+                    <div class="cost-item" id="discountRow" style="display:none;">
+                        <span class="cost-label">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 12L4 12"/>
+                                <path d="M12 4v16"/>
+                            </svg>
+                            Discount
+                        </span>
+                        <span class="cost-value" id="discountAmount">-Kshs 0.00</span>
+                    </div>
+                    <div class="cost-total">
+                        <span class="cost-total-label">Total</span>
+                        <span class="cost-total-value" id="totalCost">Kshs 40.00</span>
+                    </div>
+                </div>
+                <button class="btn-primary" id="pushToQueueBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 6 2 18 2 18 9"/>
                         <path d="M18 9H6"/>
                         <path d="M18 9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/>
                         <rect x="10" y="13" width="4" height="4"/>
                     </svg>
-                    <div style="font-size:0.875rem;">No preview available</div>
-                </div>
-                {% endif %}
+                    Push to Queue
+                </button>
             </div>
-
-            <div class="doc-info">
-                {% set filename = printjob.properties["file_metadata"]["filename"] %}
-                {% set name_parts = filename.rsplit('.', 1) %}
-                {% set name = name_parts[0] if name_parts|length > 1 else filename %}
-                {% set ext = '.' + name_parts[1] if name_parts|length > 1 else '' %}
-                <div class="doc-name">
-                    {{ name }}
-                    <span class="ext">{{ ext }}</span>
-                </div>
-                <div class="doc-meta">
-                    <span class="doc-meta-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="17 8 12 3 7 8"/>
-                            <line x1="12" y1="3" x2="12" y2="15"/>
-                        </svg>
-                        {{ format_file_size(printjob.properties["file_metadata"]["filesize"]) }}
-                    </span>
-                    <span class="doc-meta-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                            <line x1="16" y1="13" x2="8" y2="13"/>
-                            <line x1="16" y1="17" x2="8" y2="17"/>
-                        </svg>
-                        {{ printjob.properties["file_metadata"]["page_count"] }} pages
-                    </span>
-                    <span class="doc-meta-item">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"/>
-                            <polyline points="12 6 12 12 16 14"/>
-                        </svg>
-                        {{ printjob.created_at|time_ago }}
-                    </span>
-                </div>
-            </div>
-
-            <div class="doc-status">
-                <span class="status-dot {{ printjob.properties["status"]|lower|replace(' ', '-') }}"></span>
-                <span class="status-label">{{ printjob.properties["status"] }}</span>
-                {% if printjob.updated_at and printjob.updated_at != printjob.created_at %}
-                <span class="status-time">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    Updated {{ printjob.updated_at|time_ago }}
-                </span>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-                </svg>
-                Shop Information
-            </div>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
-                <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:#6b7280;padding:0.5rem 0.75rem;background:#f9fafb;border-radius:0.5rem;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-                    </svg>
-                    <strong>PrintQ Express</strong>
-                </div>
-                <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:#6b7280;padding:0.5rem 0.75rem;background:#f9fafb;border-radius:0.5rem;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <polyline points="12 6 12 12 16 14"/>
-                    </svg>
-                    <span style="display:inline-flex;align-items:center;gap:0.375rem;font-size:0.7rem;font-weight:500;padding:0.15rem 0.6rem;border-radius:9999px;background:#e8f5e9;color:#2e7d32;">
-                        <span style="width:5px;height:5px;border-radius:50%;display:inline-block;background:#43a047;"></span>
-                        Open
-                    </span>
-                </div>
-                <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:#6b7280;padding:0.5rem 0.75rem;background:#f9fafb;border-radius:0.5rem;grid-column:1/2;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                        <circle cx="12" cy="10" r="3"/>
-                    </svg>
-                    123 Main Street, Downtown
-                </div>
-                <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;color:#6b7280;padding:0.5rem 0.75rem;background:#f9fafb;border-radius:0.5rem;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="17 8 12 3 7 8"/>
-                        <line x1="12" y1="3" x2="12" y2="15"/>
-                    </svg>
-                    <strong>{{ printjobs|length if printjobs else 0 }}</strong> jobs today
-                </div>
-            </div>
-        </div>
-
-        <div class="card" style="grid-column: 1 / -1;">
-            <div class="card-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="3"/>
-                    <path d="M12 1v4"/>
-                    <path d="M12 19v4"/>
-                    <path d="M4.22 4.22l2.83 2.83"/>
-                    <path d="M16.95 16.95l2.83 2.83"/>
-                    <path d="M1 12h4"/>
-                    <path d="M19 12h4"/>
-                    <path d="M4.22 19.78l2.83-2.83"/>
-                    <path d="M16.95 7.05l2.83-2.83"/>
-                </svg>
-                Print Settings
-                <span style="font-weight:400;font-size:0.75rem;color:#9ca3af;margin-left:auto;">Defaults applied</span>
-            </div>
-
-            <div class="settings-toggle" id="settingsToggle">
-                <span class="settings-toggle-text">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"/>
-                    </svg>
-                    Customize print settings
-                </span>
-                <span class="settings-toggle-icon" id="settingsToggleIcon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 12 15 18 9"/>
-                    </svg>
-                </span>
-            </div>
-
-            <div class="settings-content" id="settingsContent">
-                <div class="settings-group">
-                    <label class="settings-label" for="pageSize">Page Size <span class="default-badge">Default: A4</span></label>
-                    <select class="settings-control" id="pageSize">
-                        <option value="A4" selected>A4</option>
-                        <option value="A3">A3</option>
-                        <option value="Letter">Letter</option>
-                        <option value="Legal">Legal</option>
-                    </select>
-                </div>
-
-                <div class="settings-group">
-                    <label class="settings-label" for="colorMode">Color Mode <span class="default-badge">Default: Black &amp; White</span></label>
-                    <select class="settings-control" id="colorMode">
-                        <option value="bw" selected>Black &amp; White</option>
-                        <option value="color">Color</option>
-                    </select>
-                </div>
-
-                <div class="settings-row">
-                    <div class="settings-group">
-                        <label class="settings-label" for="copies">Copies <span class="default-badge">Default: 1</span></label>
-                        <input class="settings-control" type="number" id="copies" value="1" min="1" max="99">
-                    </div>
-                    <div class="settings-group">
-                        <label class="settings-label" for="pageRange">Page Range <span class="default-badge">Default: All</span></label>
-                        <input class="settings-control" type="text" id="pageRange" placeholder="e.g. 1,3,5-8" value="All">
-                    </div>
-                </div>
-
-                <div class="settings-group">
-                    <label class="settings-label" for="orientation">Orientation <span class="default-badge">Default: Portrait</span></label>
-                    <select class="settings-control" id="orientation">
-                        <option value="portrait" selected>Portrait</option>
-                        <option value="landscape">Landscape</option>
-                    </select>
-                </div>
-
-                <div class="settings-group">
-                    <label class="settings-label" for="paperType">Paper Type <span class="default-badge">Default: Standard</span></label>
-                    <select class="settings-control" id="paperType">
-                        <option value="standard" selected>Standard</option>
-                        <option value="premium">Premium</option>
-                        <option value="glossy">Glossy</option>
-                    </select>
-                </div>
-
-                <div class="settings-group">
-                    <label class="settings-label" for="binding">Binding / Stapling <span class="default-badge">Default: Stapled</span></label>
-                    <select class="settings-control" id="binding">
-                        <option value="stapled" selected>Stapled</option>
-                        <option value="bind">Bind</option>
-                        <option value="none">None</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="card" style="grid-column: 1 / -1;">
-            <div class="card-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"/>
-                    <path d="M12 6v6l4 2"/>
-                </svg>
-                Cost Summary
-            </div>
-
-            <div class="cost-breakdown">
-                <div class="cost-item">
-                    <span class="cost-label">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                            <line x1="16" y1="13" x2="8" y2="13"/>
-                            <line x1="16" y1="17" x2="8" y2="17"/>
-                        </svg>
-                        Pages
-                    </span>
-                    <span class="cost-value">{{ printjob.properties["file_metadata"]["page_count"] }}</span>
-                </div>
-                <div class="cost-item">
-                    <span class="cost-label">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-                        </svg>
-                        Copies
-                    </span>
-                    <span class="cost-value" id="copyCount">1</span>
-                </div>
-                <div class="cost-item">
-                    <span class="cost-label">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="3"/>
-                            <path d="M12 1v4"/>
-                            <path d="M12 19v4"/>
-                            <path d="M4.22 4.22l2.83 2.83"/>
-                            <path d="M16.95 16.95l2.83 2.83"/>
-                            <path d="M1 12h4"/>
-                            <path d="M19 12h4"/>
-                            <path d="M4.22 19.78l2.83-2.83"/>
-                            <path d="M16.95 7.05l2.83-2.83"/>
-                        </svg>
-                        Cost per page
-                    </span>
-                    <span class="cost-value" id="costPerPage">$0.10</span>
-                </div>
-                <div class="cost-total">
-                    <span class="cost-total-label">Total</span>
-                    <span class="cost-total-value" id="totalCost">$0.10</span>
-                </div>
-            </div>
-
-            <button class="btn-primary" id="pushToQueueBtn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 6 2 18 2 18 9"/>
-                    <path d="M18 9H6"/>
-                    <path d="M18 9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/>
-                    <rect x="10" y="13" width="4" height="4"/>
-                </svg>
-                Push to Queue
-            </button>
         </div>
     </div>
-</div>
 
-<div id="toast" class="toast-message"></div>
+    <div id="toast" class="toast-message"></div>
 
-<script>
-    (function() {
-        var settingsToggle = document.getElementById('settingsToggle');
-        var settingsContent = document.getElementById('settingsContent');
-        var settingsToggleIcon = document.getElementById('settingsToggleIcon');
-        var copiesInput = document.getElementById('copies');
-        var copyCount = document.getElementById('copyCount');
-        var colorMode = document.getElementById('colorMode');
-        var costPerPageEl = document.getElementById('costPerPage');
-        var totalCostEl = document.getElementById('totalCost');
-        var pushToQueueBtn = document.getElementById('pushToQueueBtn');
-        var toast = document.getElementById('toast');
+    <script>
+        (function() {
+            const tariff = JSON.parse('{{ tariff | tojson | safe }}');
 
-        var pageCount = parseInt('{{ printjob.properties["file_metadata"]["page_count"]|default(1) }}') || 1;
-        var costPerPageBW = parseFloat('{{ printjob.properties.get("cost_per_page_on_upload_bw", 0.10)|default(0.10) }}') || 0.10;
-        var costPerPageColor = parseFloat('{{ printjob.properties.get("cost_per_page_on_upload_color", 0.25)|default(0.25) }}') || 0.25;
+            const pageSize = document.getElementById('pageSize');
+            const colorMode = document.getElementById('colorMode');
+            const copiesInput = document.getElementById('copies');
+            const pageRange = document.getElementById('pageRange');
+            const orientation = document.getElementById('orientation');
+            const paperType = document.getElementById('paperType');
+            const bindingSelect = document.getElementById('binding');
 
-        var settingsExpanded = false;
+            const pageCountDisplay = document.getElementById('pageCountDisplay');
+            const pageCountCost = document.getElementById('pageCountCost');
+            const copyCount = document.getElementById('copyCount');
+            const costPerPageEl = document.getElementById('costPerPage');
+            const totalCostEl = document.getElementById('totalCost');
+            const bindingCostRow = document.getElementById('bindingCostRow');
+            const bindingCost = document.getElementById('bindingCost');
+            const bindingUnits = document.getElementById('bindingUnits');
+            const discountRow = document.getElementById('discountRow');
+            const discountAmount = document.getElementById('discountAmount');
+            const discountBadge = document.getElementById('discountBadge');
 
-        settingsToggle.addEventListener('click', function() {
-            settingsExpanded = !settingsExpanded;
-            settingsContent.classList.toggle('expanded');
-            settingsToggleIcon.classList.toggle('expanded');
-        });
+            const toast = document.getElementById('toast');
+            const pushBtn = document.getElementById('pushToQueueBtn');
 
-        function showToast(message, type) {
-            toast.textContent = message;
-            toast.className = 'toast-message';
-            if (type === 'success') {
-                toast.classList.add('success');
-            } else if (type === 'error') {
-                toast.classList.add('error');
+            const settingsToggle = document.getElementById('settingsToggle');
+            const settingsContent = document.getElementById('settingsContent');
+            const settingsToggleIcon = document.getElementById('settingsToggleIcon');
+            let settingsExpanded = true;
+
+            settingsToggle.addEventListener('click', function() {
+                settingsExpanded = !settingsExpanded;
+                settingsContent.classList.toggle('expanded');
+                settingsToggleIcon.classList.toggle('expanded');
+            });
+
+            function showToast(msg, type) {
+                toast.textContent = msg;
+                toast.className = 'toast-message';
+                if (type === 'success') toast.classList.add('success');
+                if (type === 'error') toast.classList.add('error');
+                toast.classList.add('show');
+                clearTimeout(window.toastTimer);
+                window.toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
             }
-            toast.classList.add('show');
-            setTimeout(function() {
-                toast.classList.remove('show');
-            }, 3000);
-        }
 
-        function updateCost() {
-            var copies = parseInt(copiesInput.value) || 1;
-            if (copies < 1) copies = 1;
-            if (copies > 99) copies = 99;
-            copiesInput.value = copies;
-            copyCount.textContent = copies;
+            const initialPageCount = parseInt('{{ printjob.properties.get("file_metadata", {}).get("page_count", 1) }}') || 1;
 
-            var isColor = colorMode.value === 'color';
-            var costPerPage = isColor ? costPerPageColor : costPerPageBW;
-            costPerPageEl.textContent = '$' + costPerPage.toFixed(2);
+            function updateCost() {
+                let totalPages = initialPageCount;
+                const rangeVal = pageRange.value.trim();
+                if (rangeVal && rangeVal !== 'All') {
+                    const numbers = rangeVal.match(/\d+/g);
+                    if (numbers) {
+                        totalPages = numbers.reduce((sum, n) => sum + parseInt(n, 10), 0);
+                    } else {
+                        totalPages = initialPageCount;
+                    }
+                }
+                if (totalPages < 1) totalPages = 1;
+                pageCountDisplay.textContent = totalPages;
+                pageCountCost.textContent = totalPages;
 
-            var total = costPerPage * pageCount * copies;
-            totalCostEl.textContent = '$' + total.toFixed(2);
-        }
+                let copies = parseInt(copiesInput.value, 10) || 1;
+                if (copies < 1) copies = 1;
+                if (copies > 99) copies = 99;
+                copiesInput.value = copies;
+                copyCount.textContent = copies;
 
-        copiesInput.addEventListener('input', updateCost);
-        colorMode.addEventListener('change', updateCost);
+                const isColor = colorMode.value === 'color';
+                const costPerPage = isColor ? tariff.cost_per_page_color : tariff.cost_per_page_bw;
+                costPerPageEl.textContent = 'Kshs ' + costPerPage.toFixed(2);
 
-        updateCost();
+                const bindType = bindingSelect.value;
+                let bindCostPerUnit = 0;
+                const costs = tariff.binding.costs;
+                if (bindType === 'stapled') bindCostPerUnit = costs.staple || 0;
+                else if (bindType === 'spiral') bindCostPerUnit = costs.spiral || 0;
+                else if (bindType === 'tape') bindCostPerUnit = costs.tape || 0;
+                else bindCostPerUnit = 0;
 
-        pushToQueueBtn.addEventListener('click', function() {
-            var settings = {
-                page_size: document.getElementById('pageSize').value,
-                color_mode: document.getElementById('colorMode').value,
-                copies: parseInt(document.getElementById('copies').value) || 1,
-                page_range: document.getElementById('pageRange').value,
-                orientation: document.getElementById('orientation').value,
-                paper_type: document.getElementById('paperType').value,
-                binding: document.getElementById('binding').value
-            };
+                const bindingUnitsCount = copies;
+                const totalBindCost = bindCostPerUnit * bindingUnitsCount;
 
-            console.log('Print settings:', settings);
-            showToast('Document pushed to queue successfully!', 'success');
+                if (bindType !== 'none') {
+                    bindingCostRow.style.display = 'flex';
+                    bindingUnits.textContent = bindingUnitsCount;
+                    bindingCost.textContent = 'Kshs ' + totalBindCost.toFixed(2);
+                } else {
+                    bindingCostRow.style.display = 'none';
+                }
 
-            setTimeout(function() {
-                console.log('POST to /api/queue with:', {
-                    printjob_uuid: '{{ printjob.uuid }}',
-                    shop_uuid: '{{ printjob.shop_uuid|default("dummy-shop-uuid") }}',
-                    settings: settings
+                let subtotal = totalPages * copies * costPerPage;
+                let total = subtotal + totalBindCost;
+
+                const discount = tariff.discount;
+                let discountAmountValue = 0;
+                let discountApplied = false;
+
+                if (discount.enabled && totalPages >= discount.min_pages) {
+                    const applyTo = discount.apply_to;
+                    if (applyTo === 'both') {
+                        discountAmountValue = (total * discount.percent) / 100;
+                    } else if (applyTo === 'pages') {
+                        const pageCost = totalPages * copies * costPerPage;
+                        discountAmountValue = (pageCost * discount.percent) / 100;
+                    } else if (applyTo === 'binding') {
+                        discountAmountValue = (totalBindCost * discount.percent) / 100;
+                    }
+                    discountAmountValue = Math.min(discountAmountValue, total);
+                    discountApplied = true;
+                    total = total - discountAmountValue;
+                }
+
+                if (discountApplied && discountAmountValue > 0.01) {
+                    discountRow.style.display = 'flex';
+                    discountAmount.textContent = '-Kshs ' + discountAmountValue.toFixed(2);
+                    discountBadge.style.display = 'inline';
+                    discountBadge.textContent = discount.percent + '% off';
+                } else {
+                    discountRow.style.display = 'none';
+                    discountBadge.style.display = 'none';
+                }
+
+                totalCostEl.textContent = 'Kshs ' + total.toFixed(2);
+                window._lastTotal = total;
+            }
+
+            const inputs = [pageSize, colorMode, copiesInput, pageRange, orientation, paperType, bindingSelect];
+            inputs.forEach(el => el.addEventListener('input', updateCost));
+            inputs.forEach(el => el.addEventListener('change', updateCost));
+
+            copiesInput.addEventListener('blur', function() {
+                let val = parseInt(this.value, 10) || 1;
+                if (val < 1) val = 1;
+                if (val > 99) val = 99;
+                this.value = val;
+                updateCost();
+            });
+
+            function syncPageSizes() {
+                const allowed = tariff.paper_sizes || ['A4', 'Letter'];
+                const current = pageSize.value;
+                pageSize.innerHTML = '';
+                allowed.forEach(size => {
+                    const opt = document.createElement('option');
+                    opt.value = size;
+                    opt.textContent = size;
+                    if (size === current) opt.selected = true;
+                    pageSize.appendChild(opt);
                 });
-            }, 500);
-        });
+                if (!allowed.includes(current) && allowed.length) pageSize.value = allowed[0];
+            }
+            syncPageSizes();
 
-        window.getSettings = function() {
-            return {
-                page_size: document.getElementById('pageSize').value,
-                color_mode: document.getElementById('colorMode').value,
-                copies: parseInt(document.getElementById('copies').value) || 1,
-                page_range: document.getElementById('pageRange').value,
-                orientation: document.getElementById('orientation').value,
-                paper_type: document.getElementById('paperType').value,
-                binding: document.getElementById('binding').value
-            };
-        };
-    })();
-</script>
+            function syncBindingOptions() {
+                const costs = tariff.binding.costs || {};
+                const keys = Object.keys(costs);
+                const current = bindingSelect.value;
+                bindingSelect.innerHTML = '';
+                const noneOpt = document.createElement('option');
+                noneOpt.value = 'none';
+                noneOpt.textContent = 'None';
+                bindingSelect.appendChild(noneOpt);
+                keys.forEach(key => {
+                    const opt = document.createElement('option');
+                    opt.value = key;
+                    opt.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+                    if (key === current) opt.selected = true;
+                    bindingSelect.appendChild(opt);
+                });
+                if (!keys.includes(current) && current !== 'none') bindingSelect.value = 'none';
+            }
+            syncBindingOptions();
+
+            updateCost();
+
+            pushBtn.addEventListener('click', function() {
+                const settings = {
+                    page_size: pageSize.value,
+                    color_mode: colorMode.value,
+                    copies: parseInt(copiesInput.value, 10) || 1,
+                    page_range: pageRange.value,
+                    orientation: orientation.value,
+                    paper_type: paperType.value,
+                    binding: bindingSelect.value,
+                };
+                console.log('Print settings:', settings);
+                showToast('Document pushed to queue successfully!', 'success');
+                setTimeout(() => {
+                    console.log('POST /api/queue with:', {
+                        printjob_uuid: '{{ printjob.uuid }}',
+                        shop_uuid: '{{ printjob.shop_uuid|default("dummy-shop-uuid") }}',
+                        settings: settings,
+                        total_cost: window._lastTotal || 0,
+                    });
+                }, 300);
+            });
+
+            window.updateCost = updateCost;
+        })();
+    </script>
 </body>
 </html>

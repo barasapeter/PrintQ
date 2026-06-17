@@ -3,9 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import PrintJob
 from app.schemas.workorder import PrintJobCreate
+from app.services.shops import ShopService
 from app.core.storage import FileStorage
 from typing import Union, IO
 from pathlib import Path
+from fastapi import HTTPException
 
 from fastapi import UploadFile
 from app.core.pages import count_pages
@@ -78,6 +80,11 @@ class PrintJobRepository:
             "page_count": count_pages(saved_path),
         }
 
+        shop_service = ShopService(self.session)
+        shop = await shop_service.get(payload.shop_uuid)
+        if not shop:
+            raise HTTPException(f"Shop {payload.shop_uuid} does not exist")
+
         printjob = PrintJob(**payload.model_dump())
         printjob.properties["status"] = "Uploaded"
         # Sequence of statuses:
@@ -97,6 +104,24 @@ class PrintJobRepository:
         #     ↓
         #     Completed
         printjob.properties["file_metadata"] = file_metadata
+        printjob.properties["tariffs"] = shop.properties.get(
+            "print_preferences",
+            {
+                "cost_per_page_bw": 5,
+                "cost_per_page_color": 10,
+                "binding": {
+                    "type": "staple",
+                    "costs": {"staple": 0, "spiral": 50, "tape": 30},
+                },
+                "discount": {
+                    "enabled": False,
+                    "min_pages": 20,
+                    "percent": 10,
+                    "apply_to": "both",
+                },
+                "paper_sizes": ["A4", "Letter"],
+            },
+        )
         self.session.add(printjob)
         await self.session.commit()
         await self.session.refresh(printjob)

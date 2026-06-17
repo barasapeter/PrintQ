@@ -36,9 +36,11 @@ async def index(
     printjob.filetype = validate_document(
         printjob.properties["file_metadata"]["filepath"]
     )
-    printjob.preview_image_url = (
-        "https://pbs.twimg.com/media/HK86MFXXkAAjq8J?format=jpg&name=small"
-    )
+    # printjob.preview_image_url = (
+    #     "https://pbs.twimg.com/media/HK86MFXXkAAjq8J?format=jpg&name=small"
+    # )
+    shop_service = ShopService(db)
+    shop = await shop_service.get(str(printjob.shop_uuid))
 
     return templates.TemplateResponse(
         "queue.html",
@@ -48,5 +50,7 @@ async def index(
             "format_file_size": format_file_size,
             "get_file_icon": get_file_icon,
             "time_ago": time_ago,
+            "shop": shop,
+            "tariff": printjob.properties.get("tariffs"),
         },
     )
