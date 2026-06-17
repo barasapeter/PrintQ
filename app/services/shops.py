@@ -30,3 +30,6 @@ class ShopService:
             raise ValueError("System shop capacity reached")
 
         return await self.repository.create(payload)
+
+    async def update_settings(self, shop_uuid: str, payload: dict) -> dict:
+        return await self.repository.update_settings(shop_uuid, payload)

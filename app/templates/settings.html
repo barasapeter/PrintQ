@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <title>Settings - Print Vendor</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f1f5f9;
+            --panel: #ffffff;
+            --text: #0f172a;
+            --muted: #475569;
+            --border: #e2e8f0;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #22c55e;
+            --error: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.55;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .container {
+            width: min(900px, 100%);
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .top-bar h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-bar h1 i {
+            color: var(--accent);
+        }
+
+        .paper-note {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .paper-note i {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .paper-note strong {
+            font-weight: 600;
+        }
+
+        .settings-card {
+            background: var(--panel);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            margin-bottom: 24px;
+        }
+
+        .settings-card h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-card h2 i {
+            color: var(--accent);
+            width: 20px;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .settings-grid .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-group label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .field-group label .required {
+            color: var(--error);
+            font-size: 1rem;
+        }
+
+        .field-group .hint {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .field-group input,
+        .field-group select {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            color: var(--text);
+            background: white;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            width: 100%;
+        }
+
+        .field-group input:focus,
+        .field-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+        }
+
+        .field-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .field-group input[type="number"]::-webkit-inner-spin-button,
+        .field-group input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .field-group .input-with-suffix {
+            position: relative;
+        }
+
+        .field-group .input-with-suffix input {
+            padding-right: 40px;
+        }
+
+        .field-group .input-with-suffix .suffix {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .binding-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        .binding-option {
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: white;
+            position: relative;
+        }
+
+        .binding-option:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .binding-option.selected {
+            border-color: var(--accent);
+            background: #eff6ff;
+        }
+
+        .binding-option .binding-icon {
+            font-size: 1.5rem;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .binding-option.selected .binding-icon {
+            color: var(--accent);
+        }
+
+        .binding-option .binding-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+
+        .binding-option .binding-cost {
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .binding-option .binding-cost input {
+            width: 70px;
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.8rem;
+            text-align: center;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .binding-option .binding-cost input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .binding-option .binding-free {
+            font-size: 0.7rem;
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .discount-section {
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            margin-top: 8px;
+        }
+
+        .discount-toggle {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #cbd5e1;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--accent);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+        .discount-fields {
+            display: none;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .discount-fields.active {
+            display: grid;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        .btn-primary {
+            padding: 12px 28px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s ease;
+            font-family: inherit;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .toast-message {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(-1rem);
+            background: #1a1a1a;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+            white-space: nowrap;
+        }
+
+        .toast-message.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast-message.success {
+            background: var(--success);
+        }
+
+        .toast-message.error {
+            background: var(--error);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            .settings-card {
+                padding: 20px;
+            }
+
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .binding-options {
+                grid-template-columns: 1fr;
+            }
+
+            .discount-fields {
+                grid-template-columns: 1fr;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-primary {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .top-bar h1 {
+                font-size: 1.4rem;
+            }
+
+            .binding-option {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 16px;
+            }
+
+            .binding-option .binding-icon {
+                margin-bottom: 0;
+            }
+
+            .binding-option .binding-cost input {
+                width: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <h1>
+                <i class="fas fa-cog"></i>
+                Settings
+            </h1>
+        </div>
+
+        <div class="paper-note">
+            <i class="fas fa-info-circle"></i>
+            <span>These settings apply to <strong>A4</strong> and <strong>Letter</strong> sized papers.</span>
+        </div>
+
+        <form id="settingsForm">
+            <div class="settings-card">
+                <h2>
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    Print Pricing
+                </h2>
+                <div class="settings-grid">
+                    <div class="field-group">
+                        <label>
+                            Black & White Cost per Page
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-with-suffix">
+                            <input type="number" id="bwCost" name="bwCost" step="0.01" min="0" value="{{ print_preferences.cost_per_page_bw if print_preferences else 5.00 }}" required>
+                            <span class="suffix">Kshs</span>
+                        </div>
+                        <span class="hint">Cost per page for black & white printing</span>
+                    </div>
+
+                    <div class="field-group">
+                        <label>
+                            Colored Cost per Page
+                            <span class="required">*</span>
+                        </label>
+                        <div class="input-with-suffix">
+                            <input type="number" id="colorCost" name="colorCost" step="0.01" min="0" value="{{ print_preferences.cost_per_page_color if print_preferences else 15.00 }}" required>
+                            <span class="suffix">Kshs</span>
+                        </div>
+                        <span class="hint">Cost per page for colored printing</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h2>
+                    <i class="fas fa-book"></i>
+                    Binding Options
+                </h2>
+                <div class="binding-options" id="bindingOptions">
+                    <div class="binding-option" data-binding="staple">
+                        <div class="binding-icon">
+                            <i class="fas fa-paperclip"></i>
+                        </div>
+                        <div class="binding-name">Staple</div>
+                        <div class="binding-free">Free</div>
+                    </div>
+
+                    <div class="binding-option" data-binding="spiral">
+                        <div class="binding-icon">
+                            <i class="fas fa-circle-notch"></i>
+                        </div>
+                        <div class="binding-name">Spiral</div>
+                        <div class="binding-cost">
+                            <input type="number" id="spiralCost" step="0.01" min="0" value="{{ print_preferences.binding.costs.spiral if print_preferences and print_preferences.binding else 50.00 }}" placeholder="Cost">
+                            <span style="font-size:0.7rem; color:var(--muted);">Kshs</span>
+                        </div>
+                    </div>
+
+                    <div class="binding-option" data-binding="tape">
+                        <div class="binding-icon">
+                            <i class="fas fa-tape"></i>
+                        </div>
+                        <div class="binding-name">Tape</div>
+                        <div class="binding-cost">
+                            <input type="number" id="tapeCost" step="0.01" min="0" value="{{ print_preferences.binding.costs.tape if print_preferences and print_preferences.binding else 30.00 }}" placeholder="Cost">
+                            <span style="font-size:0.7rem; color:var(--muted);">Kshs</span>
+                        </div>
+                    </div>
+                </div>
+                <span class="hint" style="display:block; margin-top:12px;">Select a binding type and set its cost. Staple is always free.</span>
+            </div>
+
+            <div class="settings-card">
+                <h2>
+                    <i class="fas fa-percent"></i>
+                    Bulk Discount
+                </h2>
+                <div class="discount-section">
+                    <div class="discount-toggle">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="discountEnabled" {% if print_preferences and print_preferences.discount and print_preferences.discount.enabled %}checked{% endif %}>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span style="font-weight:500; font-size:0.9rem;">Enable bulk discount</span>
+                    </div>
+
+                    <div class="discount-fields" id="discountFields">
+                        <div class="field-group">
+                            <label>
+                                Min Pages
+                                <span class="required">*</span>
+                            </label>
+                            <input type="number" id="discountMinPages" step="1" min="1" value="{{ print_preferences.discount.min_pages if print_preferences and print_preferences.discount else 20 }}">
+                            <span class="hint">Minimum pages to qualify for discount</span>
+                        </div>
+
+                        <div class="field-group">
+                            <label>
+                                Discount Percentage
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-with-suffix">
+                                <input type="number" id="discountPercent" step="0.5" min="0" max="100" value="{{ print_preferences.discount.percent if print_preferences and print_preferences.discount else 10 }}">
+                                <span class="suffix">%</span>
+                            </div>
+                            <span class="hint">Percentage discount off total cost</span>
+                        </div>
+
+                        <div class="field-group">
+                            <label>
+                                Apply to
+                                <span class="required">*</span>
+                            </label>
+                            <select id="discountApplyTo">
+                                <option value="both" {% if print_preferences and print_preferences.discount and print_preferences.discount.apply_to == 'both' %}selected{% endif %}>Both B&W and Color</option>
+                                <option value="bw" {% if print_preferences and print_preferences.discount and print_preferences.discount.apply_to == 'bw' %}selected{% endif %}>Black & White Only</option>
+                                <option value="color" {% if print_preferences and print_preferences.discount and print_preferences.discount.apply_to == 'color' %}selected{% endif %}>Color Only</option>
+                            </select>
+                            <span class="hint">Which document types get the discount</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="submit" class="btn-primary" id="saveBtn">
+                    <i class="fas fa-save"></i>
+                    Save Settings
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div id="toast" class="toast-message"></div>
+
+    <script>
+        (function() {
+            const form = document.getElementById('settingsForm');
+            const saveBtn = document.getElementById('saveBtn');
+            const toast = document.getElementById('toast');
+            const bindingOptions = document.getElementById('bindingOptions');
+            const discountEnabled = document.getElementById('discountEnabled');
+            const discountFields = document.getElementById('discountFields');
+
+            let isSaving = false;
+            const initialBinding = "{{ print_preferences.binding.type if print_preferences and print_preferences.binding else 'staple' }}";
+
+            function showToast(message, type) {
+                toast.textContent = message;
+                toast.className = 'toast-message';
+                if (type === 'success') {
+                    toast.classList.add('success');
+                } else if (type === 'error') {
+                    toast.classList.add('error');
+                }
+                toast.classList.add('show');
+                setTimeout(function() {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+
+            function getSelectedBinding() {
+                const selected = bindingOptions.querySelector('.binding-option.selected');
+                return selected ? selected.getAttribute('data-binding') : 'staple';
+            }
+
+            function getFormData() {
+                const data = {
+                    cost_per_page_bw: parseFloat(document.getElementById('bwCost').value) || 0,
+                    cost_per_page_color: parseFloat(document.getElementById('colorCost').value) || 0,
+                    binding_type: getSelectedBinding(),
+                    binding_cost_spiral: parseFloat(document.getElementById('spiralCost').value) || 0,
+                    binding_cost_tape: parseFloat(document.getElementById('tapeCost').value) || 0,
+                    discount_enabled: discountEnabled.checked,
+                    discount_min_pages: parseInt(document.getElementById('discountMinPages').value) || 0,
+                    discount_percent: parseFloat(document.getElementById('discountPercent').value) || 0,
+                    discount_apply_to: document.getElementById('discountApplyTo').value
+                };
+                return data;
+            }
+
+            function loadBindingSelection() {
+                document.querySelectorAll('.binding-option').forEach(el => {
+                    const binding = el.getAttribute('data-binding');
+                    el.classList.toggle('selected', binding === initialBinding);
+                });
+            }
+
+            discountEnabled.addEventListener('change', function() {
+                discountFields.classList.toggle('active', this.checked);
+            });
+
+            bindingOptions.addEventListener('click', function(e) {
+                const option = e.target.closest('.binding-option');
+                if (!option) return;
+                
+                const binding = option.getAttribute('data-binding');
+                if (binding === 'staple') {
+                    document.querySelectorAll('.binding-option').forEach(el => {
+                        el.classList.toggle('selected', el === option);
+                    });
+                } else {
+                    const costInput = option.querySelector('input');
+                    if (costInput) {
+                        const cost = parseFloat(costInput.value);
+                        if (!cost || cost <= 0) {
+                            showToast('Please set a valid cost for this binding type', 'error');
+                            return;
+                        }
+                    }
+                    document.querySelectorAll('.binding-option').forEach(el => {
+                        el.classList.toggle('selected', el === option);
+                    });
+                }
+            });
+
+            if (discountEnabled.checked) {
+                discountFields.classList.add('active');
+            }
+
+            loadBindingSelection();
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (isSaving) return;
+                
+                const formData = getFormData();
+                
+                if (formData.cost_per_page_bw < 0) {
+                    showToast('Black & white cost cannot be negative', 'error');
+                    return;
+                }
+                if (formData.cost_per_page_color < 0) {
+                    showToast('Color cost cannot be negative', 'error');
+                    return;
+                }
+                
+                if (formData.binding_type === 'spiral' && formData.binding_cost_spiral <= 0) {
+                    showToast('Please set a valid cost for spiral binding', 'error');
+                    return;
+                }
+                if (formData.binding_type === 'tape' && formData.binding_cost_tape <= 0) {
+                    showToast('Please set a valid cost for tape binding', 'error');
+                    return;
+                }
+                
+                if (formData.discount_enabled) {
+                    if (formData.discount_min_pages < 1) {
+                        showToast('Minimum pages for discount must be at least 1', 'error');
+                        return;
+                    }
+                    if (formData.discount_percent < 0 || formData.discount_percent > 100) {
+                        showToast('Discount percentage must be between 0 and 100', 'error');
+                        return;
+                    }
+                }
+                
+                isSaving = true;
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<span class="loading-spinner"></span> Saving...';
+                
+                try {
+                    const payload = {
+                        cost_per_page_bw: formData.cost_per_page_bw,
+                        cost_per_page_color: formData.cost_per_page_color,
+                        binding: {
+                            type: formData.binding_type,
+                            costs: {
+                                staple: 0,
+                                spiral: formData.binding_cost_spiral,
+                                tape: formData.binding_cost_tape
+                            }
+                        },
+                        discount: {
+                            enabled: formData.discount_enabled,
+                            min_pages: formData.discount_min_pages,
+                            percent: formData.discount_percent,
+                            apply_to: formData.discount_apply_to
+                        },
+                        paper_sizes: ["A4", "Letter"]
+                    };
+                    
+                    const response = await fetch('/api/v1/shop/settings', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        let message = 'Failed to save settings.';
+                        if (data?.detail) {
+                            if (typeof data.detail === 'string') {
+                                message = data.detail;
+                            } else if (Array.isArray(data.detail)) {
+                                message = data.detail.map(err => err?.msg).filter(Boolean).join('\n');
+                            } else if (typeof data.detail === 'object') {
+                                message = data.detail.msg || message;
+                            }
+                        }
+                        throw new Error(message);
+                    }
+                    
+                    showToast('Settings saved successfully!', 'success');
+                    
+                } catch (error) {
+                    console.error('Error saving settings:', error);
+                    showToast(error.message || 'Failed to save settings. Please try again.', 'error');
+                } finally {
+                    isSaving = false;
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Settings';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

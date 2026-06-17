@@ -38,7 +38,7 @@ async def dashboard(
     printjobs = await printjob_service.get_by_customer_uuid(customer_uuid)
 
     if not customer:
-        return RedirectResponse(url="/get-started")
+        return RedirectResponse(url="/otplogin")
 
     return templates.TemplateResponse(
         "dashboard.html",
@@ -55,10 +55,30 @@ async def dashboard(
     )
 
 
-@router.get("/get-started")
-async def index(request: Request):
+@router.get("/otplogin")
+async def otplogin(request: Request):
     request.session.pop("customer", None)
     return templates.TemplateResponse("started.html", {"request": request})
+
+
+@router.get("/settings")
+async def settings(
+    request: Request,
+    session: AsyncSession = Depends(get_db_session),
+):
+    if not request.session.get("vendor"):
+        return RedirectResponse("/vendor/login")
+
+    shop_service = ShopService(session)
+    shop = await shop_service.get_by_vendor(request.session.get("vendor"))
+
+    return templates.TemplateResponse(
+        "settings.html",
+        {
+            "request": request,
+            "print_preferences": shop.properties.get("print_preferences", {}),
+        },
+    )
 
 
 @router.get("/vendor")
@@ -79,7 +99,9 @@ async def vendor(
         workorders = None
     else:
         workorder_service = PrintJobService(session)
-        workorders = await workorder_service.get_by_shop_uuid(shop.uuid, status="Uploaded")
+        workorders = await workorder_service.get_by_shop_uuid(
+            shop.uuid, status="Uploaded"
+        )
 
     return templates.TemplateResponse(
         "vendor.html",

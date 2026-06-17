@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Request
 from fastapi.responses import JSONResponse
 
 from app.schemas.shop import ShopCreate, ShopRead
@@ -24,3 +24,18 @@ async def create_shop(
         return JSONResponse(status_code=400, content={"detail": "Invalid phone number"})
     payload.phone_contact = processed_phone
     return await service.create(payload)
+
+
+@router.post("/settings", status_code=status.HTTP_200_OK)
+async def update_settings(
+    payload: dict,
+    request: Request,
+    session: AsyncSession = Depends(get_db_session),
+) -> dict:
+    shop_service = ShopService(session)
+    shop = await shop_service.get_by_vendor(request.session.get("vendor"))
+
+    return await shop_service.update_settings(
+        str(shop.uuid),
+        payload,
+    )

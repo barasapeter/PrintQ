@@ -4,6 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models import Shop
 from app.schemas.shop import ShopCreate
 
+from fastapi import HTTPException
+
+from sqlalchemy.orm.attributes import flag_modified
+
 
 class ShopRepository:
     def __init__(self, session: AsyncSession) -> None:
@@ -28,3 +32,15 @@ class ShopRepository:
         await self.session.commit()
         await self.session.refresh(shop)
         return shop
+
+    async def update_settings(self, shop_uuid: str, payload: dict) -> dict:
+        shop = await self.get(shop_uuid)
+        if not shop:
+            raise HTTPException(f"Shop {shop_uuid} does not exist")
+
+        shop.properties["print_preferences"] = payload
+        self.session.add(shop)
+        flag_modified(shop, "properties")
+        await self.session.commit()
+        await self.session.refresh(shop)
+        return {"detail": "Print preferences updated successfully"}
