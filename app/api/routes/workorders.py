@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, UploadFile, File, Form
+from fastapi import APIRouter, Depends, status, UploadFile, File, Form, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db_session
@@ -15,27 +15,6 @@ async def create_workorder(
     customer_uuid: str = Form(...),
     session: AsyncSession = Depends(get_db_session),
 ) -> PrintJobRead:
-    """
-    Sequence of statuses:
-        Uploaded
-        ↓
-        Awaiting Payment
-        ↓
-        Paid
-        ↓
-        Processing
-        ↓
-        Queued
-        ↓
-        Printing
-        ↓
-        Printed
-        ↓
-        Ready for Pickup
-        ↓
-        Completed
-    """
-
     payload = PrintJobCreate(
         shop_uuid=shop_uuid, customer_uuid=customer_uuid, properties={}
     )
@@ -44,3 +23,13 @@ async def create_workorder(
     result = await service.create(payload, file_object)
 
     return result
+
+
+@router.post("/queue", status_code=status.HTTP_200_OK)
+async def push_to_queue(
+    payload: dict,
+    request: Request,
+    session: AsyncSession = Depends(get_db_session),
+) -> dict:
+    queue_service = PrintJobService(session)
+    return await queue_service.push_to_queue(payload)

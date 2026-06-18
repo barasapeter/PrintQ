@@ -47,3 +47,6 @@ class PrintJobService:
         file_object: Union[UploadFile, bytes, str, IO[bytes], Path],
     ) -> PrintJob:
         return await self.repository.create(payload, file_object)
+
+    async def push_to_queue(self, payload: dict) -> dict:
+        return await self.repository.push_to_queue(payload)

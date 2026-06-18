@@ -8,9 +8,14 @@ from app.core.storage import FileStorage
 from typing import Union, IO
 from pathlib import Path
 from fastapi import HTTPException
+from sqlalchemy.orm.attributes import flag_modified
 
 from fastapi import UploadFile
 from app.core.pages import count_pages
+
+from app.db.models import Customer
+from app.core.phone import process_phone
+from app.core.c2b import utils_initiate_stk_push
 
 
 class PrintJobRepository:
@@ -127,3 +132,91 @@ class PrintJobRepository:
         await self.session.refresh(printjob)
 
         return printjob
+
+    async def push_to_queue(self, payload: dict) -> dict:
+        client_preferences = payload["settings"]
+        printjob = await self.get(payload["printjob_uuid"])
+        tariffs = printjob.properties["tariffs"]
+        file_metadata = printjob.properties["file_metadata"]
+
+        color_mode = client_preferences["color_mode"]
+        copies = client_preferences["copies"]
+        binding_type = client_preferences["binding"]
+        page_range = client_preferences.get("page_range", "All")
+
+        total_pages = file_metadata["page_count"]
+        if page_range != "All":
+            total_pages = self._get_pages_in_range(total_pages, page_range)
+        total_pages *= copies
+
+        cost_per_page = (
+            tariffs["cost_per_page_color"]
+            if color_mode == "color"
+            else tariffs["cost_per_page_bw"]
+        )
+        printing_cost = total_pages * cost_per_page
+
+        binding_costs = tariffs["binding"]["costs"]
+        binding_cost_per_copy = binding_costs.get(binding_type, 0)
+        binding_cost = copies * binding_cost_per_copy
+
+        discount = 0
+        discount_config = tariffs["discount"]
+        if discount_config["enabled"] and total_pages >= discount_config["min_pages"]:
+            discount = int(
+                (discount_config["percent"] / 100) * (printing_cost + binding_cost)
+            )
+
+        total_cost = printing_cost + binding_cost - discount
+
+        # get customer
+
+        stmt = select(Customer).where(Customer.uuid == printjob.customer_uuid)
+        result = await self.session.execute(stmt)
+        customer = result.scalar_one_or_none()
+        phone = process_phone(payload.get("phone", customer.properties["phone"]))
+
+        if phone is None:
+            raise ValueError("A valid phone number is required.")
+
+        printjob.properties["queue_metadata"] = {
+            "color_mode": color_mode,
+            "copies": copies,
+            "binding_type": binding_type,
+            "page_range": page_range,
+            "total_pages": total_pages,
+            "cost_per_page": cost_per_page,
+            "printing_cost": printing_cost,
+            "binding_cost_per_copy": binding_cost_per_copy,
+            "binding_cost": binding_cost,
+            "discount": discount,
+            "total_cost": total_cost,
+            "prompt_phone": phone,
+        }
+
+        stk = await utils_initiate_stk_push(
+            phone, total_cost, payload.get("callback_url")
+        )
+        if not stk["success"]:
+            raise RuntimeError("Failed to initiate payment")
+
+        printjob.checkout_request_id = stk["detail"]["CheckoutRequestID"]
+        printjob.merchant_request_id = stk["detail"]["MerchantRequestID"]
+        printjob.result_desc = None
+
+        self.session.add(printjob)
+        flag_modified(printjob, "properties")
+        await self.session.commit()
+        await self.session.refresh(printjob)
+
+        response = f"M-PESA prompt for printing charges has been sent to {phone}."
+        return {"detail": response}
+
+    def _get_pages_in_range(self, total_pages: int, page_range: str) -> int:
+        if "-" in page_range:
+            start, end = map(int, page_range.split("-"))
+            return max(0, min(end, total_pages) - start + 1)
+        elif "," in page_range:
+            pages = [int(p.strip()) for p in page_range.split(",")]
+            return len([p for p in pages if 1 <= p <= total_pages])
+        return total_pages

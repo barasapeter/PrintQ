@@ -744,7 +744,7 @@
                 if (type === 'error') toast.classList.add('error');
                 toast.classList.add('show');
                 clearTimeout(window.toastTimer);
-                window.toastTimer = setTimeout(() => toast.classList.remove('show'), 3000);
+                window.toastTimer = setTimeout(() => toast.classList.remove('show'), 20000);
             }
 
             const initialPageCount = parseInt('{{ printjob.properties.get("file_metadata", {}).get("page_count", 1) }}') || 1;
@@ -878,7 +878,10 @@
 
             updateCost();
 
-            pushBtn.addEventListener('click', function() {
+            pushBtn.addEventListener('click', async function() {
+                pushBtn.disabled = true;
+                pushBtn.textContent = 'Pushing...';
+                
                 const settings = {
                     page_size: pageSize.value,
                     color_mode: colorMode.value,
@@ -888,16 +891,38 @@
                     paper_type: paperType.value,
                     binding: bindingSelect.value,
                 };
-                console.log('Print settings:', settings);
-                showToast('Document pushed to queue successfully!', 'success');
-                setTimeout(() => {
-                    console.log('POST /api/queue with:', {
-                        printjob_uuid: '{{ printjob.uuid }}',
-                        shop_uuid: '{{ printjob.shop_uuid|default("dummy-shop-uuid") }}',
-                        settings: settings,
-                        total_cost: window._lastTotal || 0,
+                
+                
+                const payload = {
+                    printjob_uuid: '{{ printjob.uuid }}',
+                    shop_uuid: '{{ printjob.shop_uuid|default("dummy-shop-uuid") }}',
+                    settings: settings,
+                    total_cost: window._lastTotal || 0,
+                };
+                
+                try {
+                    const response = await fetch('/api/v1/workorder/queue', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(payload),
                     });
-                }, 300);
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        showToast(data.detail || 'Document pushed to queue successfully!', 'success');
+                    } else {
+                        showToast(data.detail || 'Failed to push document to queue', 'error');
+                    }
+                } catch (error) {
+                    showToast('Network error: Could not connect to server', 'error');
+                    console.error('Request failed:', error);
+                } finally {
+                    // pushBtn.disabled = false;
+                    pushBtn.textContent = 'Waiting for payment...';
+                }
             });
 
             window.updateCost = updateCost;

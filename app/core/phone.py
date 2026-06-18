@@ -1,5 +1,6 @@
 import re
 
+
 def process_phone(phone: str) -> str | None:
     if not isinstance(phone, str):
         return None

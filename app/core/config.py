@@ -34,6 +34,17 @@ class Settings(BaseSettings):
 
     starlette_session_middleware_secret_key: str
 
+    c2b_consumer_key: str
+    c2b_consumer_secret: str
+    c2b_shortcode: str
+    c2b_online_passkey: str
+
+    b2c_consumer_key: str
+    b2c_consumer_secret: str
+    b2c_shortcode: str
+    b2c_initiator_name: str
+    b2c_security_credential: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
