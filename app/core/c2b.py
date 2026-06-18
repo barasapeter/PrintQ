@@ -22,7 +22,7 @@ class MpesaAPI:
     async def get_mpesa_token(self):
         api_url = "https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
 
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=30.0) as client:
             response = await client.get(
                 api_url, auth=HTTPBasicAuth(self.consumer_key, self.consumer_secret)
             )
@@ -81,7 +81,7 @@ class MpesaAPI:
 
                 api_url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
 
-                async with httpx.AsyncClient() as client:
+                async with httpx.AsyncClient(timeout=30.0) as client:
                     response = await client.post(
                         api_url, json=request_body, headers=headers
                     )

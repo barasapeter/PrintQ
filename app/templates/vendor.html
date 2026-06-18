@@ -165,6 +165,7 @@
             left: 0;
             right: 0;
             height: 4px;
+            display: none;
         }
 
         .file-type-pdf .file-type-indicator { background: var(--pdf-red); }
@@ -580,7 +581,7 @@
             {% endif %}
             
             <div class="workorder-card {{ file_class }}">
-                <div class="file-type-indicator" hidden></div>
+                <div class="file-type-indicator"></div>
                 <div class="workorder-header">
                     <span class="workorder-id">
                         <i class="fas fa-print"></i> 
@@ -588,7 +589,7 @@
                         {{ color|title if color is not none else 'N/A'  }} • {{ binding.replace("none", "Staple")|title if binding is not none else 'N/A'  }}
                     </span>
                     <span class="workorder-amount">
-                        <span class="currency">Kshs </span>{{ "%.2f"|format(amount) }}
+                        <span class="currency">Kshs </span>{{ "{:,.2f}".format(amount) }}
                     </span>
                 </div>
 

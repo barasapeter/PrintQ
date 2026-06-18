@@ -99,7 +99,7 @@ async def vendor(
         workorders = None
     else:
         workorder_service = PrintJobService(session)
-        workorders = await workorder_service.get_by_shop_uuid(shop.uuid)
+        workorders = await workorder_service.get_by_shop_uuid(shop.uuid, "Queued")
 
     return templates.TemplateResponse(
         "vendor.html",
