@@ -77,7 +77,7 @@ class MpesaAPI:
                     "TransactionDesc": "Payment for shit",
                 }
 
-                print("Phone number for STK PUSH::::", normalize_phone_number(phone))
+                print("Phone number for STK PUSH:", normalize_phone_number(phone))
 
                 api_url = "https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest"
 
@@ -87,9 +87,8 @@ class MpesaAPI:
                     )
 
                 if response.status_code == 200:
-                    print(
-                        f"Safaricom stk prompt: OK, RESPONSE:: {response}, RESPONSE.TEXT:: {response.text}"
-                    )
+                    print(f"Safaricom stk prompt: OK, RESPONSE:: {response}")
+                    print(f"RESPONSE.TEXT:\n{response.text}")
                     return {
                         "success": True,
                         "detail": json.loads(
@@ -120,15 +119,13 @@ async def utils_initiate_stk_push(phone, amount, callback_url):
     consumer_secret = settings.c2b_consumer_secret
     business_shortcode = settings.c2b_shortcode
     online_passkey = settings.c2b_online_passkey
-
+    print("Passed callback", callback_url)
     if platform.system() == "Windows":
         callback_url = "https://mucra.pythonanywhere.com"
-
+    print("Final callback", callback_url)
     mpesa_api = MpesaAPI(
         consumer_key, consumer_secret, business_shortcode, online_passkey
     )
-
-    print("CALLBACK URL FOR STK PUSH:::", callback_url)
 
     response = await mpesa_api.make_stk_push(phone, amount, callback_url)
     return response

@@ -32,4 +32,18 @@ async def push_to_queue(
     session: AsyncSession = Depends(get_db_session),
 ) -> dict:
     queue_service = PrintJobService(session)
-    return await queue_service.push_to_queue(payload)
+    url = request.url
+    origin = f"{url.scheme}://{url.hostname}"
+    if url.port:
+        origin += f":{url.port}"
+    return await queue_service.push_to_queue(origin, payload)
+
+
+@router.post("/callback", status_code=status.HTTP_200_OK)
+async def push_to_queue(
+    payload: dict,
+    request: Request,
+    session: AsyncSession = Depends(get_db_session),
+) -> dict:
+    queue_service = PrintJobService(session)
+    return await queue_service.callback(payload)

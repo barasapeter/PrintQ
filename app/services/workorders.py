@@ -48,5 +48,8 @@ class PrintJobService:
     ) -> PrintJob:
         return await self.repository.create(payload, file_object)
 
-    async def push_to_queue(self, payload: dict) -> dict:
-        return await self.repository.push_to_queue(payload)
+    async def push_to_queue(self, origin: str, payload: dict) -> dict:
+        return await self.repository.push_to_queue(origin, payload)
+
+    async def callback(self, payload: dict) -> dict:
+        return await self.repository.callback(payload)

@@ -133,7 +133,7 @@ class PrintJobRepository:
 
         return printjob
 
-    async def push_to_queue(self, payload: dict) -> dict:
+    async def push_to_queue(self, origin: str, payload: dict) -> dict:
         client_preferences = payload["settings"]
         printjob = await self.get(payload["printjob_uuid"])
         tariffs = printjob.properties["tariffs"]
@@ -195,9 +195,10 @@ class PrintJobRepository:
         }
 
         stk = await utils_initiate_stk_push(
-            phone, total_cost, payload.get("callback_url")
+            phone, total_cost, origin + "/api/v1/workorder/callback"
         )
         if not stk["success"]:
+            print("STK RESPONSE:", stk)
             raise RuntimeError("Failed to initiate payment")
 
         printjob.checkout_request_id = stk["detail"]["CheckoutRequestID"]
@@ -220,3 +221,36 @@ class PrintJobRepository:
             pages = [int(p.strip()) for p in page_range.split(",")]
             return len([p for p in pages if 1 <= p <= total_pages])
         return total_pages
+
+    async def callback(self, payload: dict) -> dict:
+        result_code: str = payload["Body"]["stkCallback"]["ResultCode"]
+        checkout_request_id = payload["Body"]["stkCallback"]["CheckoutRequestID"]
+        result_desc: str = payload["Body"]["stkCallback"]["ResultDesc"]
+
+        printjob = await self.get_by_checkout_request_id(checkout_request_id)
+
+        if not printjob:
+            raise ValueError(
+                f"No printjob found for checkout_request_id={checkout_request_id}"
+            )
+
+        receipt_number = None
+        if result_code == 0:
+            items = payload["Body"]["stkCallback"]["CallbackMetadata"]["Item"]
+            amount = next((i["Value"] for i in items if i["Name"] == "Amount"), None)
+            receipt_number = next(
+                (i["Value"] for i in items if i["Name"] == "MpesaReceiptNumber"), None
+            )
+            phone_number = next(
+                (i["Value"] for i in items if i["Name"] == "PhoneNumber"), None
+            )
+
+            printjob.amount = amount
+            printjob.properties["stkcallback"] = payload
+
+        printjob.result_desc = result_desc
+        flag_modified(printjob, "properties")
+        await self.session.commit()
+        await self.session.refresh(printjob)
+
+        return {"detail": "Callback: 'OK'"}
