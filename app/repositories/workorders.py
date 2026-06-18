@@ -52,13 +52,16 @@ class PrintJobRepository:
     async def get_by_shop_uuid(
         self,
         shop_uuid: str,
-        status: str | None = None,
+        # status: str | None = "Paid",
     ) -> list[PrintJob]:
         """`status=None` means no filtering."""
         stmt = select(PrintJob).where(PrintJob.shop_uuid == shop_uuid)
 
-        if status is not None:
-            stmt = stmt.where(PrintJob.properties["status"].astext == status)
+        # if status is not None:
+        #     stmt = stmt.where(
+        #         PrintJob.properties["status"].astext == status,
+        #         PrintJob.amount.is_not(None),
+        #     )
 
         stmt = stmt.order_by(PrintJob.updated_at.asc())
 
@@ -264,6 +267,7 @@ class PrintJobRepository:
                 "phone_number": phone_number,
                 "callback_detail": payload,
             }
+            printjob.properties["status"] = "Paid"
 
         printjob.result_desc = result_desc
         flag_modified(printjob, "properties")

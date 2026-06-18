@@ -544,6 +544,9 @@
             {% set status_class = status|lower|replace(' ', '-') %}
             {% set amount = workorder.amount if workorder.amount is not none else 0 %}
             {% set page_count = workorder.properties.get('file_metadata', {}).get('page_count') if workorder.properties else None %}
+            {% set copies = workorder.properties.get('queue_metadata', {}).get('copies') if workorder.properties else None %}
+            {% set color = workorder.properties.get('queue_metadata', {}).get('color_mode') if workorder.properties else None %}
+            {% set binding = workorder.properties.get('queue_metadata', {}).get('binding_type') if workorder.properties else None %}
             {% set file_name = workorder.properties.get('file_metadata', {}).get('filename') if workorder.properties else 'document' %}
             
             {% set extension = file_name.split('.')[-1].lower() if '.' in file_name else '' %}
@@ -580,7 +583,9 @@
                 <div class="file-type-indicator" hidden></div>
                 <div class="workorder-header">
                     <span class="workorder-id">
-                        <i class="fas fa-print"></i> Order {{ loop.index }}
+                        <i class="fas fa-print"></i> 
+                        <!-- Order {{ loop.index }} •  -->
+                        {{ color|title if color is not none else 'N/A'  }} • {{ binding.replace("none", "Staple")|title if binding is not none else 'N/A'  }}
                     </span>
                     <span class="workorder-amount">
                         <span class="currency">Kshs </span>{{ "%.2f"|format(amount) }}
@@ -599,13 +604,13 @@
                             <span class="value">{{ page_count if page_count is not none else 'N/A' }}</span>
                         </div>
                         <div class="info-row">
-                            <span class="label">Created</span>
-                            <span class="timestamp">{{ time_ago(workorder.created_at) }}</span>
+                            <span class="label">Copies</span>
+                            <span class="value">{{ copies if copies is not none else 'N/A' }}</span>
                         </div>
                         <div class="info-row">
                             <span class="label">Status</span>
                             <span class="status-badge {{ status_class }}">
-                                <span class="status-circle"></span>
+                                <span class="timestamp">{{ time_ago(workorder.created_at) }}</span>
                                 {{ status }}
                             </span>
                         </div>
