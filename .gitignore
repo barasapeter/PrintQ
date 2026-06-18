@@ -220,3 +220,6 @@ __marimo__/
 document.py
 
 storage/
+CheckoutRequestID.json
+simulate_c2b.py
+simulate_b2c.py

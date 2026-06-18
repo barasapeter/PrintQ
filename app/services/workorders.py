@@ -53,3 +53,6 @@ class PrintJobService:
 
     async def callback(self, payload: dict) -> dict:
         return await self.repository.callback(payload)
+
+    async def verify_payment(self, printjob_uuid: str) -> dict:
+        return await self.repository.verify_payment(printjob_uuid)

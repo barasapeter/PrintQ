@@ -144,6 +144,10 @@ class PrintJobRepository:
         binding_type = client_preferences["binding"]
         page_range = client_preferences.get("page_range", "All")
 
+        if await self.verify_payment(str(printjob.uuid)):
+            detail = f"Payment of Kshs {printjob.amount} was already completed."
+            return {"detail", detail}
+
         total_pages = file_metadata["page_count"]
         if page_range != "All":
             total_pages = self._get_pages_in_range(total_pages, page_range)
@@ -168,8 +172,6 @@ class PrintJobRepository:
             )
 
         total_cost = printing_cost + binding_cost - discount
-
-        # get customer
 
         stmt = select(Customer).where(Customer.uuid == printjob.customer_uuid)
         result = await self.session.execute(stmt)
@@ -204,6 +206,17 @@ class PrintJobRepository:
         printjob.checkout_request_id = stk["detail"]["CheckoutRequestID"]
         printjob.merchant_request_id = stk["detail"]["MerchantRequestID"]
         printjob.result_desc = None
+
+        # For Testing Only
+        import platform, json
+
+        if platform.system() == "Windows":
+            data = {
+                "CheckoutRequestID": stk["detail"]["CheckoutRequestID"],
+                "amount": total_cost,
+            }
+            with open("CheckoutRequestID.json", "w") as f:
+                json.dump(data, f, indent=4)
 
         self.session.add(printjob)
         flag_modified(printjob, "properties")
@@ -246,7 +259,11 @@ class PrintJobRepository:
             )
 
             printjob.amount = amount
-            printjob.properties["stkcallback"] = payload
+            printjob.properties["stkcallback_metadata"] = {
+                "receipt_number": receipt_number,
+                "phone_number": phone_number,
+                "callback_detail": payload,
+            }
 
         printjob.result_desc = result_desc
         flag_modified(printjob, "properties")
@@ -254,3 +271,14 @@ class PrintJobRepository:
         await self.session.refresh(printjob)
 
         return {"detail": "Callback: 'OK'"}
+
+    async def verify_payment(self, printjob_uuid: str) -> dict:
+        printjob = await self.get(printjob_uuid)
+
+        amount = printjob.amount is not None
+        metadata_saved = printjob.properties.get("stkcallback_metadata")
+
+        if amount and metadata_saved:
+            return True
+
+        return False

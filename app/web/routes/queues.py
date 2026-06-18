@@ -52,5 +52,8 @@ async def index(
             "time_ago": time_ago,
             "shop": shop,
             "tariff": printjob.properties.get("tariffs"),
+            "payment_completed": await printjob_service.verify_payment(
+                str(printjob.uuid)
+            ),
         },
     )
