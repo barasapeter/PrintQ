@@ -585,7 +585,7 @@
                 <div class="workorder-header">
                     <span class="workorder-id">
                         <i class="fas fa-print"></i> 
-                        <!-- Order {{ loop.index }} •  -->
+                        Order {{ loop.index }} • 
                         {{ color|title if color is not none else 'N/A'  }} • {{ binding.replace("none", "Staple")|title if binding is not none else 'N/A'  }}
                     </span>
                     <span class="workorder-amount">
