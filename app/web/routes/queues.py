@@ -75,6 +75,9 @@ async def orders(
     printjob.filetype = validate_document(
         printjob.properties["file_metadata"]["filepath"]
     )
+    stmt = select(Customer).where(Customer.uuid == printjob.customer_uuid)
+    result = await db.execute(stmt)
+    customer = result.scalar_one_or_none()
 
     return templates.TemplateResponse(
         "order.html",
@@ -83,10 +86,13 @@ async def orders(
             "printjob": printjob,
             "format_file_size": format_file_size,
             "get_file_icon": get_file_icon,
-            "time_ago": time_ago,
+            "time_ago": time_ago(printjob.updated_at),
+            "copies": printjob.properties.get("queue_metadata").get("copies"),
             "tariff": printjob.properties.get("tariffs"),
+            "customer_phone": customer.properties.get("phone"),
             "payment_completed": await printjob_service.verify_payment(
                 str(printjob.uuid)
             ),
+
         },
     )

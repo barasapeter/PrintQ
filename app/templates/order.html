@@ -31,7 +31,6 @@
       box-shadow: 0 24px 48px -16px rgba(0,20,40,0.28), 0 8px 24px -6px rgba(0,0,0,0.06);
       padding: 2.2rem 2.5rem;
       border: 1px solid rgba(255,255,255,0.7);
-      transition: all 0.2s;
     }
     .file-header {
       display: flex;
@@ -50,7 +49,6 @@
       justify-content: center;
       box-shadow: 0 12px 20px -10px rgba(0,0,0,0.12);
       border: 1px solid rgba(0,0,0,0.02);
-      transition: 0.15s;
       flex-shrink: 0;
     }
     .file-icon-wrapper i {
@@ -163,6 +161,15 @@
       font-size: 0.9rem;
       opacity: 0.8;
     }
+    .color-indicator {
+      font-size: 0.7rem;
+    }
+    .color-indicator.colored {
+      color: #2b6d9c;
+    }
+    .color-indicator.grayscale {
+      color: #6b7d8e;
+    }
     .binding-badge {
       background: #eef3f9;
       padding: 0.2rem 1.2rem;
@@ -213,9 +220,15 @@
       font-weight: 450;
       font-size: 0.9rem;
       cursor: pointer;
+      padding: 0.4rem 0.8rem;
+      border-radius: 30px;
     }
-    .status-right i {
-      color: #2c6b9b;
+    .status-right:hover {
+      background: rgba(44, 107, 155, 0.08);
+      transform: translateX(2px);
+    }
+    .status-right:active {
+      transform: scale(0.96);
     }
     .print-action {
       display: flex;
@@ -235,8 +248,7 @@
       align-items: center;
       gap: 0.9rem;
       box-shadow: 0 12px 24px -12px rgba(10, 40, 70, 0.35);
-      transition: 0.15s;
-      cursor: default;
+      cursor: pointer;
       border: 1px solid rgba(255,255,255,0.1);
     }
     .btn-print i {
@@ -244,9 +256,232 @@
     }
     .btn-print:hover {
       background: #123a5a;
-      transform: scale(1.01);
+      transform: translateY(-1px) scale(1.02);
       box-shadow: 0 16px 28px -10px rgba(0, 30, 60, 0.3);
     }
+    .btn-print:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 4px 12px -8px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px) scale(0.98); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .modal {
+      background: white;
+      border-radius: 32px;
+      max-width: 480px;
+      width: 100%;
+      padding: 2rem 2rem;
+      box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.25s ease;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .modal-header h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #0b1a2b;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .modal-header h2 i {
+      color: #f59e0b;
+      font-size: 1.2rem;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: #8a9db0;
+      cursor: pointer;
+      padding: 0.3rem 0.6rem;
+      border-radius: 10px;
+      line-height: 1;
+    }
+    .modal-close:hover {
+      background: #f1f4f8;
+      color: #1f3a57;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.3rem 1rem;
+      padding: 0.8rem 0;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid #e8edf4;
+    }
+    .summary-grid .item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.2rem 0;
+      font-size: 0.85rem;
+    }
+    .summary-grid .item .label {
+      color: #6b8aa3;
+      font-weight: 450;
+    }
+    .summary-grid .item .value {
+      color: #0b1a2b;
+      font-weight: 500;
+    }
+
+    .amount-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 1rem;
+      background: #f8faff;
+      border-radius: 12px;
+      margin-bottom: 1.2rem;
+      border: 1px solid #e8edf4;
+    }
+    .amount-section .label {
+      font-size: 0.85rem;
+      color: #4a637c;
+      font-weight: 450;
+    }
+    .amount-section .amount {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0b2b44;
+    }
+
+    .confirmation-section {
+      margin-bottom: 1.2rem;
+    }
+    .confirmation-section .checkbox-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      padding: 0.8rem 1rem;
+      background: #f8faff;
+      border-radius: 12px;
+      border: 2px solid #dce4ed;
+      cursor: pointer;
+    }
+    .confirmation-section .checkbox-wrap:hover {
+      background: #f4f8ff;
+    }
+    .confirmation-section .checkbox-wrap.checked {
+      border-color: #1d7a3e;
+      background: #f4fcf7;
+    }
+    .confirmation-section .checkbox-wrap input[type="checkbox"] {
+      display: none;
+    }
+    .confirmation-section .custom-check {
+      min-width: 20px;
+      height: 20px;
+      border: 2px solid #dce4ed;
+      border-radius: 6px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .confirmation-section .checkbox-wrap.checked .custom-check {
+      background: #1d7a3e;
+      border-color: #1d7a3e;
+    }
+    .confirmation-section .custom-check i {
+      color: white;
+      font-size: 0.7rem;
+      opacity: 0;
+    }
+    .confirmation-section .checkbox-wrap.checked .custom-check i {
+      opacity: 1;
+    }
+    .confirmation-section .check-label {
+      font-size: 0.9rem;
+      color: #1f3a57;
+      font-weight: 450;
+      line-height: 1.5;
+    }
+    .confirmation-section .check-label strong {
+      color: #0b2b44;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.8rem;
+      justify-content: flex-end;
+      padding-top: 0.5rem;
+    }
+    .btn-modal {
+      padding: 0.6rem 1.8rem;
+      border-radius: 40px;
+      font-weight: 550;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .btn-modal:active {
+      transform: scale(0.97);
+    }
+    .btn-modal.cancel {
+      background: #f1f4f8;
+      color: #4a637c;
+    }
+    .btn-modal.cancel:hover {
+      background: #e4e9f0;
+    }
+    .btn-modal.primary {
+      background: #0b2b44;
+      color: white;
+      box-shadow: 0 4px 12px rgba(11, 43, 68, 0.2);
+    }
+    .btn-modal.primary:hover {
+      background: #123a5a;
+      box-shadow: 0 6px 20px rgba(11, 43, 68, 0.3);
+    }
+    .btn-modal.primary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    .btn-modal.primary.success {
+      background: #1d7a3e;
+    }
+    .btn-modal.primary.success:hover {
+      background: #1f8a47;
+    }
+
     @media (max-width: 640px) {
       .print-card {
         padding: 1.5rem;
@@ -290,6 +525,26 @@
       .file-header {
         gap: 1rem;
       }
+      .modal {
+        padding: 1.5rem 1.2rem;
+        border-radius: 24px;
+        max-width: 100%;
+        margin: 0.5rem;
+      }
+      .modal-header h2 {
+        font-size: 1.2rem;
+      }
+      .modal-actions {
+        flex-direction: column-reverse;
+      }
+      .btn-modal {
+        justify-content: center;
+        width: 100%;
+      }
+      .summary-grid {
+        grid-template-columns: 1fr;
+        gap: 0.1rem;
+      }
     }
     @media (max-width: 420px) {
       .file-name {
@@ -311,20 +566,31 @@
 </head>
 <body>
   <div class="print-card" id="printCard">
+    {% set filename = printjob.properties.get('file_metadata', {}).get('filename', 'document.pdf') %}
+    {% set file_extension = filename.split('.')[-1]|lower if '.' in filename else 'pdf' %}
+    {% set customer_phone = printjob.properties.get('customer_phone', 'N/A') %}
+    {% set total_pages = printjob.properties.get('queue_metadata', {}).get('total_pages', 0) %}
+    {% set copies = printjob.properties.get('queue_metadata', {}).get('copies', 1) %}
+    {% set color_mode = printjob.properties.get('queue_metadata', {}).get('color_mode', 'Colored') %}
+    {% set binding_type = printjob.properties.get('queue_metadata', {}).get('binding_type', 'None') %}
+    {% set time_ago = printjob.properties.get('time_ago', 'Just now') %}
+    {% set amount = printjob.amount or 0 %}
+    {% set is_colored = color_mode|lower == 'colored' %}
+    {% set order_id = printjob.id or 'N/A' %}
 
     <div class="file-header">
-      <div class="file-icon-wrapper" id="fileIconWrapper">
-        <i class="fas fa-file-pdf" id="fileIcon"></i>
+      <div class="file-icon-wrapper {{ file_extension if file_extension in ['pdf','pptx','ppt','xlsx','xls','docx','doc','odt','txt'] else 'default' }}">
+        <i class="fas fa-file-{{ 'pdf' if file_extension == 'pdf' else 'powerpoint' if file_extension in ['pptx','ppt'] else 'excel' if file_extension in ['xlsx','xls'] else 'word' if file_extension in ['docx','doc'] else 'alt' if file_extension == 'odt' else 'lines' if file_extension == 'txt' else 'file' }}"></i>
       </div>
       <div class="file-meta">
         <div class="file-name">
-          <span id="fileNameDisplay">Inferential Statistics_Lecture (1).pdf</span>
-          <span class="file-ext" id="fileExtBadge">PDF</span>
+          <span>{{ filename }}</span>
+          <span class="file-ext">{{ file_extension.upper() }}</span>
         </div>
         <div class="file-sub">
-          <span><i class="far fa-calendar-alt"></i> Queued <span id="queueTime">3 minutes ago</span></span>
-          <span><i class="far fa-copy"></i> <span id="copyCount">3</span> Copies</span>
-          <span class="badge-queue">Kshs <span id="pageCount">200</span></span>
+          <span><i class="far fa-calendar-alt"></i> Queued <span>{{ time_ago }}</span></span>
+          <span><i class="far fa-copy"></i> <span>{{ copies }}</span> Copies</span>
+          <span class="badge-queue">Kshs <span>{{ "{:,.2f}".format(amount) }}</span></span>
         </div>
       </div>
     </div>
@@ -332,155 +598,207 @@
     <div class="detail-grid">
       <div class="detail-item">
         <span class="label">Customer</span>
-        <span class="value"><i class="fas fa-phone-alt"></i> <span id="customerPhone">254114068425</span></span>
+        <span class="value"><i class="fas fa-phone-alt"></i> <span>{{ customer_phone }}</span></span>
       </div>
       <div class="detail-item">
         <span class="label"><i class="far fa-file-alt"></i> Pages</span>
-        <span class="value"><span id="pageCount2">24</span></span>
+        <span class="value"><span>{{ total_pages }}</span></span>
       </div>
       <div class="detail-item">
         <span class="label"><i class="far fa-clock"></i> Queued</span>
-        <span class="value"><span id="queueTime2">3 minutes ago</span></span>
+        <span class="value"><span>{{ time_ago }}</span></span>
       </div>
       <div class="detail-item">
         <span class="label"><i class="fas fa-palette"></i> Color</span>
-        <span class="value"><i class="fas fa-circle" style="color: #2b6d9c; font-size: 0.7rem;"></i> <span id="colorMode">Colored</span></span>
+        <span class="value">
+          <i class="fas fa-circle color-indicator {{ 'colored' if is_colored else 'grayscale' }}"></i>
+          <span>{{ color_mode }}</span>
+        </span>
       </div>
       <div class="detail-item">
         <span class="label"><i class="fas fa-copy"></i> Copies</span>
-        <span class="value"><span id="copyCount2">3</span></span>
+        <span class="value"><span>{{ copies }}</span></span>
       </div>
       <div class="detail-item">
         <span class="label"><i class="fas fa-book"></i> Binding</span>
-        <span class="value"><span class="binding-badge" id="bindingType">Spiral</span></span>
+        <span class="value"><span class="binding-badge">{{ binding_type }}</span></span>
       </div>
     </div>
 
     <div class="status-row">
       <div class="status-left">
         <i class="fas fa-check-circle"></i>
-        <span>Is the printout Ready?</span>
+        <span>Already Printed?</span>
       </div>
-      <div class="status-right">
-        <i class="fas fa-print"></i> 
-        <span>I have Printed</span>
+      <div class="status-right" id="releaseBtn">
+        <i class="fas fa-coins"></i> 
+        <span>Release Escrow</span>
         <i class="fas fa-chevron-right" style="font-size: 0.7rem; opacity: 0.6;"></i>
       </div>
     </div>
 
     <div class="print-action">
-      <div class="btn-print">
+      <button class="btn-print">
         <i class="fas fa-print"></i> Print Document
+      </button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="releaseModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2><i class="fas fa-coins"></i> Release Escrow</h2>
+        <button class="modal-close" id="modalCloseBtn">&times;</button>
+      </div>
+
+      <div class="summary-grid">
+        <div class="item"><span class="label"></span><span class="value">{{ filename }}</span></div>
+        <div class="item"><span class="label">Customer</span><span class="value">{{ customer_phone }}</span></div>
+        <div class="item"><span class="label">Pages</span><span class="value">{{ total_pages }}</span></div>
+        <div class="item"><span class="label">Copies</span><span class="value">{{ copies }}</span></div>
+        <div class="item"><span class="label">Color</span><span class="value">{{ color_mode }}</span></div>
+        <div class="item"><span class="label">Binding</span><span class="value">{{ binding_type }}</span></div>
+      </div>
+
+      <div class="amount-section">
+        <span class="label"><i class="fas fa-lock"></i> Escrow Amount</span>
+        <span class="amount">Kshs {{ "{:,.2f}".format(amount) }}</span>
+      </div>
+
+      <div class="confirmation-section">
+        <div class="checkbox-wrap" id="confirmCheck">
+          <input type="checkbox" id="confirmCheckbox">
+          <div class="custom-check"><i class="fas fa-check"></i></div>
+          <span class="check-label">
+            I confirm that I have <strong>printed the document</strong> and verified it meets the customer's requirements.
+          </span>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-modal cancel" id="modalCancelBtn">Cancel</button>
+        <button class="btn-modal primary" id="releaseConfirmBtn" disabled>
+          <i class="fas fa-coins"></i> Release Funds
+        </button>
       </div>
     </div>
   </div>
 
   <script>
     (function() {
-      const config = {
-        fileType: 'pptx',
-        fileName: 'Inferential Statistics_Lecture (1).pptx',
-        customerPhone: '254114068425',
-        pages: '24',
-        queueTime: '3 minutes ago',
-        copies: '3',
-        color: 'Colored',
-        binding: 'Spiral'
-      };
-
-      const iconMap = {
-        pdf:   { icon: 'fa-regular fa-file-pdf', label: 'PDF' },
-        pptx:  { icon: 'fa-regular fa-file-powerpoint', label: 'PPTX' },
-        ppt:   { icon: 'fa-regular fa-file-powerpoint', label: 'PPT' },
-        xlsx:  { icon: 'fa-regular fa-file-excel', label: 'XLSX' },
-        xls:   { icon: 'fa-regular fa-file-excel', label: 'XLS' },
-        docx:  { icon: 'fa-regular fa-file-word', label: 'DOCX' },
-        doc:   { icon: 'fa-regular fa-file-word', label: 'DOC' },
-        odt:   { icon: 'fa-regular fa-file-alt', label: 'ODT' },
-        txt:   { icon: 'fa-regular fa-file-lines', label: 'TXT' },
-        default: { icon: 'fa-regular fa-file', label: 'FILE' }
-      };
-
-      const extMap = {
-        pdf: 'PDF', pptx: 'PPTX', ppt: 'PPT', xlsx: 'XLSX', xls: 'XLS',
-        docx: 'DOCX', doc: 'DOC', odt: 'ODT', txt: 'TXT', default: 'FILE'
-      };
-
-      const fileIcon      = document.getElementById('fileIcon');
-      const fileIconWrap  = document.getElementById('fileIconWrapper');
-      const fileNameSpan  = document.getElementById('fileNameDisplay');
-      const fileExtBadge  = document.getElementById('fileExtBadge');
-      const customerPhone = document.getElementById('customerPhone');
-      const pageCount     = document.getElementById('pageCount');
-      const pageCount2    = document.getElementById('pageCount2');
-      const queueTime     = document.getElementById('queueTime');
-      const queueTime2    = document.getElementById('queueTime2');
-      const copyCount     = document.getElementById('copyCount');
-      const copyCount2    = document.getElementById('copyCount2');
-      const colorMode     = document.getElementById('colorMode');
-      const bindingType   = document.getElementById('bindingType');
-
-      function applyConfig(type, fileName, phone, pages, queue, copies, color, binding) {
-        const typeLower = (type || 'default').toLowerCase();
-        const mapping = iconMap[typeLower] || iconMap.default;
-        const extLabel = extMap[typeLower] || extMap.default;
-
-        fileIcon.className = mapping.icon;
-        if (fileName) {
-          fileNameSpan.textContent = fileName;
-        } else {
-          fileNameSpan.textContent = `document.${extLabel.toLowerCase()}`;
-        }
-        fileExtBadge.textContent = extLabel;
-
-        fileIconWrap.className = 'file-icon-wrapper';
-        if (typeLower !== 'default') {
-          fileIconWrap.classList.add(typeLower);
-        } else {
-          fileIconWrap.classList.add('default');
-        }
-
-        if (phone) customerPhone.textContent = phone;
-        if (pages) {
-          pageCount.textContent = pages;
-          pageCount2.textContent = pages;
-        }
-        if (queue) {
-          queueTime.textContent = queue;
-          queueTime2.textContent = queue;
-        }
-        if (copies) {
-          copyCount.textContent = copies;
-          copyCount2.textContent = copies;
-        }
-        if (color) colorMode.textContent = color;
-        if (binding) bindingType.textContent = binding;
-
-        const colorCircle = document.querySelector('.detail-item .value i.fa-circle');
-        if (colorCircle) {
-          if (color && color.toLowerCase().includes('colored')) {
-            colorCircle.style.color = '#2b6d9c';
-          } else {
-            colorCircle.style.color = '#6b7d8e';
+      const extBadge = document.querySelector('.file-ext');
+      if (extBadge) {
+        const ext = extBadge.textContent.toLowerCase();
+        const iconWrapper = document.querySelector('.file-icon-wrapper');
+        const icon = iconWrapper?.querySelector('i');
+        if (iconWrapper && icon) {
+          const iconMap = {
+            'pdf': 'fa-file-pdf',
+            'pptx': 'fa-file-powerpoint',
+            'ppt': 'fa-file-powerpoint',
+            'xlsx': 'fa-file-excel',
+            'xls': 'fa-file-excel',
+            'docx': 'fa-file-word',
+            'doc': 'fa-file-word',
+            'odt': 'fa-file-alt',
+            'txt': 'fa-file-lines'
+          };
+          if (iconMap[ext]) {
+            icon.className = 'fas ' + iconMap[ext];
+          }
+          const validExts = ['pdf', 'pptx', 'ppt', 'xlsx', 'xls', 'docx', 'doc', 'odt', 'txt'];
+          if (validExts.includes(ext)) {
+            validExts.forEach(e => iconWrapper.classList.remove(e));
+            iconWrapper.classList.add(ext);
           }
         }
       }
-
-      applyConfig(
-        config.fileType,
-        config.fileName,
-        config.customerPhone,
-        config.pages,
-        config.queueTime,
-        config.copies,
-        config.color,
-        config.binding
-      );
-
-      window.updatePrint = function(type, name, phone, pages, queue, copies, color, binding) {
-        applyConfig(type, name, phone, pages, queue, copies, color, binding);
-      };
     })();
+
+    const modal = document.getElementById('releaseModal');
+    const openBtn = document.getElementById('releaseBtn');
+    const closeBtn = document.getElementById('modalCloseBtn');
+    const cancelBtn = document.getElementById('modalCancelBtn');
+    const confirmBtn = document.getElementById('releaseConfirmBtn');
+    const checkboxWrap = document.getElementById('confirmCheck');
+    const checkbox = document.getElementById('confirmCheckbox');
+
+    function openModal() {
+      checkbox.checked = false;
+      checkboxWrap.classList.remove('checked');
+      confirmBtn.disabled = true;
+      confirmBtn.className = 'btn-modal primary';
+      confirmBtn.innerHTML = '<i class="fas fa-coins"></i> Release Funds';
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function releaseFunds() {
+      if (!checkbox.checked) return;
+
+      confirmBtn.disabled = true;
+      confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+      
+      setTimeout(() => {
+        confirmBtn.classList.add('success');
+        confirmBtn.innerHTML = '<i class="fas fa-check"></i> Released!';
+        
+        setTimeout(() => {
+          closeModal();
+          confirmBtn.classList.remove('success');
+          confirmBtn.innerHTML = '<i class="fas fa-coins"></i> Release Funds';
+          confirmBtn.disabled = false;
+        }, 1500);
+      }, 1000);
+    }
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) {
+        closeModal();
+      }
+      if (e.key === 'Enter' && modal.classList.contains('active') && !confirmBtn.disabled) {
+        e.preventDefault();
+        releaseFunds();
+      }
+    });
+
+    checkboxWrap.addEventListener('click', function(e) {
+      if (e.target.tagName !== 'INPUT') {
+        checkbox.checked = !checkbox.checked;
+      }
+      if (checkbox.checked) {
+        this.classList.add('checked');
+        confirmBtn.disabled = false;
+      } else {
+        this.classList.remove('checked');
+        confirmBtn.disabled = true;
+      }
+    });
+
+    checkbox.addEventListener('change', function() {
+      if (this.checked) {
+        checkboxWrap.classList.add('checked');
+        confirmBtn.disabled = false;
+      } else {
+        checkboxWrap.classList.remove('checked');
+        confirmBtn.disabled = true;
+      }
+    });
+
+    confirmBtn.addEventListener('click', releaseFunds);
   </script>
 </body>
 </html>
