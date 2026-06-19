@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico" />
   <title>Order · Print Interface</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <style>
     * {
       margin: 0;
@@ -79,16 +79,60 @@
       flex-wrap: wrap;
       gap: 0.6rem;
     }
+
+    /* --- COLORED EXTENSION BADGE (dynamic) --- */
     .file-ext {
-      background: #e9eef3;
       padding: 0.2rem 0.9rem;
       border-radius: 40px;
       font-size: 0.7rem;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      background: #e9eef3;
       color: #1e3a5f;
+      border: 1px solid rgba(0,0,0,0.04);
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     }
+    /* extension badge colors */
+    .file-ext.ext-pdf {
+      background: #fce4e0;
+      color: #a52a2a;
+      border-color: #e6b8b0;
+    }
+    .file-ext.ext-doc,
+    .file-ext.ext-docx {
+      background: #dde6f5;
+      color: #1e4d8c;
+      border-color: #b8cce0;
+    }
+    .file-ext.ext-xls,
+    .file-ext.ext-xlsx {
+      background: #dff0e3;
+      color: #1d7a3e;
+      border-color: #b2d3bf;
+    }
+    .file-ext.ext-ppt,
+    .file-ext.ext-pptx {
+      background: #f7e2d4;
+      color: #b44a1a;
+      border-color: #eaccb8;
+    }
+    .file-ext.ext-odt {
+      background: #d4edf0;
+      color: #1e6a7a;
+      border-color: #b2d5db;
+    }
+    .file-ext.ext-txt {
+      background: #e6e9ed;
+      color: #3d4e5f;
+      border-color: #cbd2d9;
+    }
+    .file-ext.ext-default {
+      background: #e9eef3;
+      color: #1e3a5f;
+      border-color: #ccd7e3;
+    }
+
     .file-sub {
       display: flex;
       flex-wrap: wrap;
@@ -235,12 +279,12 @@
       justify-content: flex-end;
       margin-top: 0.1rem;
     }
+
+    /* --- DYNAMIC PRINT BUTTON COLORS --- */
     .btn-print {
-      background: #0b2b44;
       border: none;
       padding: 1rem 3rem;
       border-radius: 60px;
-      color: white;
       font-weight: 550;
       font-size: 1.1rem;
       letter-spacing: 0.4px;
@@ -250,12 +294,58 @@
       box-shadow: 0 12px 24px -12px rgba(10, 40, 70, 0.35);
       cursor: default;
       border: 1px solid rgba(255,255,255,0.1);
+      transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+      color: white;
     }
-    .btn-print i {
-      font-size: 1.2rem;
+    .btn-print.btn-default {
+      background: #0b2b44;
+    }
+    .btn-print.btn-default:hover {
+      background: #123a5a;
+    }
+    .btn-print.btn-pdf {
+      background: #b22222;
+    }
+    .btn-print.btn-pdf:hover {
+      background: #9e1e1e;
+    }
+    .btn-print.btn-docx,
+    .btn-print.btn-doc {
+      background: #1e4d8c;
+    }
+    .btn-print.btn-docx:hover,
+    .btn-print.btn-doc:hover {
+      background: #1a3f72;
+    }
+    .btn-print.btn-xlsx,
+    .btn-print.btn-xls {
+      background: #1d7a3e;
+    }
+    .btn-print.btn-xlsx:hover,
+    .btn-print.btn-xls:hover {
+      background: #166b34;
+    }
+    .btn-print.btn-pptx,
+    .btn-print.btn-ppt {
+      background: #c7511e;
+    }
+    .btn-print.btn-pptx:hover,
+    .btn-print.btn-ppt:hover {
+      background: #b0441a;
+    }
+    .btn-print.btn-odt {
+      background: #2a7a8a;
+    }
+    .btn-print.btn-odt:hover {
+      background: #236a78;
+    }
+    .btn-print.btn-txt {
+      background: #4b5b6b;
+    }
+    .btn-print.btn-txt:hover {
+      background: #3e4d5c;
     }
     .btn-print:hover {
-      background: #123a5a;
       transform: translateY(-1px) scale(1.02);
       box-shadow: 0 16px 28px -10px rgba(0, 30, 60, 0.3);
     }
@@ -264,6 +354,7 @@
       box-shadow: 0 4px 12px -8px rgba(0, 0, 0, 0.2);
     }
 
+    /* modal (unchanged) */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -332,7 +423,6 @@
       background: #f1f4f8;
       color: #1f3a57;
     }
-
     .summary-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -355,7 +445,6 @@
       color: #0b1a2b;
       font-weight: 500;
     }
-
     .amount-section {
       display: flex;
       align-items: center;
@@ -376,7 +465,6 @@
       font-weight: 700;
       color: #0b2b44;
     }
-
     .confirmation-section {
       margin-bottom: 1.2rem;
     }
@@ -432,7 +520,6 @@
     .confirmation-section .check-label strong {
       color: #0b2b44;
     }
-
     .modal-actions {
       display: flex;
       gap: 0.8rem;
@@ -481,240 +568,167 @@
     .btn-modal.primary.success:hover {
       background: #1f8a47;
     }
-
     @media (max-width: 640px) {
-      .print-card {
-        padding: 1.5rem;
-        border-radius: 32px;
-      }
-      .detail-grid {
-        grid-template-columns: 1fr;
-        gap: 0.1rem;
-      }
-      .detail-item {
-        padding: 0.4rem 0;
-      }
-      .file-name {
-        font-size: 1.2rem;
-      }
-      .file-icon-wrapper {
-        width: 60px;
-        height: 60px;
-      }
-      .file-icon-wrapper i {
-        font-size: 2.2rem;
-      }
-      .status-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.6rem;
-        padding: 0.9rem 1.2rem;
-      }
-      .btn-print {
-        width: 100%;
-        justify-content: center;
-        padding: 0.9rem 1.5rem;
-      }
-      .print-action {
-        justify-content: stretch;
-      }
-      .file-sub {
-        gap: 0.8rem;
-        font-size: 0.8rem;
-      }
-      .file-header {
-        gap: 1rem;
-      }
-      .modal {
-        padding: 1.5rem 1.2rem;
-        border-radius: 24px;
-        max-width: 100%;
-        margin: 0.5rem;
-      }
-      .modal-header h2 {
-        font-size: 1.2rem;
-      }
-      .modal-actions {
-        flex-direction: column-reverse;
-      }
-      .btn-modal {
-        justify-content: center;
-        width: 100%;
-      }
-      .summary-grid {
-        grid-template-columns: 1fr;
-        gap: 0.1rem;
-      }
+      .print-card { padding: 1.5rem; border-radius: 32px; }
+      .detail-grid { grid-template-columns: 1fr; gap: 0.1rem; }
+      .detail-item { padding: 0.4rem 0; }
+      .file-name { font-size: 1.2rem; }
+      .file-icon-wrapper { width: 60px; height: 60px; }
+      .file-icon-wrapper i { font-size: 2.2rem; }
+      .status-row { flex-direction: column; align-items: flex-start; gap: 0.6rem; padding: 0.9rem 1.2rem; }
+      .btn-print { width: 100%; justify-content: center; padding: 0.9rem 1.5rem; }
+      .print-action { justify-content: stretch; }
+      .file-sub { gap: 0.8rem; font-size: 0.8rem; }
+      .file-header { gap: 1rem; }
+      .modal { padding: 1.5rem 1.2rem; border-radius: 24px; max-width: 100%; margin: 0.5rem; }
+      .modal-header h2 { font-size: 1.2rem; }
+      .modal-actions { flex-direction: column-reverse; }
+      .btn-modal { justify-content: center; width: 100%; }
+      .summary-grid { grid-template-columns: 1fr; gap: 0.1rem; }
     }
     @media (max-width: 420px) {
-      .file-name {
-        font-size: 1rem;
-      }
-      .file-icon-wrapper {
-        width: 50px;
-        height: 50px;
-      }
-      .file-icon-wrapper i {
-        font-size: 1.8rem;
-      }
-      .detail-item .label {
-        min-width: 60px;
-        font-size: 0.8rem;
-      }
+      .file-name { font-size: 1rem; }
+      .file-icon-wrapper { width: 50px; height: 50px; }
+      .file-icon-wrapper i { font-size: 1.8rem; }
+      .detail-item .label { min-width: 60px; font-size: 0.8rem; }
     }
   </style>
 </head>
 <body>
-  <div class="print-card" id="printCard">
-    {% set filename = printjob.properties.get('file_metadata', {}).get('filename', 'document.pdf') %}
-    {% set file_extension = filename.split('.')[-1]|lower if '.' in filename else 'pdf' %}
-    {% set customer_phone = customer.properties.get('phone', 'N/A') %}
-    {% set total_pages = printjob.properties.get('queue_metadata', {}).get('total_pages', 0) %}
-    {% set copies = printjob.properties.get('queue_metadata', {}).get('copies', 1) %}
-    {% set color_mode = printjob.properties.get('queue_metadata', {}).get('color_mode', 'Colored') %}
-    {% set binding_type = printjob.properties.get('queue_metadata', {}).get('binding_type', 'None') %}
-    {% set time_ago = printjob.properties.get('time_ago', 'Just now') %}
-    {% set amount = printjob.amount or 0 %}
-    {% set is_colored = color_mode|lower == 'colored' %}
-    {% set order_id = printjob.id or 'N/A' %}
+<div class="print-card" id="printCard">
+  {% set filename = printjob.properties.get('file_metadata', {}).get('filename', 'invoice.pdf') %}
+  {% set file_extension = filename.split('.')[-1]|lower if '.' in filename else 'pdf' %}
+  {% set customer_phone = customer.properties.get('phone', 'N/A') %}
+  {% set total_pages = printjob.properties.get('queue_metadata', {}).get('total_pages', 0) %}
+  {% set copies = printjob.properties.get('queue_metadata', {}).get('copies', 1) %}
+  {% set color_mode = printjob.properties.get('queue_metadata', {}).get('color_mode', 'Colored') %}
+  {% set binding_type = printjob.properties.get('queue_metadata', {}).get('binding_type', 'Staple')|title %}
+  {% set amount = printjob.amount or 0 %}
+  {% set is_colored = color_mode|lower == 'colored' %}
+  {% set order_id = printjob.id or 'N/A' %}
 
-    <div class="file-header">
-      <div class="file-icon-wrapper {{ file_extension if file_extension in ['pdf','pptx','ppt','xlsx','xls','docx','doc','odt','txt'] else 'default' }}">
-        <i class="fas fa-file-{{ 'pdf' if file_extension == 'pdf' else 'powerpoint' if file_extension in ['pptx','ppt'] else 'excel' if file_extension in ['xlsx','xls'] else 'word' if file_extension in ['docx','doc'] else 'alt' if file_extension == 'odt' else 'lines' if file_extension == 'txt' else 'file' }}"></i>
-      </div>
-      <div class="file-meta">
-        <div class="file-name">
-          <span>{{ filename }}</span>
-          <span class="file-ext">{{ file_extension.upper() }}</span>
-        </div>
-        <div class="file-sub">
-          <span><i class="far fa-calendar-alt"></i> Queued <span>{{ time_ago }}</span></span>
-          <span><i class="far fa-copy"></i> <span>{{ copies }}</span> Copies</span>
-          <span class="badge-queue">Kshs <span>{{ "{:,.2f}".format(amount) }}</span></span>
-        </div>
-      </div>
+  <div class="file-header">
+    <div class="file-icon-wrapper {{ file_extension if file_extension in ['pdf','pptx','ppt','xlsx','xls','docx','doc','odt','txt'] else 'default' }}">
+      <i class="fas fa-file-{{ 'pdf' if file_extension == 'pdf' else 'powerpoint' if file_extension in ['pptx','ppt'] else 'excel' if file_extension in ['xlsx','xls'] else 'word' if file_extension in ['docx','doc'] else 'alt' if file_extension == 'odt' else 'lines' if file_extension == 'txt' else 'file' }}"></i>
     </div>
-
-    <div class="detail-grid">
-      <div class="detail-item">
-        <span class="label">Customer</span>
-        <span class="value"><i class="fas fa-phone-alt"></i> <span>{{ customer_phone }}</span></span>
+    <div class="file-meta">
+      <div class="file-name">
+        <span>{{ filename }}</span>
       </div>
-      <div class="detail-item">
-        <span class="label"><i class="far fa-file-alt"></i> Pages</span>
-        <span class="value"><span>{{ total_pages }}</span></span>
-      </div>
-      <div class="detail-item">
-        <span class="label"><i class="far fa-clock"></i> Queued</span>
-        <span class="value"><span>{{ time_ago }}</span></span>
-      </div>
-      <div class="detail-item">
-        <span class="label"><i class="fas fa-palette"></i> Color</span>
-        <span class="value">
-          <i class="fas fa-circle color-indicator {{ 'colored' if is_colored else 'grayscale' }}"></i>
-          <span>{{ color_mode }}</span>
-        </span>
-      </div>
-      <div class="detail-item">
-        <span class="label"><i class="fas fa-copy"></i> Copies</span>
-        <span class="value"><span>{{ copies }}</span></span>
-      </div>
-      <div class="detail-item">
-        <span class="label"><i class="fas fa-book"></i> Binding</span>
-        <span class="value"><span class="binding-badge">{{ binding_type }}</span></span>
-      </div>
-    </div>
-
-    <div class="status-row">
-      <div class="status-left">
-        <i class="fas fa-check-circle"></i>
-        <span>Already Printed?</span>
-      </div>
-      <div class="status-right" id="releaseBtn">
-        <i class="fas fa-coins"></i> 
-        <span>Done Printing</span>
-        <i class="fas fa-chevron-right" style="font-size: 0.7rem; opacity: 0.6;"></i>
-      </div>
-    </div>
-
-    <div class="print-action">
-      <button class="btn-print">
-        <i class="fas fa-print"></i> Print Document
-      </button>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="releaseModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h2><i class="fas fa-coins"></i> Done Printing</h2>
-        <button class="modal-close" id="modalCloseBtn">&times;</button>
-      </div>
-
-      <div class="summary-grid">
-        <div class="item"><span class="label"></span><span class="value">{{ filename }}</span></div>
-        <div class="item"><span class="label">Customer</span><span class="value">{{ customer_phone }}</span></div>
-        <div class="item"><span class="label">Pages</span><span class="value">{{ total_pages }}</span></div>
-        <div class="item"><span class="label">Copies</span><span class="value">{{ copies }}</span></div>
-        <div class="item"><span class="label">Color</span><span class="value">{{ color_mode }}</span></div>
-        <div class="item"><span class="label">Binding</span><span class="value">{{ binding_type }}</span></div>
-      </div>
-
-      <div class="amount-section">
-        <span class="label"><i class="fas fa-lock"></i> Escrow Amount</span>
-        <span class="amount">Kshs {{ "{:,.2f}".format(amount) }}</span>
-      </div>
-
-      <div class="confirmation-section">
-        <div class="checkbox-wrap" id="confirmCheck">
-          <input type="checkbox" id="confirmCheckbox">
-          <div class="custom-check"><i class="fas fa-check"></i></div>
-          <span class="check-label">
-            I confirm that I have <strong>printed the document</strong> and verified it meets the customer's requirements.
-          </span>
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn-modal cancel" id="modalCancelBtn">Cancel</button>
-        <button class="btn-modal primary" id="releaseConfirmBtn" disabled>
-          <i class="fas fa-coins"></i> Cash Out
-        </button>
+      <div class="file-sub">
+        <span><i class="far fa-calendar-alt"></i> Queued <span>{{ time_ago }}</span></span>
+        <span><i class="far fa-copy"></i> <span>{{ copies }}</span> Copies</span>
+        <span class="badge-queue">Kshs <span>{{ "{:,.2f}".format(amount) }}</span></span>
+        <!-- colored extension badge: classes added via JS -->
+        <span class="file-ext" id="fileExtBadge">{{ file_extension.upper() }}</span>
       </div>
     </div>
   </div>
 
-  <script>
-    (function() {
-      const extBadge = document.querySelector('.file-ext');
-      if (extBadge) {
-        const ext = extBadge.textContent.toLowerCase();
-        const iconWrapper = document.querySelector('.file-icon-wrapper');
-        const icon = iconWrapper?.querySelector('i');
-        if (iconWrapper && icon) {
-          const iconMap = {
-            'pdf': 'fa-file-pdf',
-            'pptx': 'fa-file-powerpoint',
-            'ppt': 'fa-file-powerpoint',
-            'xlsx': 'fa-file-excel',
-            'xls': 'fa-file-excel',
-            'docx': 'fa-file-word',
-            'doc': 'fa-file-word',
-            'odt': 'fa-file-alt',
-            'txt': 'fa-file-lines'
-          };
-          if (iconMap[ext]) {
-            icon.className = 'fas ' + iconMap[ext];
-          }
-          const validExts = ['pdf', 'pptx', 'ppt', 'xlsx', 'xls', 'docx', 'doc', 'odt', 'txt'];
-          if (validExts.includes(ext)) {
-            validExts.forEach(e => iconWrapper.classList.remove(e));
-            iconWrapper.classList.add(ext);
-          }
+  <div class="detail-grid">
+    <div class="detail-item"><span class="label">Customer</span><span class="value"><i class="fas fa-phone-alt"></i> <span>{{ customer_phone }}</span></span></div>
+    <div class="detail-item"><span class="label"><i class="far fa-file-alt"></i> Pages</span><span class="value"><span>{{ total_pages }}</span></span></div>
+    <div class="detail-item"><span class="label"><i class="far fa-clock"></i> Queued</span><span class="value"><span>{{ time_ago }}</span></span></div>
+    <div class="detail-item"><span class="label"><i class="fas fa-palette"></i> Color</span><span class="value"><i class="fas fa-circle color-indicator {{ 'colored' if is_colored else 'grayscale' }}"></i><span>{{ color_mode }}</span></span></div>
+    <div class="detail-item"><span class="label"><i class="fas fa-copy"></i> Copies</span><span class="value"><span>{{ copies }}</span></span></div>
+    <div class="detail-item"><span class="label"><i class="fas fa-book"></i> Binding</span><span class="value"><span class="binding-badge">{{ binding_type }}</span></span></div>
+  </div>
+
+  <div class="status-row">
+    <div class="status-left"><i class="fas fa-check-circle"></i><span>Already Printed?</span></div>
+    <div class="status-right" id="releaseBtn"><i class="fas fa-coins"></i> <span>Done Printing</span> <i class="fas fa-chevron-right" style="font-size: 0.7rem; opacity: 0.6;"></i></div>
+  </div>
+
+  <div class="print-action">
+    <button class="btn-print" id="printButton"><i class="fas fa-print"></i> Print Document</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="releaseModal">
+  <div class="modal">
+    <div class="modal-header"><h2><i class="fas fa-coins"></i> Done Printing</h2><button class="modal-close" id="modalCloseBtn">&times;</button></div>
+    <div class="summary-grid">
+      <div class="item"><span class="label"></span><span class="value">{{ filename }}</span></div>
+      <div class="item"><span class="label">Customer</span><span class="value">{{ customer_phone }}</span></div>
+      <div class="item"><span class="label">Pages</span><span class="value">{{ total_pages }}</span></div>
+      <div class="item"><span class="label">Copies</span><span class="value">{{ copies }}</span></div>
+      <div class="item"><span class="label">Color</span><span class="value">{{ color_mode }}</span></div>
+      <div class="item"><span class="label">Binding</span><span class="value">{{ binding_type }}</span></div>
+    </div>
+    <div class="amount-section"><span class="label"><i class="fas fa-lock"></i> Escrow Amount</span><span class="amount">Kshs {{ "{:,.2f}".format(amount) }}</span></div>
+    <div class="confirmation-section">
+      <div class="checkbox-wrap" id="confirmCheck">
+        <input type="checkbox" id="confirmCheckbox">
+        <div class="custom-check"><i class="fas fa-check"></i></div>
+        <span class="check-label">I confirm that I have <strong>printed the document</strong> and verified it meets the customer's requirements.</span>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal cancel" id="modalCancelBtn">Cancel</button>
+      <button class="btn-modal primary" id="releaseConfirmBtn" disabled><i class="fas fa-coins"></i> Cash Out</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // 1) set file icon & extension badge color
+    const extBadge = document.getElementById('fileExtBadge');
+    if (extBadge) {
+      const ext = extBadge.textContent.toLowerCase().trim();
+      // map extension to css class
+      const extClassMap = {
+        'pdf': 'ext-pdf',
+        'doc': 'ext-doc',
+        'docx': 'ext-docx',
+        'xls': 'ext-xls',
+        'xlsx': 'ext-xlsx',
+        'ppt': 'ext-ppt',
+        'pptx': 'ext-pptx',
+        'odt': 'ext-odt',
+        'txt': 'ext-txt'
+      };
+      // remove any existing ext-* classes
+      const allExtClasses = ['ext-pdf','ext-doc','ext-docx','ext-xls','ext-xlsx','ext-ppt','ext-pptx','ext-odt','ext-txt','ext-default'];
+      allExtClasses.forEach(cls => extBadge.classList.remove(cls));
+      if (extClassMap[ext]) {
+        extBadge.classList.add(extClassMap[ext]);
+      } else {
+        extBadge.classList.add('ext-default');
+      }
+    }
+
+    // 2) set print button color based on extension
+    const printBtn = document.getElementById('printButton');
+    if (printBtn) {
+      let ext = 'pdf';
+      const badge = document.getElementById('fileExtBadge');
+      if (badge) {
+        ext = badge.textContent.toLowerCase().trim();
+      } else {
+        const nameSpan = document.querySelector('.file-name span:first-child');
+        if (nameSpan) {
+          const fname = nameSpan.textContent.trim();
+          const parts = fname.split('.');
+          if (parts.length > 1) ext = parts[parts.length - 1].toLowerCase();
         }
       }
-    })();
+      const colorMap = {
+        'pdf': 'btn-pdf', 'docx': 'btn-docx', 'doc': 'btn-doc',
+        'xlsx': 'btn-xlsx', 'xls': 'btn-xls',
+        'pptx': 'btn-pptx', 'ppt': 'btn-ppt',
+        'odt': 'btn-odt', 'txt': 'btn-txt'
+      };
+      const allBtnClasses = ['btn-pdf','btn-docx','btn-doc','btn-xlsx','btn-xls','btn-pptx','btn-ppt','btn-odt','btn-txt','btn-default'];
+      allBtnClasses.forEach(cls => printBtn.classList.remove(cls));
+      if (colorMap[ext]) {
+        printBtn.classList.add(colorMap[ext]);
+      } else {
+        printBtn.classList.add('btn-default');
+      }
+    }
 
+    // 3) modal logic (unchanged)
     const modal = document.getElementById('releaseModal');
     const openBtn = document.getElementById('releaseBtn');
     const closeBtn = document.getElementById('modalCloseBtn');
@@ -732,49 +746,36 @@
       modal.classList.add('active');
       document.body.style.overflow = 'hidden';
     }
-
     function closeModal() {
       modal.classList.remove('active');
       document.body.style.overflow = '';
     }
-
     function releaseFunds() {
       if (!checkbox.checked) return;
-
       confirmBtn.disabled = true;
       confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-      
       setTimeout(() => {
         confirmBtn.classList.add('success');
         confirmBtn.innerHTML = '<i class="fas fa-check"></i> Cashed Out!';
-        
         setTimeout(() => {
           closeModal();
           confirmBtn.classList.remove('success');
-          confirmBtn.innerHTML = '<i class="fas fa-coins"></i> Release Funds';
+          confirmBtn.innerHTML = '<i class="fas fa-coins"></i> Cash Out';
           confirmBtn.disabled = false;
         }, 1500);
       }, 1000);
     }
-
     openBtn.addEventListener('click', openModal);
     closeBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
-
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.classList.contains('active')) {
-        closeModal();
-      }
+      if (e.key === 'Escape' && modal.classList.contains('active')) closeModal();
       if (e.key === 'Enter' && modal.classList.contains('active') && !confirmBtn.disabled) {
         e.preventDefault();
         releaseFunds();
       }
     });
-
     checkboxWrap.addEventListener('click', function(e) {
       if (e.target.tagName !== 'INPUT') {
         checkbox.checked = !checkbox.checked;
@@ -787,7 +788,6 @@
         confirmBtn.disabled = true;
       }
     });
-
     checkbox.addEventListener('change', function() {
       if (this.checked) {
         checkboxWrap.classList.add('checked');
@@ -797,8 +797,8 @@
         confirmBtn.disabled = true;
       }
     });
-
     confirmBtn.addEventListener('click', releaseFunds);
-  </script>
+  })();
+</script>
 </body>
 </html>
