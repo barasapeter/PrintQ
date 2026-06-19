@@ -50,10 +50,17 @@
       box-shadow: 0 12px 20px -10px rgba(0,0,0,0.12);
       border: 1px solid rgba(0,0,0,0.02);
       flex-shrink: 0;
+      overflow: hidden;
     }
     .file-icon-wrapper i {
       font-size: 2.8rem;
       line-height: 1;
+    }
+    .file-icon-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 24px;
     }
     .file-icon-wrapper.pdf i { color: #d1442b; }
     .file-icon-wrapper.pptx i { color: #d46a2a; }
@@ -65,6 +72,10 @@
     .file-icon-wrapper.odt i { color: #3b7b9e; }
     .file-icon-wrapper.txt i { color: #5f6b7a; }
     .file-icon-wrapper.default i { color: #475569; }
+    .file-icon-wrapper.image-preview {
+      background: #f0f4fa;
+      border: 1px solid #dce4ed;
+    }
     .file-meta {
       flex: 1;
       min-width: 160px;
@@ -79,8 +90,6 @@
       flex-wrap: wrap;
       gap: 0.6rem;
     }
-
-    /* --- COLORED EXTENSION BADGE (dynamic) --- */
     .file-ext {
       padding: 0.2rem 0.9rem;
       border-radius: 40px;
@@ -93,7 +102,6 @@
       border: 1px solid rgba(0,0,0,0.04);
       transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     }
-    /* extension badge colors */
     .file-ext.ext-pdf {
       background: #fce4e0;
       color: #a52a2a;
@@ -132,7 +140,17 @@
       color: #1e3a5f;
       border-color: #ccd7e3;
     }
-
+    .file-ext.ext-png,
+    .file-ext.ext-jpg,
+    .file-ext.ext-jpeg,
+    .file-ext.ext-gif,
+    .file-ext.ext-webp,
+    .file-ext.ext-bmp,
+    .file-ext.ext-svg {
+      background: #d9e6f2;
+      color: #1e5a7a;
+      border-color: #b8cfe0;
+    }
     .file-sub {
       display: flex;
       flex-wrap: wrap;
@@ -279,8 +297,6 @@
       justify-content: flex-end;
       margin-top: 0.1rem;
     }
-
-    /* --- DYNAMIC PRINT BUTTON COLORS --- */
     .btn-print {
       border: none;
       padding: 1rem 3rem;
@@ -345,6 +361,24 @@
     .btn-print.btn-txt:hover {
       background: #3e4d5c;
     }
+    .btn-print.btn-png,
+    .btn-print.btn-jpg,
+    .btn-print.btn-jpeg,
+    .btn-print.btn-gif,
+    .btn-print.btn-webp,
+    .btn-print.btn-bmp,
+    .btn-print.btn-svg {
+      background: #2a6a8a;
+    }
+    .btn-print.btn-png:hover,
+    .btn-print.btn-jpg:hover,
+    .btn-print.btn-jpeg:hover,
+    .btn-print.btn-gif:hover,
+    .btn-print.btn-webp:hover,
+    .btn-print.btn-bmp:hover,
+    .btn-print.btn-svg:hover {
+      background: #1f5a78;
+    }
     .btn-print:hover {
       transform: translateY(-1px) scale(1.02);
       box-shadow: 0 16px 28px -10px rgba(0, 30, 60, 0.3);
@@ -353,8 +387,6 @@
       transform: translateY(1px) scale(0.98);
       box-shadow: 0 4px 12px -8px rgba(0, 0, 0, 0.2);
     }
-
-    /* modal (unchanged) */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -608,8 +640,13 @@
   {% set order_id = printjob.id or 'N/A' %}
 
   <div class="file-header">
-    <div class="file-icon-wrapper {{ file_extension if file_extension in ['pdf','pptx','ppt','xlsx','xls','docx','doc','odt','txt'] else 'default' }}">
-      <i class="fas fa-file-{{ 'pdf' if file_extension == 'pdf' else 'powerpoint' if file_extension in ['pptx','ppt'] else 'excel' if file_extension in ['xlsx','xls'] else 'word' if file_extension in ['docx','doc'] else 'alt' if file_extension == 'odt' else 'lines' if file_extension == 'txt' else 'file' }}"></i>
+    <div class="file-icon-wrapper {{ file_extension if file_extension in ['pdf','pptx','ppt','xlsx','xls','docx','doc','odt','txt'] else 'default' }} {% if file_extension in ['png','jpg','jpeg','gif','webp','bmp','svg'] %}image-preview{% endif %}" id="fileIconWrapper">
+      {% if file_extension in ['png','jpg','jpeg','gif','webp','bmp','svg'] %}
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23d9e6f2'/%3E%3Ctext x='50' y='55' font-family='Inter, sans-serif' font-size='22' fill='%232a6a8a' text-anchor='middle' dominant-baseline='middle'%3E🖼️%3C/text%3E%3C/svg%3E"
+             alt="image preview" style="width:100%;height:100%;object-fit:cover;border-radius:24px;" />
+      {% else %}
+        <i class="fas fa-file-{{ 'pdf' if file_extension == 'pdf' else 'powerpoint' if file_extension in ['pptx','ppt'] else 'excel' if file_extension in ['xlsx','xls'] else 'word' if file_extension in ['docx','doc'] else 'alt' if file_extension == 'odt' else 'lines' if file_extension == 'txt' else 'file' }}"></i>
+      {% endif %}
     </div>
     <div class="file-meta">
       <div class="file-name">
@@ -619,7 +656,6 @@
         <span><i class="far fa-calendar-alt"></i> Queued <span>{{ time_ago }}</span></span>
         <span><i class="far fa-copy"></i> <span>{{ copies }}</span> Copies</span>
         <span class="badge-queue">Kshs <span>{{ "{:,.2f}".format(amount) }}</span></span>
-        <!-- colored extension badge: classes added via JS -->
         <span class="file-ext" id="fileExtBadge">{{ file_extension.upper() }}</span>
       </div>
     </div>
@@ -672,11 +708,10 @@
 
 <script>
   (function() {
-    // 1) set file icon & extension badge color
     const extBadge = document.getElementById('fileExtBadge');
+    const iconWrapper = document.getElementById('fileIconWrapper');
     if (extBadge) {
       const ext = extBadge.textContent.toLowerCase().trim();
-      // map extension to css class
       const extClassMap = {
         'pdf': 'ext-pdf',
         'doc': 'ext-doc',
@@ -686,10 +721,16 @@
         'ppt': 'ext-ppt',
         'pptx': 'ext-pptx',
         'odt': 'ext-odt',
-        'txt': 'ext-txt'
+        'txt': 'ext-txt',
+        'png': 'ext-png',
+        'jpg': 'ext-jpg',
+        'jpeg': 'ext-jpeg',
+        'gif': 'ext-gif',
+        'webp': 'ext-webp',
+        'bmp': 'ext-bmp',
+        'svg': 'ext-svg'
       };
-      // remove any existing ext-* classes
-      const allExtClasses = ['ext-pdf','ext-doc','ext-docx','ext-xls','ext-xlsx','ext-ppt','ext-pptx','ext-odt','ext-txt','ext-default'];
+      const allExtClasses = ['ext-pdf','ext-doc','ext-docx','ext-xls','ext-xlsx','ext-ppt','ext-pptx','ext-odt','ext-txt','ext-default','ext-png','ext-jpg','ext-jpeg','ext-gif','ext-webp','ext-bmp','ext-svg'];
       allExtClasses.forEach(cls => extBadge.classList.remove(cls));
       if (extClassMap[ext]) {
         extBadge.classList.add(extClassMap[ext]);
@@ -698,7 +739,6 @@
       }
     }
 
-    // 2) set print button color based on extension
     const printBtn = document.getElementById('printButton');
     if (printBtn) {
       let ext = 'pdf';
@@ -717,9 +757,11 @@
         'pdf': 'btn-pdf', 'docx': 'btn-docx', 'doc': 'btn-doc',
         'xlsx': 'btn-xlsx', 'xls': 'btn-xls',
         'pptx': 'btn-pptx', 'ppt': 'btn-ppt',
-        'odt': 'btn-odt', 'txt': 'btn-txt'
+        'odt': 'btn-odt', 'txt': 'btn-txt',
+        'png': 'btn-png', 'jpg': 'btn-jpg', 'jpeg': 'btn-jpeg',
+        'gif': 'btn-gif', 'webp': 'btn-webp', 'bmp': 'btn-bmp', 'svg': 'btn-svg'
       };
-      const allBtnClasses = ['btn-pdf','btn-docx','btn-doc','btn-xlsx','btn-xls','btn-pptx','btn-ppt','btn-odt','btn-txt','btn-default'];
+      const allBtnClasses = ['btn-pdf','btn-docx','btn-doc','btn-xlsx','btn-xls','btn-pptx','btn-ppt','btn-odt','btn-txt','btn-default','btn-png','btn-jpg','btn-jpeg','btn-gif','btn-webp','btn-bmp','btn-svg'];
       allBtnClasses.forEach(cls => printBtn.classList.remove(cls));
       if (colorMap[ext]) {
         printBtn.classList.add(colorMap[ext]);
@@ -728,7 +770,6 @@
       }
     }
 
-    // 3) modal logic (unchanged)
     const modal = document.getElementById('releaseModal');
     const openBtn = document.getElementById('releaseBtn');
     const closeBtn = document.getElementById('modalCloseBtn');

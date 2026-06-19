@@ -4,20 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
-    <title>Settings - Print Vendor</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>PrintQ · Vendor Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #f1f5f9;
-            --panel: #ffffff;
-            --text: #0f172a;
-            --muted: #475569;
-            --border: #e2e8f0;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --success: #22c55e;
-            --error: #ef4444;
+            --bg-start: #f4f8fc;
+            --bg-end: #e6edf5;
+            --panel: rgba(255,255,255,0.7);
+            --panel-border: rgba(255,255,255,0.7);
+            --text: #0b1a2b;
+            --text-secondary: #3b4d62;
+            --text-muted: #6b8aa3;
+            --accent: #0b2b44;
+            --accent-hover: #123a5a;
+            --accent-light: #d4e0f5;
+            --accent-mid: #b8c9e8;
+            --success: #1d6f4b;
+            --error: #a52a2a;
             --warning: #f59e0b;
+            --border: rgba(195, 210, 225, 0.3);
+            --shadow: rgba(11, 43, 68, 0.06);
         }
 
         * {
@@ -27,8 +36,8 @@
         }
 
         body {
-            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
-            background: var(--bg);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial;
+            background: linear-gradient(145deg, var(--bg-start) 0%, var(--bg-end) 100%);
             color: var(--text);
             line-height: 1.55;
             min-height: 100vh;
@@ -66,19 +75,22 @@
 
         .top-bar h1 i {
             color: var(--accent);
+            font-size: 1.5rem;
         }
 
         .paper-note {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 10px;
-            padding: 12px 16px;
+            background: rgba(255,255,255,0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 14px 20px;
             margin-bottom: 24px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-size: 0.9rem;
-            color: var(--text);
+            color: var(--text-secondary);
         }
 
         .paper-note i {
@@ -88,30 +100,35 @@
 
         .paper-note strong {
             font-weight: 600;
+            color: var(--text);
         }
 
         .settings-card {
             background: var(--panel);
-            border-radius: 16px;
-            border: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--panel-border);
+            border-radius: 28px;
             padding: 32px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            box-shadow: 0 8px 32px var(--shadow);
             margin-bottom: 24px;
         }
 
         .settings-card h2 {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: var(--text);
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             gap: 10px;
+            letter-spacing: -0.2px;
         }
 
         .settings-card h2 i {
             color: var(--accent);
             width: 20px;
+            font-size: 1rem;
         }
 
         .settings-grid {
@@ -146,7 +163,7 @@
 
         .field-group .hint {
             font-size: 0.75rem;
-            color: var(--muted);
+            color: var(--text-muted);
             margin-top: 2px;
         }
 
@@ -154,12 +171,13 @@
         .field-group select {
             padding: 10px 14px;
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 0.95rem;
             font-family: inherit;
             color: var(--text);
-            background: white;
-            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             width: 100%;
         }
 
@@ -167,7 +185,7 @@
         .field-group select:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+            background: rgba(255,255,255,0.8);
         }
 
         .field-group input[type="number"] {
@@ -185,7 +203,7 @@
         }
 
         .field-group .input-with-suffix input {
-            padding-right: 40px;
+            padding-right: 48px;
         }
 
         .field-group .input-with-suffix .suffix {
@@ -193,7 +211,7 @@
             right: 14px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--muted);
+            color: var(--text-muted);
             font-weight: 500;
             font-size: 0.85rem;
         }
@@ -205,29 +223,28 @@
         }
 
         .binding-option {
-            padding: 14px;
+            padding: 16px;
             border: 2px solid var(--border);
-            border-radius: 10px;
+            border-radius: 16px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.15s ease;
-            background: white;
+            background: rgba(255,255,255,0.3);
             position: relative;
         }
 
         .binding-option:hover {
-            border-color: #cbd5e1;
-            background: #f8fafc;
+            border-color: var(--accent-mid);
+            background: rgba(255,255,255,0.5);
         }
 
         .binding-option.selected {
             border-color: var(--accent);
-            background: #eff6ff;
+            background: rgba(11, 43, 68, 0.04);
         }
 
         .binding-option .binding-icon {
             font-size: 1.5rem;
-            color: var(--muted);
+            color: var(--text-muted);
             margin-bottom: 6px;
         }
 
@@ -243,24 +260,26 @@
 
         .binding-option .binding-cost {
             font-size: 0.75rem;
-            color: var(--muted);
-            margin-top: 2px;
+            color: var(--text-muted);
+            margin-top: 4px;
         }
 
         .binding-option .binding-cost input {
             width: 70px;
             padding: 4px 8px;
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 0.8rem;
             text-align: center;
             display: inline-block;
             margin-top: 4px;
+            background: rgba(255,255,255,0.5);
         }
 
         .binding-option .binding-cost input:focus {
             outline: none;
             border-color: var(--accent);
+            background: rgba(255,255,255,0.8);
         }
 
         .binding-option .binding-free {
@@ -303,7 +322,6 @@
             right: 0;
             bottom: 0;
             background: #cbd5e1;
-            transition: 0.3s;
             border-radius: 24px;
         }
 
@@ -315,9 +333,8 @@
             left: 3px;
             bottom: 3px;
             background: white;
-            transition: 0.3s;
             border-radius: 50%;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
         }
 
         .toggle-switch input:checked + .toggle-slider {
@@ -346,25 +363,24 @@
         }
 
         .btn-primary {
-            padding: 12px 28px;
+            padding: 12px 32px;
             background: var(--accent);
             color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 60px;
             font-weight: 600;
             font-size: 0.95rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.15s ease;
             font-family: inherit;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+            box-shadow: 0 8px 20px -8px rgba(11, 43, 68, 0.3);
         }
 
-        .btn-primary:hover {
+        .btn-primary:hover:not(:disabled) {
             background: var(--accent-hover);
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+            box-shadow: 0 12px 28px -8px rgba(11, 43, 68, 0.35);
         }
 
         .btn-primary:disabled {
@@ -378,15 +394,16 @@
             top: 2rem;
             left: 50%;
             transform: translateX(-50%) translateY(-1rem);
-            background: #1a1a1a;
+            background: var(--text);
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
+            padding: 0.75rem 1.75rem;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 500;
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
             white-space: nowrap;
         }
 
@@ -425,6 +442,7 @@
 
             .settings-card {
                 padding: 20px;
+                border-radius: 20px;
             }
 
             .settings-grid {
@@ -462,6 +480,7 @@
                 align-items: center;
                 justify-content: space-between;
                 padding: 12px 16px;
+                text-align: left;
             }
 
             .binding-option .binding-icon {
@@ -471,6 +490,13 @@
             .binding-option .binding-cost input {
                 width: 60px;
             }
+
+            .toast-message {
+                white-space: normal;
+                max-width: 90%;
+                text-align: center;
+                top: 1rem;
+            }
         }
     </style>
 </head>
@@ -478,7 +504,7 @@
     <div class="container">
         <div class="top-bar">
             <h1>
-                <i class="fas fa-cog"></i>
+                <i class="fas fa-sliders-h"></i>
                 Settings
             </h1>
         </div>
@@ -542,7 +568,7 @@
                         <div class="binding-name">Spiral</div>
                         <div class="binding-cost">
                             <input type="number" id="spiralCost" step="0.01" min="0" value="{{ print_preferences.binding.costs.spiral if print_preferences and print_preferences.binding else 50.00 }}" placeholder="Cost">
-                            <span style="font-size:0.7rem; color:var(--muted);">Kshs</span>
+                            <span style="font-size:0.7rem; color:var(--text-muted);">Kshs</span>
                         </div>
                     </div>
 
@@ -553,7 +579,7 @@
                         <div class="binding-name">Tape</div>
                         <div class="binding-cost">
                             <input type="number" id="tapeCost" step="0.01" min="0" value="{{ print_preferences.binding.costs.tape if print_preferences and print_preferences.binding else 30.00 }}" placeholder="Cost">
-                            <span style="font-size:0.7rem; color:var(--muted);">Kshs</span>
+                            <span style="font-size:0.7rem; color:var(--text-muted);">Kshs</span>
                         </div>
                     </div>
                 </div>
@@ -571,7 +597,7 @@
                             <input type="checkbox" id="discountEnabled" {% if print_preferences and print_preferences.discount and print_preferences.discount.enabled %}checked{% endif %}>
                             <span class="toggle-slider"></span>
                         </label>
-                        <span style="font-weight:500; font-size:0.9rem;">Enable bulk discount</span>
+                        <span style="font-weight:500; font-size:0.9rem; color:var(--text);">Enable bulk discount</span>
                     </div>
 
                     <div class="discount-fields" id="discountFields">

@@ -1,7 +1,7 @@
 """
 `dtypes` for `document_types`. Call `validate_document(filepath)`, returns:
 string, eg "pdf" as values declared on `MIME_MAP` dictionary.
-Else: Raises an error for unprintable documents.
+Else: Raises an error for corrupted/unreadable documents.
 """
 
 from pathlib import Path
@@ -14,6 +14,7 @@ from pptx import Presentation
 
 import magic
 from pypdf import PdfReader
+from PIL import Image
 
 
 MIME_MAP = {
@@ -43,6 +44,8 @@ MIME_MAP = {
     "image/svg+xml": "svg",
     "image/heic": "heic",
     "image/heif": "heif",
+    "image/x-icon": "ico",
+    "image/vnd.microsoft.icon": "ico",
 }
 
 
@@ -58,98 +61,109 @@ class NoPrintableContentError(ValueError):
 
 
 def _validate_text(filepath: str) -> None:
+    """Validate text files - accept if readable, reject only if corrupted"""
     try:
-        text = Path(filepath).read_text(errors="ignore")
-        if not text.strip():
-            raise NoPrintableContentError("Document contains no printable content")
-    except NoPrintableContentError:
-        raise
+        Path(filepath).read_text(errors="ignore")
+        # No need to check for content - empty text files are valid
     except Exception as e:
-        raise NoPrintableContentError(f"Unable to read document: {e}") from e
+        raise NoPrintableContentError(f"Unable to read text document: {e}") from e
 
 
 def _validate_docx(filepath: str) -> None:
+    """Validate DOCX files - accept if readable, reject only if corrupted"""
     try:
         with zipfile.ZipFile(filepath) as archive:
-            xml_data = archive.read("word/document.xml")
-        root = ET.fromstring(xml_data)
-        text = "".join(
-            node.text or "" for node in root.iter() if node.tag.endswith("}t")
-        ).strip()
-        if not text:
-            raise NoPrintableContentError("DOCX contains no printable content")
-    except NoPrintableContentError:
-        raise
+            archive.read("word/document.xml")
+        # No need to check for content - empty documents are valid
     except Exception as e:
-        raise NoPrintableContentError(f"Invalid DOCX document: {e}") from e
+        raise NoPrintableContentError(f"Invalid or corrupted DOCX document: {e}") from e
 
 
 def _validate_xlsx(filepath: str) -> None:
+    """Validate XLSX files - accept if readable, reject only if corrupted"""
     try:
-        workbook = load_workbook(filepath, read_only=True, data_only=True)
-        for sheet in workbook.worksheets:
-            for row in sheet.iter_rows(values_only=True):
-                if any(value not in (None, "") for value in row):
-                    return
-        raise NoPrintableContentError("XLSX contains no printable content")
-    except NoPrintableContentError:
-        raise
+        load_workbook(filepath, read_only=True, data_only=True)
+        # No need to check for content - empty spreadsheets are valid
     except Exception as e:
-        raise NoPrintableContentError(f"Invalid XLSX document: {e}") from e
+        raise NoPrintableContentError(f"Invalid or corrupted XLSX document: {e}") from e
 
 
 def _validate_pptx(filepath: str) -> None:
+    """Validate PPTX files - accept if readable, reject only if corrupted"""
     try:
-        presentation = Presentation(filepath)
-        for slide in presentation.slides:
-            for shape in slide.shapes:
-                if hasattr(shape, "text") and shape.text.strip():
-                    return
-        raise NoPrintableContentError("PPTX contains no printable content")
-    except NoPrintableContentError:
-        raise
+        Presentation(filepath)
+        # No need to check for content - empty presentations are valid
     except Exception as e:
-        raise NoPrintableContentError(f"Invalid PPTX document: {e}") from e
+        raise NoPrintableContentError(f"Invalid or corrupted PPTX document: {e}") from e
 
 
 def _validate_pdf(filepath: str) -> None:
+    """Validate PDF files - accept if readable, reject only if corrupted"""
     try:
-        reader = PdfReader(filepath)
-        for page in reader.pages:
-            text = page.extract_text()
-            if text and text.strip():
-                return
-        raise NoPrintableContentError("PDF contains no printable text")
-    except NoPrintableContentError:
-        raise
+        PdfReader(filepath)
+        # No need to check for content - PDFs can have no text and still be valid
     except Exception as e:
-        raise NoPrintableContentError(f"Invalid PDF document: {e}") from e
+        raise NoPrintableContentError(f"Invalid or corrupted PDF document: {e}") from e
+
+
+def _validate_image(filepath: str) -> None:
+    """Validate image files - accept if readable, reject only if corrupted"""
+    try:
+        with Image.open(filepath) as img:
+            img.verify()  # Verify integrity
+        # Also try to actually load the image to catch more corruption issues
+        with Image.open(filepath) as img:
+            img.load()
+    except Exception as e:
+        raise NoPrintableContentError(f"Invalid or corrupted image file: {e}") from e
 
 
 _VALIDATORS = {
+    # Text-based formats
     "txt": _validate_text,
     "csv": _validate_text,
     "html": _validate_text,
     "xml": _validate_text,
     "rtf": _validate_text,
+    # Office documents
     "docx": _validate_docx,
     "xlsx": _validate_xlsx,
     "pptx": _validate_pptx,
     "pdf": _validate_pdf,
+    # Image formats
+    "jpg": _validate_image,
+    "png": _validate_image,
+    "gif": _validate_image,
+    "webp": _validate_image,
+    "tiff": _validate_image,
+    "bmp": _validate_image,
+    "svg": _validate_image,
+    "heic": _validate_image,
+    "heif": _validate_image,
+    "ico": _validate_image,
 }
 
 
 def validate_document(filepath: str) -> str:
+    """
+    Validate that a document is readable and not corrupted.
+    
+    Returns the file type extension if valid.
+    Raises NoPrintableContentError if the file is corrupted or unreadable.
+    
+    Note: Empty files and files without text content are considered valid
+    as long as they can be opened correctly.
+    """
     file_type = _resolve_file_type(filepath)
 
     if not file_type:
-        raise NoPrintableContentError("Unsupported file type")
+        raise NoPrintableContentError("Unsupported or unrecognized file type")
 
     validator = _VALIDATORS.get(file_type)
 
     if not validator:
         raise NoPrintableContentError(
-            f"Printable-content validation not implemented for '{file_type}'"
+            f"Validation not implemented for '{file_type}'"
         )
 
     validator(filepath)
@@ -157,4 +171,15 @@ def validate_document(filepath: str) -> str:
 
 
 if __name__ == "__main__":
-    print(validate_document("Dockerfile"))
+    # Test with various file types
+    test_files = [
+        "Dockerfile",  # Should fail - unsupported
+        "empty.txt",   # Should pass - empty but readable
+        "image.jpg",   # Should pass - valid image
+        "document.pdf", # Should pass - valid PDF
+    ]
+    for test_file in test_files:
+        try:
+            print(f"{test_file}: {validate_document(test_file)}")
+        except NoPrintableContentError as e:
+            print(f"{test_file}: ERROR - {e}")

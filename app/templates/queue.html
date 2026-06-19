@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
-    <title>Queue - Print Settings</title>
+    <title>PrintQ · Queue Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -13,10 +17,11 @@
         }
 
         body {
-            background: #f5f6f8;
-            font-family: -apple-system, BlinkMacFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(145deg, #f4f8fc 0%, #e6edf5 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             padding: 2rem;
             min-height: 100vh;
+            color: #0b1a2b;
         }
 
         .container {
@@ -31,35 +36,40 @@
         }
 
         .card {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 28px;
+            padding: 1.75rem;
+            box-shadow: 0 8px 32px rgba(11, 43, 68, 0.04);
         }
 
         .card-title {
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            color: #1a1a1a;
+            color: #0b1a2b;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             margin-bottom: 1.25rem;
             padding-bottom: 0.75rem;
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid rgba(195, 210, 225, 0.2);
+            letter-spacing: -0.2px;
         }
 
-        .card-title svg {
-            color: #43a047;
+        .card-title i {
+            color: #4373a0;
             flex-shrink: 0;
+            font-size: 1rem;
         }
 
         .doc-preview {
             margin-bottom: 1rem;
-            border-radius: 0.5rem;
+            border-radius: 16px;
             overflow: hidden;
-            background: #fafbfc;
-            border: 1px solid #e5e7eb;
+            background: rgba(255,255,255,0.3);
+            border: 1px solid rgba(195, 210, 225, 0.2);
         }
 
         .doc-preview img {
@@ -73,12 +83,14 @@
         .doc-preview-placeholder {
             padding: 2.5rem;
             text-align: center;
-            color: #9ca3af;
+            color: #8a9db0;
         }
 
-        .doc-preview-placeholder svg {
+        .doc-preview-placeholder i {
+            font-size: 2.5rem;
+            color: #cbd5e1;
             margin-bottom: 0.5rem;
-            color: #d1d5db;
+            display: block;
         }
 
         .doc-info {
@@ -86,16 +98,16 @@
         }
 
         .doc-name {
-            font-size: 1rem;
+            font-size: 1.05rem;
             font-weight: 600;
-            color: #1a1a1a;
+            color: #0b1a2b;
             word-break: break-word;
             margin-bottom: 0.25rem;
             line-height: 1.4;
         }
 
         .doc-name .ext {
-            color: #6b7280;
+            color: #6b8aa3;
             font-weight: 400;
         }
 
@@ -104,7 +116,7 @@
             flex-wrap: wrap;
             gap: 1rem;
             font-size: 0.8rem;
-            color: #6b7280;
+            color: #3b4d62;
             margin-bottom: 0.75rem;
         }
 
@@ -114,10 +126,10 @@
             gap: 0.25rem;
         }
 
-        .doc-meta-item svg {
+        .doc-meta-item i {
+            font-size: 0.7rem;
+            color: #6b8aa3;
             width: 14px;
-            height: 14px;
-            flex-shrink: 0;
         }
 
         .doc-status {
@@ -125,9 +137,10 @@
             align-items: center;
             gap: 0.75rem;
             padding: 0.75rem 1rem;
-            background: #f9fafb;
-            border-radius: 0.5rem;
+            background: rgba(255,255,255,0.4);
+            border-radius: 16px;
             margin-top: 0.5rem;
+            border: 1px solid rgba(195, 210, 225, 0.15);
         }
 
         .status-dot {
@@ -137,65 +150,50 @@
             flex-shrink: 0;
         }
 
-        .status-dot.uploaded {
-            background: #757575;
-        }
-        .status-dot.awaiting-payment {
-            background: #ffa726;
-        }
-        .status-dot.paid {
-            background: #66bb6a;
-        }
-        .status-dot.queued {
-            background: #42a5f5;
-        }
-        .status-dot.printing {
-            background: #ab47bc;
-        }
-        .status-dot.printed {
-            background: #26c6da;
-        }
-        .status-dot.ready-for-pickup {
-            background: #ffa726;
-        }
-        .status-dot.completed {
-            background: #43a047;
-        }
-        .status-dot.payment-failed {
-            background: #ef5350;
-        }
+        .status-dot.uploaded { background: #6b8aa3; }
+        .status-dot.awaiting-payment { background: #f59e0b; }
+        .status-dot.paid { background: #66bb6a; }
+        .status-dot.queued { background: #4373a0; }
+        .status-dot.printing { background: #8b5cf6; }
+        .status-dot.printed { background: #26c6da; }
+        .status-dot.ready-for-pickup { background: #f59e0b; }
+        .status-dot.completed { background: #1d6f4b; }
+        .status-dot.payment-failed { background: #a52a2a; }
 
         .status-label {
             font-weight: 500;
             font-size: 0.875rem;
-            color: #1a1a1a;
+            color: #0b1a2b;
         }
 
         .status-time {
             margin-left: auto;
             font-size: 0.75rem;
-            color: #9ca3af;
+            color: #8a9db0;
             display: flex;
             align-items: center;
             gap: 0.25rem;
         }
 
-        .status-time svg {
-            width: 14px;
-            height: 14px;
+        .status-time i {
+            font-size: 0.65rem;
         }
 
         .settings-toggle {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            cursor: default;
+            cursor: pointer;
             user-select: none;
-            padding: 0.25rem 0;
+            padding: 0.5rem 0.75rem;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.3);
+            border: 1px solid rgba(195, 210, 225, 0.15);
+            margin-bottom: 0.75rem;
         }
 
         .settings-toggle:hover {
-            color: #43a047;
+            background: rgba(255,255,255,0.5);
         }
 
         .settings-toggle-text {
@@ -204,12 +202,15 @@
             gap: 0.5rem;
             font-size: 0.875rem;
             font-weight: 500;
-            color: #4a4a4a;
+            color: #0b1a2b;
+        }
+
+        .settings-toggle-text i {
+            color: #4373a0;
         }
 
         .settings-toggle-icon {
-            transition: transform 0.2s ease;
-            color: #9ca3af;
+            color: #8a9db0;
         }
 
         .settings-toggle-icon.expanded {
@@ -220,7 +221,6 @@
             overflow: hidden;
             max-height: 0;
             opacity: 0;
-            transition: max-height 0.3s ease, opacity 0.3s ease;
         }
 
         .settings-content.expanded {
@@ -241,45 +241,47 @@
             display: block;
             font-size: 0.8rem;
             font-weight: 500;
-            color: #4a4a4a;
+            color: #3b4d62;
             margin-bottom: 0.375rem;
+        }
+
+        .settings-label .default-badge {
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: #8a9db0;
+            background: rgba(255,255,255,0.5);
+            padding: 0.1rem 0.5rem;
+            border-radius: 40px;
+            margin-left: 0.5rem;
         }
 
         .settings-control {
             width: 100%;
             padding: 0.5rem 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
+            border: 1px solid rgba(195, 210, 225, 0.3);
+            border-radius: 12px;
             font-size: 0.875rem;
             font-family: inherit;
-            background: white;
-            color: #1a1a1a;
-            transition: border-color 0.15s ease;
+            background: rgba(255,255,255,0.5);
+            color: #0b1a2b;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
 
         .settings-control:focus {
             outline: none;
-            border-color: #43a047;
+            border-color: #4373a0;
+            background: rgba(255,255,255,0.8);
         }
 
         .settings-control:hover {
-            border-color: #a5d6a7;
+            border-color: #b8c9e8;
         }
 
         .settings-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
-        }
-
-        .default-badge {
-            font-size: 0.65rem;
-            font-weight: 400;
-            color: #9ca3af;
-            background: #f5f5f5;
-            padding: 0.1rem 0.5rem;
-            border-radius: 9999px;
-            margin-left: 0.5rem;
         }
 
         .cost-breakdown {
@@ -298,25 +300,25 @@
         }
 
         .cost-item:not(:last-child) {
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid rgba(195, 210, 225, 0.15);
         }
 
         .cost-label {
-            color: #4a4a4a;
+            color: #3b4d62;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .cost-label svg {
+        .cost-label i {
             width: 16px;
-            height: 16px;
-            color: #6b7280;
+            color: #6b8aa3;
+            font-size: 0.8rem;
         }
 
         .cost-value {
             font-weight: 500;
-            color: #1a1a1a;
+            color: #0b1a2b;
         }
 
         .cost-total {
@@ -324,52 +326,53 @@
             justify-content: space-between;
             align-items: center;
             padding-top: 0.75rem;
-            border-top: 2px solid #e5e7eb;
+            border-top: 2px solid rgba(195, 210, 225, 0.2);
             margin-top: 0.25rem;
         }
 
         .cost-total-label {
             font-size: 1rem;
             font-weight: 600;
-            color: #1a1a1a;
+            color: #0b1a2b;
         }
 
         .cost-total-value {
             font-size: 1.25rem;
             font-weight: 700;
-            color: #43a047;
+            color: #1d6f4b;
         }
 
         .btn-primary {
             width: 100%;
-            background: #43a047;
+            background: #0b2b44;
             border: none;
             color: white;
             font-weight: 600;
-            font-size: 0.875rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 60px;
             cursor: pointer;
             font-family: inherit;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            transition: background 0.15s ease;
+            box-shadow: 0 8px 20px -8px rgba(11, 43, 68, 0.3);
         }
 
-        .btn-primary:hover {
-            background: #2e7d32;
+        .btn-primary:hover:not(:disabled) {
+            background: #123a5a;
+            box-shadow: 0 12px 28px -8px rgba(11, 43, 68, 0.35);
         }
 
         .btn-primary:disabled {
-            background: #bdbdbd;
+            background: #b8c9e8;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
-        .btn-primary svg {
-            width: 18px;
-            height: 18px;
+        .btn-primary i {
+            font-size: 0.9rem;
         }
 
         .toast-message {
@@ -377,15 +380,16 @@
             top: 2rem;
             left: 50%;
             transform: translateX(-50%) translateY(-1rem);
-            background: #1a1a1a;
+            background: #0b1a2b;
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
+            padding: 0.75rem 1.75rem;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            font-weight: 500;
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
             white-space: nowrap;
         }
 
@@ -396,21 +400,53 @@
         }
 
         .toast-message.success {
-            background: #43a047;
+            background: #1d6f4b;
         }
 
         .toast-message.error {
-            background: #e53935;
+            background: #a52a2a;
         }
 
         .discount-badge {
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 0.15rem 0.6rem;
-            border-radius: 9999px;
+            background: rgba(29, 111, 75, 0.12);
+            color: #1d6f4b;
+            padding: 0.15rem 0.7rem;
+            border-radius: 40px;
             font-size: 0.7rem;
-            font-weight: 500;
+            font-weight: 600;
             margin-left: 0.5rem;
+            border: 1px solid rgba(29, 111, 75, 0.15);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .payment-complete {
+            background: rgba(29, 111, 75, 0.06);
+            border: 2px solid rgba(29, 111, 75, 0.15);
+            border-radius: 28px;
+            padding: 3rem;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        .payment-complete i {
+            font-size: 3rem;
+            color: #1d6f4b;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .payment-complete h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0b1a2b;
+        }
+
+        .payment-complete p {
+            color: #3b4d62;
+            margin-top: 0.5rem;
         }
 
         @media (max-width: 768px) {
@@ -439,6 +475,13 @@
                 text-align: center;
                 top: 1rem;
             }
+            .full-width {
+                grid-column: 1;
+            }
+            .payment-complete {
+                grid-column: 1;
+                padding: 2rem 1.5rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -446,7 +489,8 @@
                 font-size: 0.9rem;
             }
             .card {
-                padding: 1rem;
+                padding: 1.25rem;
+                border-radius: 20px;
             }
             .cost-total-value {
                 font-size: 1.1rem;
@@ -459,12 +503,7 @@
         <div class="grid-2col">
             <div class="card">
                 <div class="card-title">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                    </svg>
+                    <i class="fas fa-file-alt"></i>
                     Document Details
                 </div>
                 <div class="doc-preview">
@@ -472,12 +511,7 @@
                     <img src="{{ printjob.preview_image_url }}" alt="Document preview">
                     {% else %}
                     <div class="doc-preview-placeholder">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 6 2 18 2 18 9"/>
-                            <path d="M18 9H6"/>
-                            <path d="M18 9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/>
-                            <rect x="10" y="13" width="4" height="4"/>
-                        </svg>
+                        <i class="fas fa-file-alt"></i>
                         <div style="font-size:0.875rem;">No preview available</div>
                     </div>
                     {% endif %}
@@ -493,27 +527,15 @@
                     </div>
                     <div class="doc-meta">
                         <span class="doc-meta-item">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                <polyline points="17 8 12 3 7 8"/>
-                                <line x1="12" y1="3" x2="12" y2="15"/>
-                            </svg>
+                            <i class="fas fa-weight-hanging"></i>
                             {{ format_file_size(printjob.properties.get("file_metadata", {}).get("filesize", 0)) }}
                         </span>
                         <span class="doc-meta-item">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                                <polyline points="14 2 14 8 20 8"/>
-                                <line x1="16" y1="13" x2="8" y2="13"/>
-                                <line x1="16" y1="17" x2="8" y2="17"/>
-                            </svg>
+                            <i class="fas fa-file-alt"></i>
                             <span id="pageCountDisplay">{{ printjob.properties.get("file_metadata", {}).get("page_count", 1) }}</span> pages
                         </span>
                         <span class="doc-meta-item">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"/>
-                                <polyline points="12 6 12 12 16 14"/>
-                            </svg>
+                            <i class="far fa-clock"></i>
                             {{ printjob.created_at|time_ago }}
                         </span>
                     </div>
@@ -523,10 +545,7 @@
                     <span class="status-label">{{ printjob.properties.get("status", "Uploaded") }}</span>
                     {% if printjob.updated_at and printjob.updated_at != printjob.created_at %}
                     <span class="status-time">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                            <circle cx="12" cy="12" r="3"/>
-                        </svg>
+                        <i class="far fa-eye"></i>
                         Updated {{ printjob.updated_at|time_ago }}
                     </span>
                     {% endif %}
@@ -534,31 +553,22 @@
             </div>
 
             {% if not payment_completed %}
-            <div class="card" style="grid-column: 1 / -1;">
+            <div class="card full-width">
                 <div class="card-title">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"/>
-                        <path d="M12 1v4"/>
-                        <path d="M12 19v4"/>
-                        <path d="M4.22 4.22l2.83 2.83"/>
-                        <path d="M16.95 16.95l2.83 2.83"/>
-                        <path d="M1 12h4"/>
-                        <path d="M19 12h4"/>
-                        <path d="M4.22 19.78l2.83-2.83"/>
-                        <path d="M16.95 7.05l2.83-2.83"/>
-                    </svg>
+                    <i class="fas fa-sliders-h"></i>
                     Print Settings
-                    <span style="font-weight:400;font-size:0.75rem;color:#9ca3af;margin-left:auto;">Real‑time update</span>
+                    <span style="font-weight:400;font-size:0.75rem;color:#8a9db0;margin-left:auto;">Real-time update</span>
                 </div>
                 <div class="settings-toggle" id="settingsToggle">
-                    <span class="settings-toggle-text">Customize print settings</span>
+                    <span class="settings-toggle-text">
+                        <i class="fas fa-cog"></i>
+                        Customize print settings
+                    </span>
                     <span class="settings-toggle-icon" id="settingsToggleIcon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"/>
-                        </svg>
+                        <i class="fas fa-chevron-down"></i>
                     </span>
                 </div>
-                <div class="settings-content closed" id="settingsContent">
+                <div class="settings-content expanded" id="settingsContent">
                     <div class="settings-group">
                         <label class="settings-label" for="pageSize">Page Size <span class="default-badge">Default: A4</span></label>
                         <select class="settings-control" id="pageSize">
@@ -610,72 +620,44 @@
                 </div>
             </div>
 
-            <div class="card" style="grid-column: 1 / -1;">
+            <div class="card full-width">
                 <div class="card-title">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 6v6l4 2"/>
-                    </svg>
+                    <i class="fas fa-calculator"></i>
                     Cost Summary
                     <span id="discountBadge" class="discount-badge" style="display:none;">10% off</span>
                 </div>
                 <div class="cost-breakdown">
                     <div class="cost-item">
                         <span class="cost-label">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                                <polyline points="14 2 14 8 20 8"/>
-                                <line x1="16" y1="13" x2="8" y2="13"/>
-                                <line x1="16" y1="17" x2="8" y2="17"/>
-                            </svg>
+                            <i class="fas fa-file-alt"></i>
                             Pages
                         </span>
                         <span class="cost-value" id="pageCountCost">{{ printjob.properties.get("file_metadata", {}).get("page_count", 1) }}</span>
                     </div>
                     <div class="cost-item">
                         <span class="cost-label">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-                            </svg>
+                            <i class="fas fa-copy"></i>
                             Copies
                         </span>
                         <span class="cost-value" id="copyCount">1</span>
                     </div>
                     <div class="cost-item">
                         <span class="cost-label">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M12 1v4"/>
-                                <path d="M12 19v4"/>
-                                <path d="M4.22 4.22l2.83 2.83"/>
-                                <path d="M16.95 16.95l2.83 2.83"/>
-                                <path d="M1 12h4"/>
-                                <path d="M19 12h4"/>
-                                <path d="M4.22 19.78l2.83-2.83"/>
-                                <path d="M16.95 7.05l2.83-2.83"/>
-                            </svg>
+                            <i class="fas fa-dollar-sign"></i>
                             Cost per page
                         </span>
                         <span class="cost-value" id="costPerPage">Kshs 5.00</span>
                     </div>
                     <div class="cost-item" id="bindingCostRow" style="display:none;">
                         <span class="cost-label">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                                <path d="M2 17l10 5 10-5"/>
-                                <path d="M2 12l10 5 10-5"/>
-                            </svg>
+                            <i class="fas fa-book"></i>
                             Binding (<span id="bindingUnits">1</span>)
                         </span>
                         <span class="cost-value" id="bindingCost">Kshs 0.00</span>
                     </div>
                     <div class="cost-item" id="discountRow" style="display:none;">
                         <span class="cost-label">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 12L4 12"/>
-                                <path d="M12 4v16"/>
-                            </svg>
+                            <i class="fas fa-tag"></i>
                             Discount
                         </span>
                         <span class="cost-value" id="discountAmount">-Kshs 0.00</span>
@@ -686,18 +668,15 @@
                     </div>
                 </div>
                 <button class="btn-primary" id="pushToQueueBtn">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 6 2 18 2 18 9"/>
-                        <path d="M18 9H6"/>
-                        <path d="M18 9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/>
-                        <rect x="10" y="13" width="4" height="4"/>
-                    </svg>
+                    <i class="fas fa-print"></i>
                     Push to Queue
                 </button>
             </div>
             {% else %}
-            <div>
-                <h1>Payment was completed!</h1>
+            <div class="payment-complete">
+                <i class="fas fa-check-circle"></i>
+                <h1>Payment Completed!</h1>
+                <p>Your document has been paid for and is now being processed.</p>
             </div>
             {% endif %}
         </div>
@@ -739,8 +718,13 @@
 
             settingsToggle.addEventListener('click', function() {
                 settingsExpanded = !settingsExpanded;
-                settingsContent.classList.toggle('expanded');
-                settingsToggleIcon.classList.toggle('expanded');
+                if (settingsExpanded) {
+                    settingsContent.classList.add('expanded');
+                    settingsToggleIcon.classList.add('expanded');
+                } else {
+                    settingsContent.classList.remove('expanded');
+                    settingsToggleIcon.classList.remove('expanded');
+                }
             });
 
             function showToast(msg, type) {
@@ -886,7 +870,7 @@
 
             pushBtn.addEventListener('click', async function() {
                 pushBtn.disabled = true;
-                pushBtn.textContent = 'Pushing...';
+                pushBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Pushing...';
                 
                 const settings = {
                     page_size: pageSize.value,
@@ -897,7 +881,6 @@
                     paper_type: paperType.value,
                     binding: bindingSelect.value,
                 };
-                
                 
                 const payload = {
                     printjob_uuid: '{{ printjob.uuid }}',
@@ -919,15 +902,17 @@
                     
                     if (response.ok) {
                         showToast(data.detail || 'Document pushed to queue successfully!', 'success');
+                        pushBtn.innerHTML = '<i class="fas fa-check"></i> Waiting for payment...';
                     } else {
                         showToast(data.detail || 'Failed to push document to queue', 'error');
+                        pushBtn.disabled = false;
+                        pushBtn.innerHTML = '<i class="fas fa-print"></i> Push to Queue';
                     }
                 } catch (error) {
                     showToast('Network error: Could not connect to server', 'error');
                     console.error('Request failed:', error);
-                } finally {
-                    // pushBtn.disabled = false;
-                    pushBtn.textContent = 'Waiting for payment...';
+                    pushBtn.disabled = false;
+                    pushBtn.innerHTML = '<i class="fas fa-print"></i> Push to Queue';
                 }
             });
 

@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
-    <title>Document Upload - {{ phone }}</title>
+    <title>PrintQ · Upload</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -13,10 +17,11 @@
         }
 
         body {
-            background: #f5f6f8;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(145deg, #f4f8fc 0%, #e6edf5 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             padding: 2rem;
             min-height: 100vh;
+            color: #0b1a2b;
         }
 
         .dashboard {
@@ -25,11 +30,14 @@
         }
 
         .header {
-            background: #e8f5e9;
-            border: 1px solid #c8e6c9;
-            border-radius: 0.75rem;
-            padding: 1.75rem 2rem;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 28px;
+            padding: 1.75rem 2.5rem;
             margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(11, 43, 68, 0.06);
         }
 
         .header-content {
@@ -43,101 +51,123 @@
         .header-left {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.25rem;
+        }
+
+        .header-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 18px;
+            background: linear-gradient(145deg, #d4e0f5, #b8c9e8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #0b2b44;
+            border: 2px solid rgba(255,255,255,0.6);
         }
 
         .header-text h1 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-bottom: 0.1rem;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #0b1a2b;
+            letter-spacing: -0.3px;
         }
 
         .header-text p {
-            color: #4a4a4a;
-            font-size: 0.875rem;
+            color: #3b4d62;
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .header-text p svg {
-            color: #666;
+        .header-text p i {
+            color: #6b8aa3;
+        }
+
+        .header-badge {
+            background: rgba(29, 111, 75, 0.12);
+            color: #1d6f4b;
+            padding: 0.4rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(29, 111, 75, 0.15);
         }
 
         .upload-card {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 28px;
             margin-bottom: 1.5rem;
+            box-shadow: 0 8px 32px rgba(11, 43, 68, 0.04);
         }
 
         .upload-card-body {
-            padding: 1.5rem;
+            padding: 1.75rem;
         }
 
         .upload-zone {
-            border: 2px dashed #d1d5db;
-            border-radius: 0.75rem;
-            padding: 2.5rem 2rem;
+            border: 2px dashed rgba(195, 210, 225, 0.4);
+            border-radius: 24px;
+            padding: 3rem 2rem;
             text-align: center;
-            cursor: pointer;
+            cursor: default;
             position: relative;
-            background: #fafbfc;
+            background: rgba(255,255,255,0.3);
         }
 
         .upload-zone:hover {
-            border-color: #43a047;
-            background: #f1f8e9;
+            border-color: #b8c9e8;
+            background: rgba(255,255,255,0.5);
         }
 
         .upload-zone.dragover {
-            border-color: #43a047;
-            background: #e8f5e9;
+            border-color: #1d6f4b;
+            background: rgba(29, 111, 75, 0.04);
         }
 
         .upload-zone.has-file {
-            border-color: #43a047;
-            background: #f1f8e9;
+            border-color: #1d6f4b;
+            background: rgba(29, 111, 75, 0.04);
             padding: 1.5rem 2rem;
         }
 
         .upload-zone-icon {
-            width: 64px;
-            height: 64px;
+            width: 72px;
+            height: 72px;
             margin: 0 auto 1rem;
-            background: #e8f5e9;
-            border-radius: 50%;
+            background: linear-gradient(145deg, #d4e0f5, #b8c9e8);
+            border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #43a047;
+            color: #0b2b44;
+            font-size: 2rem;
         }
 
         .upload-zone:hover .upload-zone-icon {
-            background: #c8e6c9;
+            background: linear-gradient(145deg, #c8d5ea, #a8bdd8);
         }
 
         .upload-zone.has-file .upload-zone-icon {
-            background: #c8e6c9;
-            color: #2e7d32;
-        }
-
-        .upload-zone-icon svg {
-            width: 32px;
-            height: 32px;
+            background: linear-gradient(145deg, #dff0e3, #c8e0cf);
+            color: #1d6f4b;
         }
 
         .upload-zone-title {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
-            color: #1a1a1a;
+            color: #0b1a2b;
             margin-bottom: 0.25rem;
         }
 
         .upload-zone-subtitle {
-            font-size: 0.875rem;
-            color: #6b7280;
+            font-size: 0.9rem;
+            color: #6b8aa3;
         }
 
         .upload-zone-formats {
@@ -150,22 +180,23 @@
 
         .upload-zone-formats span {
             font-size: 0.65rem;
-            font-weight: 500;
-            color: #4a4a4a;
-            background: #f3f4f6;
-            padding: 0.2rem 0.6rem;
-            border-radius: 0.25rem;
-            font-family: monospace;
+            font-weight: 600;
+            color: #3b4d62;
+            background: rgba(255,255,255,0.6);
+            padding: 0.25rem 0.75rem;
+            border-radius: 40px;
+            letter-spacing: 0.3px;
+            border: 1px solid rgba(195, 210, 225, 0.3);
         }
 
         .upload-zone .file-selected-info {
             display: none;
             align-items: center;
             gap: 1rem;
-            padding: 0.5rem;
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(195, 210, 225, 0.3);
+            border-radius: 16px;
             margin-top: 0.5rem;
         }
 
@@ -181,8 +212,8 @@
 
         .file-selected-icon {
             flex-shrink: 0;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -195,95 +226,55 @@
 
         .file-selected-name {
             font-weight: 600;
-            color: #1a1a1a;
-            font-size: 0.875rem;
+            color: #0b1a2b;
+            font-size: 0.9rem;
             word-break: break-all;
         }
 
         .file-selected-meta {
             font-size: 0.75rem;
-            color: #6b7280;
+            color: #6b8aa3;
         }
 
         .file-selected-remove {
-            background: none;
             border: none;
-            color: #9ca3af;
-            cursor: pointer;
+            color: #8a9db0;
+            cursor: default;
             padding: 0.25rem;
-            border-radius: 0.375rem;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .file-selected-remove:hover {
-            background: #fce4ec;
-            color: #c62828;
-        }
-
-        .upload-btn-primary {
-            background: #43a047;
-            border: none;
-            color: white;
-            font-weight: 600;
-            font-size: 0.875rem;
-            padding: 0.625rem 1.75rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-family: inherit;
-        }
-
-        .upload-btn-primary:hover:not(:disabled) {
-            background: #2e7d32;
-        }
-
-        .upload-btn-primary:disabled {
-            background: #bdbdbd;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        .clear-btn {
-            background: #f5f5f5;
-            border: 1px solid #e0e0e0;
-            color: #616161;
-            font-weight: 500;
-            font-size: 0.875rem;
-            padding: 0.625rem 1.25rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-family: inherit;
-        }
-
-        .clear-btn:hover {
-            background: #fce4ec;
-            border-color: #ef9a9a;
-            color: #c62828;
+            background: #fce4e0;
+            color: #a52a2a;
         }
 
         .selection-panel {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 28px;
+            padding: 1.75rem;
             margin-top: 1.5rem;
+            box-shadow: 0 8px 32px rgba(11, 43, 68, 0.04);
         }
 
         .selection-title {
             font-weight: 600;
-            color: #1a1a1a;
+            color: #0b1a2b;
             margin-bottom: 1.25rem;
-            font-size: 0.875rem;
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+        }
+
+        .selection-title i {
+            color: #4373a0;
         }
 
         .shops-grid {
@@ -294,33 +285,34 @@
         }
 
         .shop-card {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 0.875rem 1rem;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(195, 210, 225, 0.3);
+            border-radius: 20px;
+            padding: 1rem 1.25rem;
             display: flex;
             align-items: flex-start;
             gap: 0.75rem;
         }
 
         .shop-card.enabled {
-            cursor: pointer;
+            cursor: default;
         }
 
         .shop-card.enabled:hover {
-            background: #f1f8e9;
-            border-color: #a5d6a7;
+            background: rgba(255,255,255,0.8);
+            border-color: #b8c9e8;
+            box-shadow: 0 8px 24px rgba(11, 43, 68, 0.06);
         }
 
         .shop-card.disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
-            background: #f9fafb;
         }
 
         .shop-card.selected {
-            background: #e8f5e9;
-            border-color: #43a047;
+            background: rgba(29, 111, 75, 0.06);
+            border-color: #1d6f4b;
+            box-shadow: 0 0 0 2px rgba(29, 111, 75, 0.1);
         }
 
         .shop-radio {
@@ -328,14 +320,15 @@
             width: 1.25rem;
             height: 1.25rem;
             border-radius: 50%;
-            border: 2px solid #d1d5db;
+            border: 2px solid #cbd5e1;
             background: white;
             margin-top: 0.125rem;
             position: relative;
         }
 
         .shop-card.selected .shop-radio {
-            border-color: #43a047;
+            border-color: #1d6f4b;
+            background: #1d6f4b;
         }
 
         .shop-card.selected .shop-radio::after {
@@ -344,10 +337,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 0.625rem;
-            height: 0.625rem;
+            width: 0.5rem;
+            height: 0.5rem;
             border-radius: 50%;
-            background: #43a047;
+            background: white;
         }
 
         .shop-card.disabled .shop-radio {
@@ -370,41 +363,41 @@
         .shop-name {
             font-size: 1rem;
             font-weight: 600;
-            color: #1a1a1a;
+            color: #0b1a2b;
         }
 
         .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 0.25rem;
-            font-size: 0.7rem;
-            font-weight: 500;
-            padding: 0.2rem 0.5rem;
-            border-radius: 9999px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.15rem 0.6rem;
+            border-radius: 40px;
+            letter-spacing: 0.3px;
         }
 
         .status-badge.open {
-            background: #e8f5e9;
-            color: #2e7d32;
+            background: rgba(29, 111, 75, 0.12);
+            color: #1d6f4b;
         }
 
         .status-badge.closed {
-            background: #fce4ec;
-            color: #c62828;
+            background: rgba(165, 42, 42, 0.08);
+            color: #a52a2a;
         }
 
         .shop-location {
-            font-size: 0.75rem;
-            color: #6b7280;
-            margin-bottom: 0.375rem;
+            font-size: 0.8rem;
+            color: #3b4d62;
+            margin-bottom: 0.25rem;
         }
 
-        .shop-contatact {
+        .shop-contact {
             font-size: 0.7rem;
             font-family: monospace;
-            color: #9ca3af;
-            padding-top: 0.375rem;
-            margin-top: 0.375rem;
+            color: #6b8aa3;
+            padding-top: 0.25rem;
         }
 
         .action-buttons {
@@ -414,38 +407,41 @@
         }
 
         .btn-success {
-            background: #43a047;
+            background: #0b2b44;
             border: none;
             color: white;
             font-weight: 600;
-            font-size: 0.875rem;
-            padding: 0.5rem 1.5rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0.6rem 1.75rem;
+            border-radius: 60px;
+            cursor: default;
             font-family: inherit;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            box-shadow: 0 8px 20px -8px rgba(11, 43, 68, 0.3);
         }
 
         .btn-success:hover:not(:disabled) {
-            background: #2e7d32;
+            background: #123a5a;
+            box-shadow: 0 12px 28px -8px rgba(11, 43, 68, 0.35);
         }
 
         .btn-success:disabled {
-            background: #bdbdbd;
+            background: #b8c9e8;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         .btn-secondary {
-            background: #f5f5f5;
-            border: 1px solid #e0e0e0;
-            color: #424242;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(195, 210, 225, 0.3);
+            color: #3b4d62;
             font-weight: 500;
-            font-size: 0.875rem;
-            padding: 0.5rem 1.25rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0.6rem 1.5rem;
+            border-radius: 60px;
+            cursor: default;
             font-family: inherit;
             display: inline-flex;
             align-items: center;
@@ -453,7 +449,8 @@
         }
 
         .btn-secondary:hover {
-            background: #eeeeee;
+            background: rgba(255,255,255,0.8);
+            border-color: #b8c9e8;
         }
 
         .hidden-input {
@@ -461,12 +458,13 @@
         }
 
         .empty-state {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
-            padding: 3rem;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 28px;
+            padding: 4rem;
             text-align: center;
-            color: #6b7280;
+            color: #6b8aa3;
         }
 
         .toast-message {
@@ -474,16 +472,17 @@
             top: 2rem;
             left: 50%;
             transform: translateX(-50%) translateY(-1rem);
-            background: #1a1a1a;
+            background: #0b1a2b;
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-size: 0.875rem;
+            padding: 0.75rem 1.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
             white-space: nowrap;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
         }
 
         .toast-message.show {
@@ -493,17 +492,17 @@
         }
 
         .toast-message.success {
-            background: #43a047;
+            background: #1d6f4b;
         }
 
         .toast-message.error {
-            background: #e53935;
+            background: #a52a2a;
         }
 
         .loading-spinner {
             display: inline-block;
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border: 2px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: white;
@@ -528,21 +527,26 @@
         }
 
         .printjobs-title {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #1a1a1a;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #0b1a2b;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            letter-spacing: -0.3px;
+        }
+
+        .printjobs-title i {
+            color: #4373a0;
         }
 
         .printjobs-count {
-            background: #e8eaf6;
-            color: #283593;
+            background: rgba(11, 43, 68, 0.08);
+            color: #0b2b44;
             font-size: 0.75rem;
-            font-weight: 500;
-            padding: 0.125rem 0.625rem;
-            border-radius: 9999px;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 40px;
         }
 
         .printjobs-grid {
@@ -552,17 +556,21 @@
         }
 
         .printjob-card {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
-            padding: 1.25rem;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 24px;
+            padding: 1.25rem 1.5rem;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.02);
         }
 
         .printjob-card:hover {
-            border-color: #a5d6a7;
+            box-shadow: 0 12px 32px rgba(11, 43, 68, 0.06);
+            border-color: rgba(180, 200, 230, 0.3);
         }
 
         .printjob-top {
@@ -573,13 +581,13 @@
 
         .printjob-icon {
             flex-shrink: 0;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 0.5rem;
-            background: #f5f5f5;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.5);
         }
 
         .printjob-info {
@@ -589,8 +597,8 @@
 
         .printjob-filename {
             font-weight: 600;
-            color: #1a1a1a;
-            font-size: 0.875rem;
+            color: #0b1a2b;
+            font-size: 0.9rem;
             word-break: break-all;
             margin-bottom: 0.25rem;
         }
@@ -600,7 +608,7 @@
             flex-wrap: wrap;
             gap: 0.75rem;
             font-size: 0.75rem;
-            color: #6b7280;
+            color: #6b8aa3;
         }
 
         .printjob-meta-item {
@@ -609,10 +617,8 @@
             gap: 0.25rem;
         }
 
-        .printjob-meta-item svg {
-            width: 14px;
-            height: 14px;
-            flex-shrink: 0;
+        .printjob-meta-item i {
+            font-size: 0.7rem;
         }
 
         .printjob-bottom {
@@ -622,14 +628,14 @@
             flex-wrap: wrap;
             gap: 0.75rem;
             padding-top: 0.75rem;
-            border-top: 1px solid #f3f4f6;
+            border-top: 1px solid rgba(195, 210, 225, 0.2);
         }
 
         .printjob-status {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 500;
         }
 
@@ -640,21 +646,21 @@
             flex-shrink: 0;
         }
 
-        .status-dot.uploaded { background: #757575; }
-        .status-dot.awaiting-payment { background: #ffa726; }
+        .status-dot.uploaded { background: #6b8aa3; }
+        .status-dot.awaiting-payment { background: #f59e0b; }
         .status-dot.paid { background: #66bb6a; }
-        .status-dot.queued { background: #42a5f5; }
-        .status-dot.printing { background: #ab47bc; }
+        .status-dot.queued { background: #4373a0; }
+        .status-dot.printing { background: #8b5cf6; }
         .status-dot.printed { background: #26c6da; }
-        .status-dot.ready-for-pickup { background: #ffa726; }
-        .status-dot.completed { background: #43a047; }
-        .status-dot.payment-failed { background: #ef5350; }
+        .status-dot.ready-for-pickup { background: #f59e0b; }
+        .status-dot.completed { background: #1d6f4b; }
+        .status-dot.payment-failed { background: #a52a2a; }
 
         .printjob-timestamps {
             display: flex;
             flex-direction: column;
             font-size: 0.7rem;
-            color: #9ca3af;
+            color: #8a9db0;
             text-align: right;
             gap: 0.125rem;
         }
@@ -666,49 +672,50 @@
             gap: 0.25rem;
         }
 
-        .printjob-timestamps svg {
-            width: 12px;
-            height: 12px;
-            flex-shrink: 0;
+        .printjob-timestamps i {
+            font-size: 0.6rem;
         }
 
         .printjob-view-btn {
-            background: #f5f5f5;
-            border: 1px solid #e0e0e0;
-            color: #424242;
-            font-size: 0.75rem;
+            background: rgba(255,255,255,0.5);
+            border: 1px solid rgba(195, 210, 225, 0.3);
+            color: #3b4d62;
+            font-size: 0.8rem;
             font-weight: 500;
-            padding: 0.375rem 1rem;
-            border-radius: 0.375rem;
-            cursor: pointer;
+            padding: 0.35rem 1.25rem;
+            border-radius: 40px;
+            cursor: default;
             font-family: inherit;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 0.375rem;
-            text-align: center;
         }
 
         .printjob-view-btn:hover {
-            background: #eeeeee;
+            background: rgba(255,255,255,0.8);
+            border-color: #b8c9e8;
             text-decoration: none;
-            color: #424242;
+            color: #0b1a2b;
         }
 
         .printjob-empty {
-            background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
-            padding: 2rem;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.7);
+            border-radius: 24px;
+            padding: 3rem;
             text-align: center;
-            color: #9ca3af;
-            font-size: 0.875rem;
+            color: #8a9db0;
+            font-size: 0.9rem;
         }
 
-        .printjob-empty svg {
+        .printjob-empty i {
+            font-size: 2.5rem;
+            color: #cbd5e1;
             margin-bottom: 0.5rem;
-            color: #d1d5db;
+            display: block;
         }
 
         @media (max-width: 640px) {
@@ -716,7 +723,8 @@
                 padding: 1rem;
             }
             .header {
-                padding: 1.25rem;
+                padding: 1.25rem 1.5rem;
+                border-radius: 20px;
             }
             .header-content {
                 flex-direction: column;
@@ -760,6 +768,13 @@
             .printjob-timestamps span {
                 justify-content: flex-start;
             }
+            .upload-card-body {
+                padding: 1.25rem;
+            }
+            .selection-panel {
+                padding: 1.25rem;
+                border-radius: 20px;
+            }
         }
     </style>
 </head>
@@ -768,20 +783,27 @@
     <div class="header">
         <div class="header-content">
             <div class="header-left">
+                <div class="header-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
                 <div class="header-text">
                     <h1>Hi, there</h1>
-                    <p>                        
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <p>
+                        <i class="fas fa-map-pin"></i>
                         What are we printing today?
                     </p>
                 </div>
             </div>
-            
+            <span class="header-badge">
+                <i class="fas fa-print" style="margin-right: 4px;"></i>
+                {{ phone }}
+            </span>
         </div>
     </div>
 
     {% if not shops %}
         <div class="empty-state">
+            <i class="fas fa-store" style="font-size: 2.5rem; color: #cbd5e1; margin-bottom: 0.75rem; display: block;"></i>
             No shops available
         </div>
     {% else %}
@@ -789,11 +811,7 @@
             <div class="upload-card-body">
                 <div class="upload-zone" id="uploadZone">
                     <div class="upload-zone-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="17 8 12 3 7 8"/>
-                            <line x1="12" y1="3" x2="12" y2="15"/>
-                        </svg>
+                        <i class="fas fa-cloud-upload-alt"></i>
                     </div>
                     <div class="upload-zone-title">Drop your document here</div>
                     <div class="upload-zone-subtitle">or click to browse</div>
@@ -813,10 +831,7 @@
                             <div class="file-selected-meta" id="fileSelectedMeta"></div>
                         </div>
                         <button class="file-selected-remove" id="fileSelectedRemove" title="Remove file">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="18" y1="6" x2="6" y2="18"/>
-                                <line x1="6" y1="6" x2="18" y2="18"/>
-                            </svg>
+                            Clear
                         </button>
                     </div>
                 </div>
@@ -826,12 +841,9 @@
 
         <div id="selectionPanel" class="selection-panel" style="display: none;">
             <div class="selection-title">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-                </svg>
+                <i class="fas fa-store"></i>
                 Select a shop
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <i class="fas fa-map-pin" style="color: #6b8aa3; font-size: 0.8rem;"></i>
             </div>
             <div class="shops-grid" id="shopsContainer">
                 {% for shop in shops %}
@@ -846,23 +858,24 @@
                             <span class="shop-name">{{ shop.name }}</span>
                             {% if is_open %}
                             <span class="status-badge open">
-                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"/>
-                                </svg>
+                                <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
                                 Open
                             </span>
                             {% else %}
                             <span class="status-badge closed">
-                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="18" y1="6" x2="6" y2="18"/>
-                                    <line x1="6" y1="6" x2="18" y2="18"/>
-                                </svg>
+                                <i class="fas fa-circle" style="font-size: 0.4rem;"></i>
                                 Closed
                             </span>
                             {% endif %}
                         </div>
-                        <div class="shop-location">{{ shop.location }}</div>
-                        <div class="shop-contatact">{{ shop.phone_contact }}</div>
+                        <div class="shop-location">
+                            <i class="fas fa-location-dot" style="font-size: 0.6rem; margin-right: 4px;"></i>
+                            {{ shop.location }}
+                        </div>
+                        <div class="shop-contact">
+                            <i class="fas fa-phone" style="font-size: 0.6rem; margin-right: 4px;"></i>
+                            {{ shop.phone_contact }}
+                        </div>
                     </div>
                 </div>
                 {% endfor %}
@@ -872,11 +885,9 @@
                     Clear selection
                 </button>
                 <button class="btn-success" id="confirmUploadBtn" disabled>
-                    Print
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14"/>
-                        <path d="M12 5l7 7-7 7"/>
-                    </svg>
+                    <i class="fas fa-print"></i>
+                    Next Step
+                    <i class="fas fa-arrow-right" style="font-size: 0.8rem;"></i>
                 </button>
             </div>
         </div>
@@ -886,12 +897,7 @@
     <div class="printjobs-section">
         <div class="printjobs-header">
             <div class="printjobs-title">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 6 2 18 2 18 9"/>
-                    <path d="M18 9H6"/>
-                    <path d="M18 9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/>
-                    <rect x="10" y="13" width="4" height="4"/>
-                </svg>
+                <i class="fas fa-file-alt"></i>
                 Your Print Jobs
                 <span class="printjobs-count" id="printjobsCount">{{ printjobs|length if printjobs else 0 }}</span>
             </div>
@@ -912,21 +918,21 @@
                         <div class="printjob-icon">
                             {% set ext = filename.split('.')[-1].lower() if '.' in filename else '' %}
                             {% if ext == 'pdf' %}
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#E53935" stroke="#E53935" stroke-width="1.5"/><path d="M14 2V8H20" fill="#E53935"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="8" y="17" font-size="7" font-weight="bold" fill="white" font-family="Arial">PDF</text></svg>
+                            <i class="fas fa-file-pdf" style="font-size: 1.4rem; color: #a52a2a;"></i>
                             {% elif ext in ['doc', 'docx'] %}
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#1E88E5" stroke="#1E88E5" stroke-width="1.5"/><path d="M14 2V8H20" fill="#1E88E5"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">DOC</text></svg>
+                            <i class="fas fa-file-word" style="font-size: 1.4rem; color: #1e4d8c;"></i>
                             {% elif ext in ['xls', 'xlsx'] %}
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#43A047" stroke="#43A047" stroke-width="1.5"/><path d="M14 2V8H20" fill="#43A047"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">XLS</text></svg>
+                            <i class="fas fa-file-excel" style="font-size: 1.4rem; color: #1d7a3e;"></i>
                             {% elif ext in ['ppt', 'pptx'] %}
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#FB8C00" stroke="#FB8C00" stroke-width="1.5"/><path d="M14 2V8H20" fill="#FB8C00"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6.5" y="17" font-size="6" font-weight="bold" fill="white" font-family="Arial">PPT</text></svg>
+                            <i class="fas fa-file-powerpoint" style="font-size: 1.4rem; color: #b44a1a;"></i>
                             {% elif ext in ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'] %}
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#8E24AA" stroke="#8E24AA" stroke-width="1.5"/><path d="M14 2V8H20" fill="#8E24AA"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="10" r="1.5" fill="white"/><path d="M17 16L14 13L9 17L7 15L4 18" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                            <i class="fas fa-file-image" style="font-size: 1.4rem; color: #7b1fa2;"></i>
                             {% elif ext == 'txt' %}
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#757575" stroke="#757575" stroke-width="1.5"/><path d="M14 2V8H20" fill="#757575"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="7" y1="12" x2="15" y2="12" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="15" x2="13" y2="15" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="18" x2="11" y2="18" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            <i class="fas fa-file-alt" style="font-size: 1.4rem; color: #5f6b7a;"></i>
                             {% elif ext == 'csv' %}
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#2E7D32" stroke="#2E7D32" stroke-width="1.5"/><path d="M14 2V8H20" fill="#2E7D32"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">CSV</text></svg>
+                            <i class="fas fa-file-csv" style="font-size: 1.4rem; color: #2e7d32;"></i>
                             {% else %}
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#607D8B" stroke="#607D8B" stroke-width="1.5"/><path d="M14 2V8H20" fill="#607D8B"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 14L11 16L15 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+                            <i class="fas fa-file" style="font-size: 1.4rem; color: #6b8aa3;"></i>
                             {% endif %}
                         </div>
                         <div class="printjob-info">
@@ -934,22 +940,13 @@
                             <div class="printjob-meta">
                                 {% if filesize %}
                                 <span class="printjob-meta-item">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                        <polyline points="17 8 12 3 7 8"/>
-                                        <line x1="12" y1="3" x2="12" y2="15"/>
-                                    </svg>
+                                    <i class="fas fa-weight-hanging"></i>
                                     {{ format_file_size(filesize) }}
                                 </span>
                                 {% endif %}
                                 {% if pagecount %}
                                 <span class="printjob-meta-item">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                                        <polyline points="14 2 14 8 20 8"/>
-                                        <line x1="16" y1="13" x2="8" y2="13"/>
-                                        <line x1="16" y1="17" x2="8" y2="17"/>
-                                    </svg>
+                                    <i class="fas fa-file-alt"></i>
                                     {{ pagecount }} pages
                                 </span>
                                 {% endif %}
@@ -964,43 +961,29 @@
                         <div class="printjob-timestamps">
                             {% if printjob.created_at %}
                             <span>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <polyline points="12 6 12 12 16 14"/>
-                                </svg>
+                                <i class="far fa-clock"></i>
                                 {{ printjob.created_at|time_ago }}
                             </span>
                             {% endif %}
                             {% if printjob.updated_at and printjob.updated_at != printjob.created_at %}
                             <span>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                    <circle cx="12" cy="12" r="3"/>
-                                </svg>
+                                <i class="far fa-eye"></i>
                                 {{ printjob.updated_at|time_ago }}
                             </span>
                             {% endif %}
                         </div>
                         <a href="/queue/{{ printjob.uuid }}" class="printjob-view-btn">
                             View
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 12h14"/>
-                                <path d="M12 5l7 7-7 7"/>
-                            </svg>
+                            <i class="fas fa-arrow-right" style="font-size: 0.6rem;"></i>
                         </a>
                     </div>
                 </div>
                 {% endfor %}
             {% else %}
                 <div class="printjob-empty" id="printjobEmpty">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="6 9 6 2 18 2 18 9"/>
-                        <path d="M18 9H6"/>
-                        <path d="M18 9v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9"/>
-                        <rect x="10" y="13" width="4" height="4"/>
-                    </svg>
+                    <i class="fas fa-file-alt"></i>
                     <div>No print jobs yet</div>
-                    <div style="font-size:0.75rem; color:#d1d5db; margin-top:0.25rem;">Upload a document to get started</div>
+                    <div style="font-size:0.8rem; color:#cbd5e1; margin-top:0.25rem;">Upload a document to get started</div>
                 </div>
             {% endif %}
         </div>
@@ -1037,30 +1020,25 @@
         var isUploading = false;
         var API_BASE = '/api/v1/workorder';
 
-        function getFileIcon(filename) {
+        function getFileIconHtml(filename) {
             var ext = filename.split('.').pop().toLowerCase();
-            if (ext === 'pdf') {
-                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#E53935" stroke="#E53935" stroke-width="1.5"/><path d="M14 2V8H20" fill="#E53935"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="8" y="17" font-size="7" font-weight="bold" fill="white" font-family="Arial">PDF</text></svg>';
-            }
-            if (ext === 'doc' || ext === 'docx') {
-                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#1E88E5" stroke="#1E88E5" stroke-width="1.5"/><path d="M14 2V8H20" fill="#1E88E5"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">DOC</text></svg>';
-            }
-            if (ext === 'xls' || ext === 'xlsx') {
-                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#43A047" stroke="#43A047" stroke-width="1.5"/><path d="M14 2V8H20" fill="#43A047"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">XLS</text></svg>';
-            }
-            if (ext === 'ppt' || ext === 'pptx') {
-                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#FB8C00" stroke="#FB8C00" stroke-width="1.5"/><path d="M14 2V8H20" fill="#FB8C00"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6.5" y="17" font-size="6" font-weight="bold" fill="white" font-family="Arial">PPT</text></svg>';
-            }
-            if (ext === 'jpg' || ext === 'jpeg' || ext === 'png' || ext === 'gif' || ext === 'webp' || ext === 'bmp') {
-                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#8E24AA" stroke="#8E24AA" stroke-width="1.5"/><path d="M14 2V8H20" fill="#8E24AA"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="10" r="1.5" fill="white"/><path d="M17 16L14 13L9 17L7 15L4 18" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
-            }
-            if (ext === 'txt') {
-                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#757575" stroke="#757575" stroke-width="1.5"/><path d="M14 2V8H20" fill="#757575"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="7" y1="12" x2="15" y2="12" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="15" x2="13" y2="15" stroke="white" stroke-width="1.2" stroke-linecap="round"/><line x1="7" y1="18" x2="11" y2="18" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>';
-            }
-            if (ext === 'csv') {
-                return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#2E7D32" stroke="#2E7D32" stroke-width="1.5"/><path d="M14 2V8H20" fill="#2E7D32"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="6" y="17" font-size="6.5" font-weight="bold" fill="white" font-family="Arial">CSV</text></svg>';
-            }
-            return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H14L20 8V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V4Z" fill="#607D8B" stroke="#607D8B" stroke-width="1.5"/><path d="M14 2V8H20" fill="#607D8B"/><path d="M14 2V8H20" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 14L11 16L15 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+            var icons = {
+                'pdf': '<i class="fas fa-file-pdf" style="font-size: 1.8rem; color: #a52a2a;"></i>',
+                'doc': '<i class="fas fa-file-word" style="font-size: 1.8rem; color: #1e4d8c;"></i>',
+                'docx': '<i class="fas fa-file-word" style="font-size: 1.8rem; color: #1e4d8c;"></i>',
+                'xls': '<i class="fas fa-file-excel" style="font-size: 1.8rem; color: #1d7a3e;"></i>',
+                'xlsx': '<i class="fas fa-file-excel" style="font-size: 1.8rem; color: #1d7a3e;"></i>',
+                'ppt': '<i class="fas fa-file-powerpoint" style="font-size: 1.8rem; color: #b44a1a;"></i>',
+                'pptx': '<i class="fas fa-file-powerpoint" style="font-size: 1.8rem; color: #b44a1a;"></i>',
+                'jpg': '<i class="fas fa-file-image" style="font-size: 1.8rem; color: #7b1fa2;"></i>',
+                'jpeg': '<i class="fas fa-file-image" style="font-size: 1.8rem; color: #7b1fa2;"></i>',
+                'png': '<i class="fas fa-file-image" style="font-size: 1.8rem; color: #7b1fa2;"></i>',
+                'gif': '<i class="fas fa-file-image" style="font-size: 1.8rem; color: #7b1fa2;"></i>',
+                'webp': '<i class="fas fa-file-image" style="font-size: 1.8rem; color: #7b1fa2;"></i>',
+                'txt': '<i class="fas fa-file-alt" style="font-size: 1.8rem; color: #5f6b7a;"></i>',
+                'csv': '<i class="fas fa-file-csv" style="font-size: 1.8rem; color: #2e7d32;"></i>'
+            };
+            return icons[ext] || '<i class="fas fa-file" style="font-size: 1.8rem; color: #6b8aa3;"></i>';
         }
 
         function formatFileSize(bytes) {
@@ -1138,17 +1116,38 @@
             var status = printjob.properties && printjob.properties.status ? printjob.properties.status : 'Uploaded';
             var statusClass = getStatusDotClass(status);
             
+            var ext = filename.split('.').pop().toLowerCase();
+            var iconMap = {
+                'pdf': 'fa-file-pdf',
+                'doc': 'fa-file-word',
+                'docx': 'fa-file-word',
+                'xls': 'fa-file-excel',
+                'xlsx': 'fa-file-excel',
+                'ppt': 'fa-file-powerpoint',
+                'pptx': 'fa-file-powerpoint',
+                'jpg': 'fa-file-image',
+                'jpeg': 'fa-file-image',
+                'png': 'fa-file-image',
+                'gif': 'fa-file-image',
+                'webp': 'fa-file-image',
+                'txt': 'fa-file-alt',
+                'csv': 'fa-file-csv'
+            };
+            var iconClass = iconMap[ext] || 'fa-file';
+            
             var card = document.createElement('div');
             card.className = 'printjob-card';
             card.setAttribute('data-uuid', printjob.uuid);
             card.innerHTML = 
                 '<div class="printjob-top">' +
-                    '<div class="printjob-icon">' + getFileIcon(filename) + '</div>' +
+                    '<div class="printjob-icon">' +
+                        '<i class="fas ' + iconClass + '" style="font-size: 1.4rem; color: #6b8aa3;"></i>' +
+                    '</div>' +
                     '<div class="printjob-info">' +
                         '<div class="printjob-filename">' + escapeHtml(filename) + '</div>' +
                         '<div class="printjob-meta">' +
-                            (filesize ? '<span class="printjob-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> ' + formatFileSize(filesize) + '</span>' : '') +
-                            (pagecount ? '<span class="printjob-meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> ' + pagecount + ' pages</span>' : '') +
+                            (filesize ? '<span class="printjob-meta-item"><i class="fas fa-weight-hanging"></i> ' + formatFileSize(filesize) + '</span>' : '') +
+                            (pagecount ? '<span class="printjob-meta-item"><i class="fas fa-file-alt"></i> ' + pagecount + ' pages</span>' : '') +
                         '</div>' +
                     '</div>' +
                 '</div>' +
@@ -1158,25 +1157,19 @@
                         '<span>' + status + '</span>' +
                     '</div>' +
                     '<div class="printjob-timestamps">' +
-                        (printjob.created_at ? '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ' + timeAgo(printjob.created_at) + '</span>' : '') +
-                        (printjob.updated_at && printjob.updated_at !== printjob.created_at ? '<span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> ' + timeAgo(printjob.updated_at) + '</span>' : '') +
+                        (printjob.created_at ? '<span><i class="far fa-clock"></i> ' + timeAgo(printjob.created_at) + '</span>' : '') +
+                        (printjob.updated_at && printjob.updated_at !== printjob.created_at ? '<span><i class="far fa-eye"></i> ' + timeAgo(printjob.updated_at) + '</span>' : '') +
                     '</div>' +
-                    '<a href="/queue/' + printjob.uuid + '" class="printjob-view-btn">View <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>' +
+                    '<a href="/queue/' + printjob.uuid + '" class="printjob-view-btn">View <i class="fas fa-arrow-right" style="font-size: 0.6rem;"></i></a>' +
                 '</div>';
             return card;
         }
 
-        function addPrintJobToTop(printjob) {
-            
-        }
-
         function updateFileSelectedUI(file) {
             if (file) {
-                var icon = getFileIcon(file.name);
-                var size = formatFileSize(file.size);
-                fileSelectedIcon.innerHTML = icon;
+                fileSelectedIcon.innerHTML = getFileIconHtml(file.name);
                 fileSelectedName.textContent = file.name;
-                fileSelectedMeta.textContent = size + ' · ' + file.name.split('.').pop().toUpperCase();
+                fileSelectedMeta.textContent = formatFileSize(file.size) + ' · ' + file.name.split('.').pop().toUpperCase();
                 uploadZone.classList.add('has-file');
                 selectionPanel.style.display = 'block';
             } else {
@@ -1311,8 +1304,6 @@
                 var result = await submitWorkOrder(currentFile, selectedShopUuid, customerUuid);
                 if (result && result.uuid) {
                     showToast('Document "' + fileName + '" sent to ' + shopName + ' successfully!', 'success');
-                    addPrintJobToTop(result);
-                    resetUploadFlow(false);
                     window.location.href = '/queue/' + result.uuid;
                     return true;
                 } else {

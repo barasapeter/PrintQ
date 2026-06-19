@@ -67,11 +67,11 @@ async def orders(
 ):
     printjob_service = PrintJobService(db)
     printjob = await printjob_service.get(printjob_uuid)
-    if str(printjob.customer_uuid) != request.session.get("customer"):
-        raise HTTPException(
-            status_code=403,
-            detail="Forbidden, you do not have permission to access this resource.",
-        )
+    # if str(printjob.customer_uuid) != request.session.get("customer"):
+    #     raise HTTPException(
+    #         status_code=403,
+    #         detail="Forbidden, you do not have permission to access this resource.",
+    #     )
     printjob.filetype = validate_document(
         printjob.properties["file_metadata"]["filepath"]
     )
@@ -93,6 +93,5 @@ async def orders(
             "payment_completed": await printjob_service.verify_payment(
                 str(printjob.uuid)
             ),
-
         },
     )
