@@ -89,7 +89,7 @@ async def orders(
             "time_ago": time_ago(printjob.updated_at),
             "copies": printjob.properties.get("queue_metadata").get("copies"),
             "tariff": printjob.properties.get("tariffs"),
-            "customer_phone": customer.properties.get("phone"),
+            "customer": customer,
             "payment_completed": await printjob_service.verify_payment(
                 str(printjob.uuid)
             ),
