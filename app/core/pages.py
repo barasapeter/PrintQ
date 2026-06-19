@@ -1,20 +1,3 @@
-"""
-`page_count` for document page counting. Call `count_pages(filepath)`, returns:
-int, the number of pages/sheets/slides found in the document.
-Validates the document first via `validate_document`; raises the same
-`NoPrintableContentError` on invalid or unsupported files.
-
-Supported types: pdf, docx, xlsx, pptx, txt, csv, html, xml, rtf, and all image types
-Page semantics per type:
-  - pdf   → number of PDF pages
-  - docx  → number of pages (via w:sectPr / page-break heuristic)
-  - xlsx  → number of visible worksheets
-  - pptx  → number of slides
-  - txt / csv / html / xml / rtf → lines divided by a configurable page size
-                                   (default: 50 lines per page, min 1)
-  - images (jpg, png, gif, etc.) → always returns 1 (single image)
-"""
-
 from __future__ import annotations
 
 import math
@@ -31,7 +14,6 @@ from app.core.dtypes import validate_document, NoPrintableContentError
 
 LINES_PER_PAGE: int = 50
 
-# Image file types that we support
 IMAGE_TYPES = {
     "jpg",
     "jpeg",
@@ -101,7 +83,6 @@ def _count_pptx(filepath: str) -> int:
 def _count_text(filepath: str) -> int:
     try:
         lines = Path(filepath).read_text(errors="ignore").splitlines()
-        # Count non-empty lines, but if file is empty, still return 1
         non_empty = [l for l in lines if l.strip()]
         count = math.ceil(len(non_empty) / LINES_PER_PAGE) if non_empty else 1
         return max(count, 1)
@@ -110,9 +91,7 @@ def _count_text(filepath: str) -> int:
 
 
 def _count_image(filepath: str) -> int:
-    """Images are single pages/documents."""
     try:
-        # Verify the image is valid (already done in validate_document)
         with Image.open(filepath) as img:
             img.verify()
         return 1
@@ -130,7 +109,6 @@ _COUNTERS = {
     "html": _count_text,
     "xml": _count_text,
     "rtf": _count_text,
-    # Image types
     "jpg": _count_image,
     "jpeg": _count_image,
     "png": _count_image,
@@ -146,18 +124,6 @@ _COUNTERS = {
 
 
 def count_pages(filepath: str) -> int:
-    """
-    Count pages/units in a document.
-
-    Args:
-        filepath: Path to the document
-
-    Returns:
-        int: Number of pages/sheets/slides (minimum 1)
-
-    Raises:
-        NoPrintableContentError: If the document is corrupted or unsupported
-    """
     file_type = validate_document(filepath)
 
     counter = _COUNTERS.get(file_type)

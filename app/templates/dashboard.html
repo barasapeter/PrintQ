@@ -959,22 +959,26 @@
                             <span>{{ status }}</span>
                         </div>
                         <div class="printjob-timestamps">
-                            {% if printjob.created_at %}
+                            <!-- {% if printjob.created_at %}
                             <span>
                                 <i class="far fa-clock"></i>
                                 {{ printjob.created_at|time_ago }}
                             </span>
-                            {% endif %}
+                            {% endif %} -->
                             {% if printjob.updated_at and printjob.updated_at != printjob.created_at %}
                             <span>
-                                <i class="far fa-eye"></i>
+                                <i class="far fa-hand"></i>
                                 {{ printjob.updated_at|time_ago }}
                             </span>
                             {% endif %}
                         </div>
                         <a href="/queue/{{ printjob.uuid }}" class="printjob-view-btn">
-                            View
+                            Next Step
                             <i class="fas fa-arrow-right" style="font-size: 0.6rem;"></i>
+                        </a>
+                        <a onclick="window.location.href='/api/v1/files/{{ printjob.uuid }}'" class="printjob-view-btn">
+                            <i class="fas fa-download" style="font-size: 0.6rem;"></i>
+                            Download File
                         </a>
                     </div>
                 </div>

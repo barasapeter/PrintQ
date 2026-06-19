@@ -36,9 +36,7 @@ async def index(
     printjob.filetype = validate_document(
         printjob.properties["file_metadata"]["filepath"]
     )
-    # printjob.preview_image_url = (
-    #     "https://pbs.twimg.com/media/HK86MFXXkAAjq8J?format=jpg&name=small"
-    # )
+    printjob.preview_image_url = f"/api/v1/files/{str(printjob.uuid)}"
     shop_service = ShopService(db)
     shop = await shop_service.get(str(printjob.shop_uuid))
 
