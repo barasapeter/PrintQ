@@ -42,7 +42,6 @@ async def push_to_queue(
 @router.post("/callback", status_code=status.HTTP_200_OK)
 async def push_to_queue(
     payload: dict,
-    request: Request,
     session: AsyncSession = Depends(get_db_session),
 ) -> dict:
     queue_service = PrintJobService(session)
