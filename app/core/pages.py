@@ -172,7 +172,6 @@ def count_pages(filepath: str) -> int:
 if __name__ == "__main__":
     import sys
 
-    # Test various file types
     test_files = [
         "brainstorm/2025_2026 final_project_proposals Comp 493.xlsx",
         "test.pdf",

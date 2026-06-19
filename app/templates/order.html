@@ -73,8 +73,12 @@
     .file-icon-wrapper.txt i { color: #5f6b7a; }
     .file-icon-wrapper.default i { color: #475569; }
     .file-icon-wrapper.image-preview {
-      background: #f0f4fa;
-      border: 1px solid #dce4ed;
+      background: linear-gradient(145deg, #d9e6f2, #c8d5e8);
+      border: 1px solid rgba(42, 106, 138, 0.15);
+    }
+    .file-icon-wrapper.image-preview svg {
+      width: 36px;
+      height: 36px;
     }
     .file-meta {
       flex: 1;
@@ -642,8 +646,11 @@
   <div class="file-header">
     <div class="file-icon-wrapper {{ file_extension if file_extension in ['pdf','pptx','ppt','xlsx','xls','docx','doc','odt','txt'] else 'default' }} {% if file_extension in ['png','jpg','jpeg','gif','webp','bmp','svg'] %}image-preview{% endif %}" id="fileIconWrapper">
       {% if file_extension in ['png','jpg','jpeg','gif','webp','bmp','svg'] %}
-        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23d9e6f2'/%3E%3Ctext x='50' y='55' font-family='Inter, sans-serif' font-size='22' fill='%232a6a8a' text-anchor='middle' dominant-baseline='middle'%3E🖼️%3C/text%3E%3C/svg%3E"
-             alt="image preview" style="width:100%;height:100%;object-fit:cover;border-radius:24px;" />
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="4" stroke="#2a6a8a" stroke-width="1.8"/>
+          <path d="M6 20L9 16L12 18L16 13L20 17V20H6Z" fill="#2a6a8a" stroke="#2a6a8a" stroke-width="1.2"/>
+          <circle cx="8.5" cy="8.5" r="2.5" fill="#2a6a8a"/>
+        </svg>
       {% else %}
         <i class="fas fa-file-{{ 'pdf' if file_extension == 'pdf' else 'powerpoint' if file_extension in ['pptx','ppt'] else 'excel' if file_extension in ['xlsx','xls'] else 'word' if file_extension in ['docx','doc'] else 'alt' if file_extension == 'odt' else 'lines' if file_extension == 'txt' else 'file' }}"></i>
       {% endif %}
@@ -676,7 +683,7 @@
   </div>
 
   <div class="print-action">
-    <button class="btn-print" id="printButton" onclick="window.location.href='/api/v1/files/{{ printjob.uuid }}'"><i class="fas fa-print"></i> Print Document</button>
+    <button class="btn-print" id="printButton" onclick="window.location.href='/api/v1/files/{{ printjob.uuid }}'"><i class="fas fa-print"></i> Print {{ file_extension.upper() }}</button>
   </div>
 </div>
 
