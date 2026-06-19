@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+  <title>Order · Print Interface</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background: linear-gradient(145deg, #f4f8fc 0%, #e6edf5 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .print-card {
+      max-width: 740px;
+      width: 100%;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-radius: 44px;
+      box-shadow: 0 24px 48px -16px rgba(0,20,40,0.28), 0 8px 24px -6px rgba(0,0,0,0.06);
+      padding: 2.2rem 2.5rem;
+      border: 1px solid rgba(255,255,255,0.7);
+      transition: all 0.2s;
+    }
+    .file-header {
+      display: flex;
+      align-items: center;
+      gap: 1.4rem;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+    }
+    .file-icon-wrapper {
+      width: 72px;
+      height: 72px;
+      background: white;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 20px -10px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0,0,0,0.02);
+      transition: 0.15s;
+      flex-shrink: 0;
+    }
+    .file-icon-wrapper i {
+      font-size: 2.8rem;
+      line-height: 1;
+    }
+    .file-icon-wrapper.pdf i { color: #d1442b; }
+    .file-icon-wrapper.pptx i { color: #d46a2a; }
+    .file-icon-wrapper.ppt i { color: #d46a2a; }
+    .file-icon-wrapper.xlsx i { color: #1d7a3e; }
+    .file-icon-wrapper.xls i { color: #1d7a3e; }
+    .file-icon-wrapper.docx i { color: #2a5699; }
+    .file-icon-wrapper.doc i { color: #2a5699; }
+    .file-icon-wrapper.odt i { color: #3b7b9e; }
+    .file-icon-wrapper.txt i { color: #5f6b7a; }
+    .file-icon-wrapper.default i { color: #475569; }
+    .file-meta {
+      flex: 1;
+      min-width: 160px;
+    }
+    .file-name {
+      font-size: 1.55rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #0b1a2b;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .file-ext {
+      background: #e9eef3;
+      padding: 0.2rem 0.9rem;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #1e3a5f;
+    }
+    .file-sub {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.6rem;
+      margin-top: 1.2rem;
+      color: #3b4d62;
+      font-size: 0.9rem;
+      font-weight: 450;
+    }
+    .file-sub i {
+      margin-right: 6px;
+      opacity: 0.7;
+      font-size: 0.85rem;
+      width: 1rem;
+      text-align: center;
+    }
+    .file-sub span {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .badge-queue {
+      background: #d4dfea;
+      padding: 0.2rem 1rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #1f3a57;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem 1.8rem;
+      margin-bottom: 1.6rem;
+    }
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0.2rem;
+      border-bottom: 1px solid rgba(195, 210, 225, 0.25);
+    }
+    .detail-item .label {
+      font-weight: 450;
+      color: #3e5770;
+      min-width: 80px;
+      font-size: 0.9rem;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .detail-item .label i {
+      width: 1.1rem;
+      text-align: center;
+      opacity: 0.7;
+      font-size: 0.85rem;
+    }
+    .detail-item .value {
+      font-weight: 550;
+      color: #0f263b;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .value i {
+      color: #4373a0;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+    .binding-badge {
+      background: #eef3f9;
+      padding: 0.2rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #1b3d5e;
+      letter-spacing: 0.2px;
+    }
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      background: #f0f5fe;
+      padding: 0.8rem 1.6rem;
+      border-radius: 60px;
+      margin: 1rem 0 1.8rem 0;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .status-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .status-left i {
+      font-size: 1.2rem;
+      color: #1d6f4b;
+      background: #d3eee0;
+      padding: 0.4rem;
+      border-radius: 40px;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .status-left span {
+      font-weight: 550;
+      color: #0c2d41;
+      letter-spacing: -0.2px;
+    }
+    .status-right {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #1b4b6c;
+      font-weight: 450;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .status-right i {
+      color: #2c6b9b;
+    }
+    .print-action {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.1rem;
+    }
+    .btn-print {
+      background: #0b2b44;
+      border: none;
+      padding: 1rem 3rem;
+      border-radius: 60px;
+      color: white;
+      font-weight: 550;
+      font-size: 1.1rem;
+      letter-spacing: 0.4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.9rem;
+      box-shadow: 0 12px 24px -12px rgba(10, 40, 70, 0.35);
+      transition: 0.15s;
+      cursor: default;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .btn-print i {
+      font-size: 1.2rem;
+    }
+    .btn-print:hover {
+      background: #123a5a;
+      transform: scale(1.01);
+      box-shadow: 0 16px 28px -10px rgba(0, 30, 60, 0.3);
+    }
+    @media (max-width: 640px) {
+      .print-card {
+        padding: 1.5rem;
+        border-radius: 32px;
+      }
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 0.1rem;
+      }
+      .detail-item {
+        padding: 0.4rem 0;
+      }
+      .file-name {
+        font-size: 1.2rem;
+      }
+      .file-icon-wrapper {
+        width: 60px;
+        height: 60px;
+      }
+      .file-icon-wrapper i {
+        font-size: 2.2rem;
+      }
+      .status-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+        padding: 0.9rem 1.2rem;
+      }
+      .btn-print {
+        width: 100%;
+        justify-content: center;
+        padding: 0.9rem 1.5rem;
+      }
+      .print-action {
+        justify-content: stretch;
+      }
+      .file-sub {
+        gap: 0.8rem;
+        font-size: 0.8rem;
+      }
+      .file-header {
+        gap: 1rem;
+      }
+    }
+    @media (max-width: 420px) {
+      .file-name {
+        font-size: 1rem;
+      }
+      .file-icon-wrapper {
+        width: 50px;
+        height: 50px;
+      }
+      .file-icon-wrapper i {
+        font-size: 1.8rem;
+      }
+      .detail-item .label {
+        min-width: 60px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="print-card" id="printCard">
+
+    <div class="file-header">
+      <div class="file-icon-wrapper" id="fileIconWrapper">
+        <i class="fas fa-file-pdf" id="fileIcon"></i>
+      </div>
+      <div class="file-meta">
+        <div class="file-name">
+          <span id="fileNameDisplay">Inferential Statistics_Lecture (1).pdf</span>
+          <span class="file-ext" id="fileExtBadge">PDF</span>
+        </div>
+        <div class="file-sub">
+          <span><i class="far fa-calendar-alt"></i> Queued <span id="queueTime">3 minutes ago</span></span>
+          <span><i class="far fa-copy"></i> <span id="copyCount">3</span> Copies</span>
+          <span class="badge-queue">Kshs <span id="pageCount">200</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="detail-item">
+        <span class="label">Customer</span>
+        <span class="value"><i class="fas fa-phone-alt"></i> <span id="customerPhone">254114068425</span></span>
+      </div>
+      <div class="detail-item">
+        <span class="label"><i class="far fa-file-alt"></i> Pages</span>
+        <span class="value"><span id="pageCount2">24</span></span>
+      </div>
+      <div class="detail-item">
+        <span class="label"><i class="far fa-clock"></i> Queued</span>
+        <span class="value"><span id="queueTime2">3 minutes ago</span></span>
+      </div>
+      <div class="detail-item">
+        <span class="label"><i class="fas fa-palette"></i> Color</span>
+        <span class="value"><i class="fas fa-circle" style="color: #2b6d9c; font-size: 0.7rem;"></i> <span id="colorMode">Colored</span></span>
+      </div>
+      <div class="detail-item">
+        <span class="label"><i class="fas fa-copy"></i> Copies</span>
+        <span class="value"><span id="copyCount2">3</span></span>
+      </div>
+      <div class="detail-item">
+        <span class="label"><i class="fas fa-book"></i> Binding</span>
+        <span class="value"><span class="binding-badge" id="bindingType">Spiral</span></span>
+      </div>
+    </div>
+
+    <div class="status-row">
+      <div class="status-left">
+        <i class="fas fa-check-circle"></i>
+        <span>Is the printout Ready?</span>
+      </div>
+      <div class="status-right">
+        <i class="fas fa-print"></i> 
+        <span>I have Printed</span>
+        <i class="fas fa-chevron-right" style="font-size: 0.7rem; opacity: 0.6;"></i>
+      </div>
+    </div>
+
+    <div class="print-action">
+      <div class="btn-print">
+        <i class="fas fa-print"></i> Print Document
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const config = {
+        fileType: 'pptx',
+        fileName: 'Inferential Statistics_Lecture (1).pptx',
+        customerPhone: '254114068425',
+        pages: '24',
+        queueTime: '3 minutes ago',
+        copies: '3',
+        color: 'Colored',
+        binding: 'Spiral'
+      };
+
+      const iconMap = {
+        pdf:   { icon: 'fa-regular fa-file-pdf', label: 'PDF' },
+        pptx:  { icon: 'fa-regular fa-file-powerpoint', label: 'PPTX' },
+        ppt:   { icon: 'fa-regular fa-file-powerpoint', label: 'PPT' },
+        xlsx:  { icon: 'fa-regular fa-file-excel', label: 'XLSX' },
+        xls:   { icon: 'fa-regular fa-file-excel', label: 'XLS' },
+        docx:  { icon: 'fa-regular fa-file-word', label: 'DOCX' },
+        doc:   { icon: 'fa-regular fa-file-word', label: 'DOC' },
+        odt:   { icon: 'fa-regular fa-file-alt', label: 'ODT' },
+        txt:   { icon: 'fa-regular fa-file-lines', label: 'TXT' },
+        default: { icon: 'fa-regular fa-file', label: 'FILE' }
+      };
+
+      const extMap = {
+        pdf: 'PDF', pptx: 'PPTX', ppt: 'PPT', xlsx: 'XLSX', xls: 'XLS',
+        docx: 'DOCX', doc: 'DOC', odt: 'ODT', txt: 'TXT', default: 'FILE'
+      };
+
+      const fileIcon      = document.getElementById('fileIcon');
+      const fileIconWrap  = document.getElementById('fileIconWrapper');
+      const fileNameSpan  = document.getElementById('fileNameDisplay');
+      const fileExtBadge  = document.getElementById('fileExtBadge');
+      const customerPhone = document.getElementById('customerPhone');
+      const pageCount     = document.getElementById('pageCount');
+      const pageCount2    = document.getElementById('pageCount2');
+      const queueTime     = document.getElementById('queueTime');
+      const queueTime2    = document.getElementById('queueTime2');
+      const copyCount     = document.getElementById('copyCount');
+      const copyCount2    = document.getElementById('copyCount2');
+      const colorMode     = document.getElementById('colorMode');
+      const bindingType   = document.getElementById('bindingType');
+
+      function applyConfig(type, fileName, phone, pages, queue, copies, color, binding) {
+        const typeLower = (type || 'default').toLowerCase();
+        const mapping = iconMap[typeLower] || iconMap.default;
+        const extLabel = extMap[typeLower] || extMap.default;
+
+        fileIcon.className = mapping.icon;
+        if (fileName) {
+          fileNameSpan.textContent = fileName;
+        } else {
+          fileNameSpan.textContent = `document.${extLabel.toLowerCase()}`;
+        }
+        fileExtBadge.textContent = extLabel;
+
+        fileIconWrap.className = 'file-icon-wrapper';
+        if (typeLower !== 'default') {
+          fileIconWrap.classList.add(typeLower);
+        } else {
+          fileIconWrap.classList.add('default');
+        }
+
+        if (phone) customerPhone.textContent = phone;
+        if (pages) {
+          pageCount.textContent = pages;
+          pageCount2.textContent = pages;
+        }
+        if (queue) {
+          queueTime.textContent = queue;
+          queueTime2.textContent = queue;
+        }
+        if (copies) {
+          copyCount.textContent = copies;
+          copyCount2.textContent = copies;
+        }
+        if (color) colorMode.textContent = color;
+        if (binding) bindingType.textContent = binding;
+
+        const colorCircle = document.querySelector('.detail-item .value i.fa-circle');
+        if (colorCircle) {
+          if (color && color.toLowerCase().includes('colored')) {
+            colorCircle.style.color = '#2b6d9c';
+          } else {
+            colorCircle.style.color = '#6b7d8e';
+          }
+        }
+      }
+
+      applyConfig(
+        config.fileType,
+        config.fileName,
+        config.customerPhone,
+        config.pages,
+        config.queueTime,
+        config.copies,
+        config.color,
+        config.binding
+      );
+
+      window.updatePrint = function(type, name, phone, pages, queue, copies, color, binding) {
+        applyConfig(type, name, phone, pages, queue, copies, color, binding);
+      };
+    })();
+  </script>
+</body>
+</html>

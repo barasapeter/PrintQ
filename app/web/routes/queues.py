@@ -57,3 +57,36 @@ async def index(
             ),
         },
     )
+
+
+@router.get("/orders/{printjob_uuid}")
+async def orders(
+    request: Request,
+    printjob_uuid: str,
+    db: AsyncSession = Depends(get_db_session),
+):
+    printjob_service = PrintJobService(db)
+    printjob = await printjob_service.get(printjob_uuid)
+    if str(printjob.customer_uuid) != request.session.get("customer"):
+        raise HTTPException(
+            status_code=403,
+            detail="Forbidden, you do not have permission to access this resource.",
+        )
+    printjob.filetype = validate_document(
+        printjob.properties["file_metadata"]["filepath"]
+    )
+
+    return templates.TemplateResponse(
+        "order.html",
+        {
+            "request": request,
+            "printjob": printjob,
+            "format_file_size": format_file_size,
+            "get_file_icon": get_file_icon,
+            "time_ago": time_ago,
+            "tariff": printjob.properties.get("tariffs"),
+            "payment_completed": await printjob_service.verify_payment(
+                str(printjob.uuid)
+            ),
+        },
+    )
