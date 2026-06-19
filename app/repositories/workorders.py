@@ -148,8 +148,7 @@ class PrintJobRepository:
         page_range = client_preferences.get("page_range", "All")
 
         if await self.verify_payment(str(printjob.uuid)):
-            detail = f"Payment of Kshs {printjob.amount} was already completed."
-            return {"detail", detail}
+            return await self.get_payment_status(printjob.uuid)
 
         total_pages = file_metadata["page_count"]
         if page_range != "All":
@@ -226,8 +225,7 @@ class PrintJobRepository:
         await self.session.commit()
         await self.session.refresh(printjob)
 
-        response = f"M-PESA prompt for printing charges has been sent to {phone}."
-        return {"detail": response}
+        return await self.get_payment_status(printjob.uuid)
 
     def _get_pages_in_range(self, total_pages: int, page_range: str) -> int:
         if "-" in page_range:
@@ -276,7 +274,7 @@ class PrintJobRepository:
 
         return {"detail": "Callback: 'OK'"}
 
-    async def verify_payment(self, printjob_uuid: str) -> dict:
+    async def verify_payment(self, printjob_uuid: str) -> bool:
         printjob = await self.get(printjob_uuid)
 
         amount = printjob.amount is not None
@@ -286,3 +284,7 @@ class PrintJobRepository:
             return True
 
         return False
+
+    async def get_payment_status(self, printjob_uuid: str) -> dict:
+        printjob = await self.get(printjob_uuid)
+        return {"amount": printjob.amount, "result_desc": printjob.result_desc}

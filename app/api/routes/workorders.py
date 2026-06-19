@@ -47,3 +47,12 @@ async def push_to_queue(
 ) -> dict:
     queue_service = PrintJobService(session)
     return await queue_service.callback(payload)
+
+
+@router.post("/poll", status_code=status.HTTP_200_OK)
+async def poll_workorder(
+    payload: dict,
+    session: AsyncSession = Depends(get_db_session),
+) -> dict:
+    queue_service = PrintJobService(session)
+    return await queue_service.get_payment_status(payload["workorder_uuid"])

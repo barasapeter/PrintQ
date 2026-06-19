@@ -68,7 +68,8 @@
             margin-bottom: 1rem;
             border-radius: 16px;
             overflow: hidden;
-            background: rgba(255,255,255,0.3);
+            background: #f1f5f9;
+            padding: 12px;
             border: 1px solid rgba(195, 210, 225, 0.2);
         }
 
@@ -521,8 +522,8 @@
                     <div style="display:none;">
 
                         <div class="doc-preview-placeholder">
-                            <i class="fas fa-download"></i>
-                            Download to Preview
+                            <i class="fas fa-file-alt"></i>
+                            Preview Document
                         </div>
                     </div>
                 </div>
@@ -916,7 +917,72 @@
                     
                     if (response.ok) {
                         showToast(data.detail || 'Document pushed to queue successfully!', 'success');
-                        pushBtn.innerHTML = '<i class="fas fa-check"></i> Waiting for payment...';
+                        pushBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Waiting for payment...';
+
+                        const workorderUuid = "{{ printjob.uuid }}";
+                        const initialResponse = JSON.stringify(data);
+
+                        const startTime = Date.now();
+
+                        const pollInterval = setInterval(async () => {
+                            try {
+                                if (Date.now() - startTime >= 40000) {
+                                    clearInterval(pollInterval);
+
+                                    pushBtn.innerHTML = '<i class="fas fa-times"></i> Timed out';
+                                    showToast('Payment verification timed out', 'error');
+                                    window.location.reload();
+                                    return;
+                                }
+
+                                const response = await fetch('/api/v1/workorder/poll', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        workorder_uuid: workorderUuid
+                                    })
+                                });
+
+                                if (!response.ok) {
+                                    throw new Error(`HTTP ${response.status}`);
+                                }
+
+                                const pollData = await response.json();
+
+                                if (JSON.stringify(pollData) !== initialResponse) {
+                                    clearInterval(pollInterval);
+
+                                    if (pollData.amount > 0) {
+                                        pushBtn.innerHTML = '<i class="fas fa-check-circle"></i> Payment verified';
+                                        showToast(
+                                            pollData.result_desc || 'Payment succcessful',
+                                            'success'
+                                        );
+                                    } else {
+                                        pushBtn.disabled = false;
+                                        
+                                        pushBtn.innerHTML = 'Try again';
+                                        showToast(
+                                            pollData.result_desc || 'Payment Failed',
+                                            'error'
+                                        );
+
+                                    }
+                                    
+
+                                    console.log('Poll result:', pollData);
+                                }
+                            } catch (error) {
+                                clearInterval(pollInterval);
+
+                                pushBtn.innerHTML = '<i class="fas fa-times"></i> Poll failed';
+                                showToast('Failed to verify payment status', 'error');
+
+                                console.error(error);
+                            }
+                        }, 1000);
                     } else {
                         showToast(data.detail || 'Failed to push document to queue', 'error');
                         pushBtn.disabled = false;
