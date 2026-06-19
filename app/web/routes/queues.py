@@ -77,6 +77,8 @@ async def orders(
     result = await db.execute(stmt)
     customer = result.scalar_one_or_none()
 
+    await printjob_service.set_print_intent(str(printjob.uuid))
+
     return templates.TemplateResponse(
         "order.html",
         {

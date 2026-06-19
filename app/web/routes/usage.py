@@ -103,7 +103,7 @@ async def vendor(
 
     return templates.TemplateResponse(
         "vendor.html",
-        {"request": request, "workorders": workorders, "time_ago": time_ago},
+        {"request": request, "workorders": workorders, "time_ago": time_ago, },
     )
 
 

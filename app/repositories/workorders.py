@@ -4,6 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models import PrintJob
 from app.schemas.workorder import PrintJobCreate
 from app.services.shops import ShopService
+from app.services.workorders import PrintJobService
+from app.services.vendors import VendorService
 from app.core.storage import FileStorage
 from typing import Union, IO
 from pathlib import Path
@@ -13,9 +15,10 @@ from sqlalchemy.orm.attributes import flag_modified
 from fastapi import UploadFile
 from app.core.pages import count_pages
 
-from app.db.models import Customer
+from app.db.models import Customer, Shop
 from app.core.phone import process_phone
 from app.core.c2b import utils_initiate_stk_push
+from sqlalchemy.orm import joinedload
 
 
 class PrintJobRepository:
@@ -287,4 +290,38 @@ class PrintJobRepository:
 
     async def get_payment_status(self, printjob_uuid: str) -> dict:
         printjob = await self.get(printjob_uuid)
-        return {"amount": printjob.amount, "result_desc": printjob.result_desc}
+        return {
+            "amount": int(printjob.amount) if printjob.amount is not None else None,
+            "result_desc": printjob.result_desc,
+        }
+
+    async def set_print_intent(self, printjob_uuid: str) -> None:
+        printjob = await self.get(printjob_uuid)
+        shop = printjob.shop
+        vendor = shop.vendor
+        vendor.properties["print_intent"] = printjob_uuid
+
+        flag_modified(vendor, "properties")
+        await self.session.commit()
+        await self.session.refresh(vendor)
+
+        return None
+
+    async def clear_print_intent(self, printjob_uuid: str) -> None:
+        printjob = await self.get(printjob_uuid)
+        shop = printjob.shop
+        vendor = shop.vendor
+        vendor.properties.pop("print_intent", None)
+
+        flag_modified(vendor, "properties")
+        await self.session.commit()
+        await self.session.refresh(vendor)
+
+        return None
+
+    async def get_print_intent(self, vendor_uuid: str) -> PrintJob:
+        vendor_service = VendorService(self.session)
+        vendor = await vendor_service.get(vendor_uuid)
+
+        printjob = await self.get(printjob_uuid)
+
