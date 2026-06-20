@@ -686,7 +686,7 @@
             {% else %}
             <div class="payment-complete">
                 <i class="fas fa-check-circle"></i>
-                <h1>Payment Completed!</h1>
+                <h1>{{ printjob.properties.get("status", "Payment Completed!") }}</h1>
                 <p>Your document has been paid for and is now being processed.</p>
             </div>
             {% endif %}
