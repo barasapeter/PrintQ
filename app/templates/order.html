@@ -803,20 +803,59 @@
 
     
     function releaseFunds() {
-      if (!checkbox.checked) return;
-      confirmBtn.disabled = true;
-      confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-      setTimeout(() => {
-        confirmBtn.classList.add('success');
-        confirmBtn.innerHTML = '<i class="fas fa-check"></i> Cashed Out!';
-        setTimeout(() => {
-          closeModal();
-          confirmBtn.classList.remove('success');
-          confirmBtn.innerHTML = '<i class="fas fa-coins"></i> Cash Out';
-          confirmBtn.disabled = false;
-        }, 1500);
-      }, 1000);
+        if (!checkbox.checked) return;
+        
+        const workorderUuid = '{{ printjob.uuid }}';
+        
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        fetch('/api/v1/workorder/cashout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ workorder_uuid: workorderUuid })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(errorData => {
+                    const errorMessage = errorData.detail || `HTTP error! status: ${response.status}`;
+                    throw new Error(errorMessage);
+                }).catch(() => {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Cashout successful:', data);
+            
+            confirmBtn.classList.add('success');
+            confirmBtn.innerHTML = '<i class="fas fa-check"></i> Cashed Out!';
+            
+            setTimeout(() => {
+                closeModal();
+                confirmBtn.classList.remove('success');
+                window.location.href="/vendor";
+            }, 1500);
+        })
+        .catch(error => {
+            console.error('Cashout failed:', error);
+            
+            const errorMessage = error.message || 'Cashout failed!';
+            
+            confirmBtn.classList.add('error');
+            confirmBtn.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${errorMessage}`;
+            
+            setTimeout(() => {
+                confirmBtn.classList.remove('error');
+                confirmBtn.innerHTML = '<i class="fas fa-coins"></i> Cash Out';
+                confirmBtn.disabled = false;
+            }, 3000);
+        });
     }
+
     openBtn.addEventListener('click', openModal);
     closeBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
@@ -858,7 +897,7 @@
   Swal.fire({
     title: "Just a Second...",
     html: `You previously triggered a print action for <strong>{{ filename }}</strong>. Has printing been completed? Please confirm to notify customer.`,
-    icon: "info",
+    icon: "question",
     showCancelButton: true,
     confirmButtonText: "Yes, It's Ready",
     cancelButtonText: "Not Yet",

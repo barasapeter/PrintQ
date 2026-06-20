@@ -55,3 +55,13 @@ async def poll_workorder(
 ) -> dict:
     queue_service = PrintJobService(session)
     return await queue_service.get_payment_status(payload["workorder_uuid"])
+
+@router.post("/cashout", status_code=status.HTTP_200_OK)
+async def cashout(
+    payload: dict,
+    request: Request,
+    session: AsyncSession = Depends(get_db_session),
+) -> dict:
+    queue_service = PrintJobService(session)
+    cashout_response = await queue_service.cashout(payload.get("workorder_uuid"), request)
+    return cashout_response

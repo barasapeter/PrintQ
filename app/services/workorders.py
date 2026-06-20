@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import UploadFile
+from fastapi import UploadFile, Request
 
 from app.db.models import PrintJob
 from app.schemas.workorder import PrintJobCreate, PrintJobRead
@@ -59,3 +59,6 @@ class PrintJobService:
 
     async def get_payment_status(self, printjob_uuid: str) -> dict:
         return await self.repository.get_payment_status(printjob_uuid)
+    
+    async def cashout(self, printjob_uuid: str, request: Request) -> dict:
+        return await self.repository.cashout(printjob_uuid, request)

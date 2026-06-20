@@ -73,7 +73,13 @@ async def orders(
     customer = result.scalar_one_or_none()
     show_intent_dialog = False
     if not request.session.get("print_intent"):
-        request.session["print_intent"] = str(printjob.uuid)  # Set print intent
+        if (
+            printjob.properties["status"] == "Ready for Pickup"
+            or printjob.properties["status"] == "Completed"
+        ):
+            pass
+        else:
+            request.session["print_intent"] = str(printjob.uuid)  # Set print intent
     else:
         if str(printjob.uuid) != request.session["print_intent"]:
             return RedirectResponse(

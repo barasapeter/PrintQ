@@ -11,13 +11,16 @@ from pathlib import Path
 from fastapi import HTTPException
 from sqlalchemy.orm.attributes import flag_modified
 
-from fastapi import UploadFile
+from fastapi import UploadFile, Request
 from app.core.pages import count_pages
 
-from app.db.models import Customer, Shop
+from app.db.models import Customer, Shop, MerchantLedger
 from app.core.phone import process_phone
 from app.core.c2b import utils_initiate_stk_push
 from sqlalchemy.orm import joinedload
+
+from sqlalchemy.orm import joinedload
+from sqlalchemy import select
 
 
 class PrintJobRepository:
@@ -293,3 +296,46 @@ class PrintJobRepository:
             "amount": int(printjob.amount) if printjob.amount is not None else None,
             "result_desc": printjob.result_desc,
         }
+
+    async def cashout(self, printjob_uuid: str, request: Request) -> dict:
+        stmt = (
+            select(PrintJob)
+            .where(PrintJob.uuid == printjob_uuid)
+            .options(joinedload(PrintJob.shop))
+        )
+
+        result = await self.session.execute(stmt)
+        printjob = result.unique().scalar_one_or_none()
+
+        if (
+            printjob.properties["status"] == "Ready for Pickup"
+            or printjob.properties["status"] == "Completed"
+        ):
+            raise ValueError("This order was already cashed out.")
+
+        if not printjob:
+            raise ValueError(f"Print job {printjob_uuid} not found")
+
+        shop = printjob.shop
+
+        if not await self.verify_payment(printjob_uuid):
+            raise ValueError("Failed to cash out. Payment verification failed.")
+
+        merchant_ledger = MerchantLedger(
+            shop_uuid=shop.uuid,
+            debit=0,
+            credit=printjob.amount,
+            desc="Merchant cash out for printjob.",
+        )
+
+        printjob.properties["status"] = "Ready for Pickup"
+
+        flag_modified(printjob, "properties")
+
+        self.session.add(merchant_ledger)
+        await self.session.commit()
+        await self.session.refresh(printjob)
+        await self.session.refresh(merchant_ledger)
+        request.session.pop("print_intent", None)
+
+        return {"detail": "Cashout successful"}
