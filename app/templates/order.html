@@ -857,14 +857,14 @@
 <script>
   Swal.fire({
     title: "Just a Second...",
-    html: `We detected a print action for this file.<br> Has printing been completed for:<br><br><strong>{{ filename }}</strong>?`,
+    html: `You previously triggered a print action for <strong>{{ filename }}</strong>. Has printing been completed? Please confirm to notify customer.`,
     icon: "info",
     showCancelButton: true,
     confirmButtonText: "Yes, It's Ready",
     cancelButtonText: "Not Yet",
     didOpen: () => {
       const popup = Swal.getPopup();
-      popup.style.borderRadius = "20px";
+      popup.style.borderRadius = "30px";
 
       const confirmBtn = Swal.getConfirmButton();
       const cancelBtn = Swal.getCancelButton();
