@@ -15,7 +15,7 @@ from app.services.shops import ShopService
 from app.services.workorders import PrintJobService
 from app.core.templating import get_file_icon, format_file_size, time_ago
 from app.core.dtypes import validate_document
-
+from fastapi.responses import RedirectResponse
 
 router = APIRouter()
 
@@ -65,20 +65,24 @@ async def orders(
 ):
     printjob_service = PrintJobService(db)
     printjob = await printjob_service.get(printjob_uuid)
-    # if str(printjob.customer_uuid) != request.session.get("customer"):
-    #     raise HTTPException(
-    #         status_code=403,
-    #         detail="Forbidden, you do not have permission to access this resource.",
-    #     )
     printjob.filetype = validate_document(
         printjob.properties["file_metadata"]["filepath"]
     )
     stmt = select(Customer).where(Customer.uuid == printjob.customer_uuid)
     result = await db.execute(stmt)
     customer = result.scalar_one_or_none()
+    show_intent_dialog = False
+    if not request.session.get("print_intent"):
+        request.session["print_intent"] = str(printjob.uuid)  # Set print intent
+    else:
+        if str(printjob.uuid) != request.session["print_intent"]:
+            return RedirectResponse(
+                f"/orders/{request.session["print_intent"]}"
+            )  # Switch to print intent
+        else:
+            show_intent_dialog = True
 
-    await printjob_service.set_print_intent(str(printjob.uuid))
-
+    payment_completed = await printjob_service.verify_payment(str(printjob.uuid))
     return templates.TemplateResponse(
         "order.html",
         {
@@ -90,8 +94,7 @@ async def orders(
             "copies": printjob.properties.get("queue_metadata").get("copies"),
             "tariff": printjob.properties.get("tariffs"),
             "customer": customer,
-            "payment_completed": await printjob_service.verify_payment(
-                str(printjob.uuid)
-            ),
+            "payment_completed": payment_completed,
+            "show_intent_dialog": show_intent_dialog,
         },
     )

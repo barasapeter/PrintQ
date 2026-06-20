@@ -59,12 +59,3 @@ class PrintJobService:
 
     async def get_payment_status(self, printjob_uuid: str) -> dict:
         return await self.repository.get_payment_status(printjob_uuid)
-
-    async def set_print_intent(self, printjob_uuid: str) -> None:
-        return await self.repository.set_print_intent(printjob_uuid)
-
-    async def clear_print_intent(self, printjob_uuid: str) -> None:
-        return await self.repository.clear_print_intent(printjob_uuid)
-    
-    async def get_print_intent(self, vendor_uuid: str) -> PrintJob:
-        return await self.repository.get_print_intent(vendor_uuid)

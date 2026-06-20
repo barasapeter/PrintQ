@@ -101,9 +101,18 @@ async def vendor(
         workorder_service = PrintJobService(session)
         workorders = await workorder_service.get_by_shop_uuid(shop.uuid, "Queued")
 
+    show_intent_dialog = False
+    if request.session.get("print_intent"):
+        show_intent_dialog = True
+
     return templates.TemplateResponse(
         "vendor.html",
-        {"request": request, "workorders": workorders, "time_ago": time_ago, },
+        {
+            "request": request,
+            "workorders": workorders,
+            "time_ago": time_ago,
+            "show_intent_dialog": show_intent_dialog
+        },
     )
 
 
