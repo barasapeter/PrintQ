@@ -716,6 +716,28 @@
 
 
 <script>
+  const modal = document.getElementById('releaseModal');
+  const openBtn = document.getElementById('releaseBtn');
+  const closeBtn = document.getElementById('modalCloseBtn');
+  const cancelBtn = document.getElementById('modalCancelBtn');
+  const confirmBtn = document.getElementById('releaseConfirmBtn');
+  const checkboxWrap = document.getElementById('confirmCheck');
+  const checkbox = document.getElementById('confirmCheckbox');
+
+  function openModal() {
+    checkbox.checked = false;
+    checkboxWrap.classList.remove('checked');
+    confirmBtn.disabled = true;
+    confirmBtn.className = 'btn-modal primary';
+    confirmBtn.innerHTML = '<i class="fas fa-coins"></i> Cash Out';
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
   (function() {
     const extBadge = document.getElementById('fileExtBadge');
     const iconWrapper = document.getElementById('fileIconWrapper');
@@ -779,27 +801,7 @@
       }
     }
 
-    const modal = document.getElementById('releaseModal');
-    const openBtn = document.getElementById('releaseBtn');
-    const closeBtn = document.getElementById('modalCloseBtn');
-    const cancelBtn = document.getElementById('modalCancelBtn');
-    const confirmBtn = document.getElementById('releaseConfirmBtn');
-    const checkboxWrap = document.getElementById('confirmCheck');
-    const checkbox = document.getElementById('confirmCheckbox');
-
-    function openModal() {
-      checkbox.checked = false;
-      checkboxWrap.classList.remove('checked');
-      confirmBtn.disabled = true;
-      confirmBtn.className = 'btn-modal primary';
-      confirmBtn.innerHTML = '<i class="fas fa-coins"></i> Cash Out';
-      modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeModal() {
-      modal.classList.remove('active');
-      document.body.style.overflow = '';
-    }
+    
     function releaseFunds() {
       if (!checkbox.checked) return;
       confirmBtn.disabled = true;
@@ -855,10 +857,10 @@
 <script>
   Swal.fire({
     title: "Just a Second...",
-    html: "Did you complete printing <strong>{{ filename }}</strong>?",
+    html: `Did you complete printing <br><br> "<strong>{{ filename }}</strong>"?`,
     icon: "info",
     showCancelButton: true,
-    confirmButtonText: "Yes, It Is Ready!",
+    confirmButtonText: "Yes, It's Ready",
     cancelButtonText: "Not Yet",
     didOpen: () => {
       const popup = Swal.getPopup();
@@ -875,6 +877,7 @@
     }
   }).then((result) => {
     if (result.isConfirmed) {
+        openModal();
     } else if (result.dismiss === "cancel") {
     }
   });
