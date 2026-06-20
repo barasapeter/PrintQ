@@ -111,7 +111,7 @@ async def vendor(
             "request": request,
             "workorders": workorders,
             "time_ago": time_ago,
-            "show_intent_dialog": show_intent_dialog
+            "show_intent_dialog": show_intent_dialog,
         },
     )
 
@@ -147,3 +147,11 @@ async def shop_create(
         "shop-create.html",
         {"request": request, "vendors": vendors},
     )
+
+
+@router.get("/clear")
+async def clear_print_intent(
+    request: Request,
+):
+    request.session.pop("print_intent", None)
+    return "OK"
