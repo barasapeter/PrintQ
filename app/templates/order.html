@@ -894,45 +894,47 @@
 
 {% if show_intent_dialog %}
 <script>
-  Swal.fire({
-    title: "Just a Second...",
-    html: `You previously triggered a print action for <strong>{{ filename }}</strong>. Has printing been completed? Please confirm to notify customer.`,
-    icon: "question",
-    showCancelButton: true,
-    confirmButtonText: "Yes, It's Ready",
-    cancelButtonText: "Skip This Document",
-    didOpen: () => {
-      const popup = Swal.getPopup();
-      popup.style.borderRadius = "30px";
+  setTimeout(() => {
+    Swal.fire({
+      title: "Just a Second...",
+      html: `You previously triggered a print action for <strong>{{ filename }}</strong>. Has printing been completed? Please confirm to notify customer.`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes, It's Ready",
+      cancelButtonText: "Skip This Document",
+      didOpen: () => {
+        const popup = Swal.getPopup();
+        popup.style.borderRadius = "30px";
 
-      const confirmBtn = Swal.getConfirmButton();
-      const cancelBtn = Swal.getCancelButton();
+        const confirmBtn = Swal.getConfirmButton();
+        const cancelBtn = Swal.getCancelButton();
 
-      confirmBtn.style.borderRadius = "999px";
-      cancelBtn.style.borderRadius = "999px";
+        confirmBtn.style.borderRadius = "999px";
+        cancelBtn.style.borderRadius = "999px";
 
-      confirmBtn.style.padding = "10px 24px";
-      cancelBtn.style.padding = "10px 24px";
-    }
-  }).then((result) => {
-    if (result.isConfirmed) {
-        openModal();
-    } else if (result.dismiss === "cancel") {
-      fetch('/clear', {
-        method: 'GET',
-        credentials: 'same-origin'
-      })
-      .then(response => {
-        if (response.ok) {
-          console.log('Print intent cleared');
-          window.location.href="/vendor";
-        }
-      })
-      .catch(error => {
-        console.error('Error clearing print intent:', error);
-      });
-    }
-  });
+        confirmBtn.style.padding = "10px 24px";
+        cancelBtn.style.padding = "10px 24px";
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+          openModal();
+      } else if (result.dismiss === "cancel") {
+        fetch('/clear', {
+          method: 'GET',
+          credentials: 'same-origin'
+        })
+        .then(response => {
+          if (response.ok) {
+            console.log('Print intent cleared');
+            window.location.href="/vendor";
+          }
+        })
+        .catch(error => {
+          console.error('Error clearing print intent:', error);
+        });
+      }
+    });
+  }, 500);
 </script>
 {% endif %}
 </body>
