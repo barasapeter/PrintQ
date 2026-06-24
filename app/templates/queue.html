@@ -357,7 +357,7 @@
             font-weight: 600;
             font-size: 0.9rem;
             padding: 0.8rem 1.5rem;
-            border-radius: 20px;
+            border-radius: 60px;
             cursor: default;
             font-family: inherit;
             display: inline-flex;
@@ -556,8 +556,7 @@
                     <span class="status-label">{{ printjob.properties.get("status", "Uploaded") }}</span>
                     {% if printjob.updated_at and printjob.updated_at != printjob.created_at %}
                     <span class="status-time">
-                        <i class="far fa-eye"></i>
-                        Updated {{ printjob.updated_at|time_ago }}
+                        {{ printjob.updated_at|time_ago }}
                     </span>
                     {% endif %}
                 </div>
@@ -687,7 +686,7 @@
             <div class="payment-complete">
                 <i class="fas fa-check-circle"></i>
                 <h1>{{ printjob.properties.get("status", "Payment Completed!") }}</h1>
-                <p>Your document has been paid for and is now being processed.</p>
+                <p>Your document is {{ printjob.properties.get("status") }}.</p>
             </div>
             {% endif %}
         </div>

@@ -39,7 +39,7 @@ async def index(
     printjob.preview_image_url = f"/api/v1/files/{str(printjob.uuid)}"
     shop_service = ShopService(db)
     shop = await shop_service.get(str(printjob.shop_uuid))
-
+    payment_completed = await printjob_service.verify_payment(str(printjob.uuid))
     return templates.TemplateResponse(
         "queue.html",
         {
@@ -50,9 +50,7 @@ async def index(
             "time_ago": time_ago,
             "shop": shop,
             "tariff": printjob.properties.get("tariffs"),
-            "payment_completed": await printjob_service.verify_payment(
-                str(printjob.uuid)
-            ),
+            "payment_completed": payment_completed,
         },
     )
 
@@ -65,26 +63,22 @@ async def orders(
 ):
     printjob_service = PrintJobService(db)
     printjob = await printjob_service.get(printjob_uuid)
-    printjob.filetype = validate_document(
-        printjob.properties["file_metadata"]["filepath"]
-    )
+    filepath = printjob.properties["file_metadata"]["filepath"]
+    printjob.filetype = validate_document(filepath)
     stmt = select(Customer).where(Customer.uuid == printjob.customer_uuid)
     result = await db.execute(stmt)
     customer = result.scalar_one_or_none()
     show_intent_dialog = False
+    status_pickup_ready = printjob.properties["status"] == "Ready for Pickup"
+    status_completed = printjob.properties["status"] == "Completed"
     if not request.session.get("print_intent"):
-        if (
-            printjob.properties["status"] == "Ready for Pickup"
-            or printjob.properties["status"] == "Completed"
-        ):
+        if status_pickup_ready or status_completed:
             pass
         else:
-            request.session["print_intent"] = str(printjob.uuid)  # Set print intent
+            request.session["print_intent"] = str(printjob.uuid)
     else:
         if str(printjob.uuid) != request.session["print_intent"]:
-            return RedirectResponse(
-                f"/orders/{request.session["print_intent"]}"
-            )  # Switch to print intent
+            return RedirectResponse(f"/orders/{request.session["print_intent"]}")
         else:
             show_intent_dialog = True
 
